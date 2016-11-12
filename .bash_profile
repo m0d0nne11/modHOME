@@ -1,6 +1,6 @@
  export ARCH=`arch`
 #. $HOME/.bashrc
- export TERM=xterm
+#export TERM=xterm
  export HOSTNAME=`uname -n`
 #stty intr ^c erase '^h' echoe tabs tab0
  stty intr ^c erase '^?' echoe tabs tab0
