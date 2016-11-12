@@ -1,0 +1,2 @@
+#!/bin/csh -f
+yes y | /afs/ri/project/norma-nd/farm/bin/reset-farm product

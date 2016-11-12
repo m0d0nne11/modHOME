@@ -1,0 +1,220 @@
+#!/bin/bash
+
+if ! [ $# -gt 0 ] ; then
+    echo mention a letter combo
+    exit
+fi
+
+function wordHelpPlusFunc() {
+    lynx -nolist -width=2400 -dump			\
+          http://www.morewords.com/words-within-plus/$@	\
+    | sed -r -e '1,/value of the blank/d'		\
+             -e '/New Search/,$d'			\
+             -e '/^[[:space:]]*$/d'			\
+             -e 's/\[[^]]*]//g'				\
+             -e 's/[[:space:]]+/ /g'
+}
+
+function wordHelpFunc() {
+    lynx -nolist -width=2400 -dump			\
+          http://www.morewords.com/words-within/$@	\
+    | sed -r -e '1,/List of shorter words within/d'	\
+             -e '/New Search/,$d'			\
+             -e '/^[[:space:]]*$/d'			\
+             -e 's/^[[:digit:]]*//'			\
+             -e 's/\[[^]]*]//g'				\
+             -e 's/[[:space:]]+/ /g' | fmt
+}
+
+function substringsOfDictWords()  {
+    local f
+    (for f in $(echo $1 | permuteString | sort -bfdu | para); do grep -i -e $f < $WORDLIST ; done) | sort -bfdu | sortByLength | para
+}
+
+function wordHelpWithBlank()  {
+    local f;
+    ( for f in a b c d e f g h i j k l m n o p q r s t u v w x y z;
+    do
+        echo "=$f";
+        wordHelp "$1"$f;
+    done )
+}
+
+smile
+wordHelpPlusFunc      $@
+wordHelpFunc          $@
+
+if [ $# -gt 1 ] ; then
+    echo Looking for full permutations of $@
+    substringsOfDictWords $@
+fi
+
+exit
+
+#    #   ##    ####  #    # ###### #####  #   #
+#    #  #  #  #    # #   #  #      #    #  # #
+###### #    # #      ####   #####  #    #   #
+#    # ###### #      #  #   #      #####    #
+#    # #    # #    # #   #  #      #   #    #
+#    # #    #  ####  #    # ###### #    #   #
+
+function xxx()  {
+    local f l ;
+
+    f=$1 ;
+    l=$(charCountForString $f) ;
+    if [ $l -lt 2 ] ; then
+        echo $f ;
+        return ;
+    fi ;
+
+    for f in $(allLeftRotationsOfString $f) ; do
+        echo $f ;
+        xxx $(rightmostNcharsOfString $(($l - 1)) $f) ;
+    done
+}
+
+function substringCombinationsFrom() {
+    local l p r s ;
+
+    s="$1" ;
+    l=$(charCountForString "$s") ;
+    if [ $l -lt 2 ] ; then
+        echo "$s" ;
+        return 0 ;
+    fi ;
+
+    echo "$s" | permuteString | sort -bfdu | while read p ; do
+        echo $p ;
+        allLeftRotationsOf "$p" | sort -bfdu | while read r ; do
+            substringCombinationsFrom $(rightmostNcharsOfString $(($l - 1)) "$r") ;
+        done ;
+    done ;
+}
+
+function substringCombinationsFrom() {
+    local l p r s ;
+
+    s="$1" ;
+    l=$(charCountForString "$s") ;
+    if [ $l -lt 2 ] ; then
+        echo "$s" ;
+        return 0 ;
+    fi ;
+
+    echo "$s" | permuteString | sort -bfdu | while read p ; do
+        echo $p ;
+        allLeftRotationsOf "$p" | sort -bfdu | while read r ; do
+            substringCombinationsFrom $(rightmostNcharsOfString $(($l - 1)) "$r") ;
+        done ;
+    done ;
+}
+
+function substringCombinationsFrom()  {
+    local l p r s ;
+
+    if [ -z "$1" ]; then
+        echo "";
+        return 1;
+    fi;
+    s="$1";
+    l=$(charCountForString "$s");
+    if [ $l -eq 1 ]; then
+        echo "$s";
+        return 0;
+    fi;
+    echo "$s" | permuteString | while read p; do
+        echo $p;
+        substringCombinationsFrom $(leftmostNcharsOfString $(($l - 1)) "$p");
+    done
+}
+
+function substringCombinationsFrom()  {
+    local l p r s ;
+
+    if [ -z "$1" ]; then
+        echo "";
+        return 1;
+    fi;
+    s="$1";
+    l=$(charCountForString "$s");
+    if [ $l -eq 1 ]; then
+        echo "$s";
+        return 0;
+    fi;
+    echo "$s" | permuteString | sort -bfdu | while read p; do
+        echo $p;
+        substringCombinationsFrom $(leftmostNcharsOfString $(($l - 1)) "$p");
+    done
+}
+
+function substringCombinationsFrom()  {
+    local l;
+    local r;
+    local s;
+    local p;
+
+    if [ -z "$1" ]; then
+        echo "";
+        return 1;
+    fi;
+    s="$1";
+    l=$(charCountForString "$s");
+    if [ $l -eq 1 ]; then
+        echo "$s";
+        return 0;
+    fi;
+    echo "$s" | permuteString | sort -bfdu | while read p; do
+        echo $p;
+        allLeftRotationsOf "$p" | sort -bfdu | while read r; do
+            substringCombinationsFrom $(rightmostNcharsOfString $(($l - 1)) "$r");
+        done;
+    done
+}
+
+# To maintain the following list of functions, position (in vi) the cursor on
+# the first line in the list and then execute one of the following verbatim:
+#
+# !}grep -e '^function ' % | awk '{ print $2 }' | sort -bfd | sed -e 's/^/\# /'
+# !}grep -e '^function ' % | awk '{ print $2 }' |             sed -e 's/^/\# /'
+
+# FUNCTIONS:
+# wordHelpPlusFunc()
+# wordHelpFunc()
+# substringsOfDictWords()
+# wordHelpWithBlank()
+# xxx()
+# substringCombinationsFrom() 4 versions
+# charCountForString()
+# individualCharactersOfString()
+# leftmostNcharsOfString()
+# rightmostNcharsOfString()
+# rotateStringLeft()
+# rotateStringRight()
+# allLeftRotationsOfString()
+# allRightRotationsOfString()
+# trimmedSubStringsOf()
+# allSpecifiedLettersGrepPipeExpr()
+# wordsIncludingAllSpecifiedLetters()
+
+function charCountForString()            { echo -n "$1" | wc -c ; }
+function individualCharactersOfString()  { echo -n "$1" | sed -e 's/./&\n/g' ; }
+function leftmostNcharsOfString()        { echo -n "$2" | sed -e 's/^\(.\{'$1'\}\).*$/\1/' ; }
+function rightmostNcharsOfString()       { echo -n "$2" | sed -e 's/^.*\(.\{'$1'\}\)$/\1/' ; }
+function rotateStringLeft()              { echo -n "$1" | sed -e 's/^\(.\)\(.*\)$/\2\1/'   ; }
+function rotateStringRight()             { echo -n "$1" | sed -e 's/^\(.*\)\(.\)$/\2\1/'   ; }
+
+function lettersWithWords()              { local l=$1 ; local w ; shift ; while [ $# -gt 0 ] ; do grep -E < $WORDLIST -e '^['$l']*'$1'['$l']*$' ; shift ; done ; }
+
+function allLeftRotationsOfString() { local l s; s="$1"; l=$(charCountForString "$s"); if [ $l -lt 2 ]; then echo "$s"; return 0; fi; while [ $l -gt 0 ]; do s=$(rotateStringLeft "$s"); echo "$s"; let l--; done }
+
+function allRightRotationsOfString() { local l s; s="$1"; l=$(charCountForString "$s"); if [ $l -lt 2 ]; then echo "$s"; return 0; fi; while [ $l -gt 0 ]; do s=$(rotateStringRight "$s"); echo "$s"; let l--; done }
+
+function allSpecifiedLettersGrepPipeExpr() { local i=0 x; for x in $@ ; do if [ $i -gt 0 ] ; then echo -n ' |' grep -e $x ; else echo -n grep -E -e $x ; fi ; let i++ ; done ; echo ; }
+
+function wordsIncludingAllSpecifiedLetters() { < $WORDLIST eval $(allSpecifiedLettersGrepPipeExpr $@) ; }
+
+function trimmedSubStringsOf() { local s l t; s=$1 ; l=$(charCountForString $s) ; t=$(($l - 1)) ; while [ $l -gt 0 ] ; do s=$(rotateStringLeft $s) ; echo $(leftmostNcharsOfString $t $s) ; let l-- ; done ; }
+
+function recursivetrimmedSubStringsOf() { local p=$1; local s; for s in $(trimmedSubStringsOf $p) ; do echo $s ; recursivetrimmedSubStringsOf $s ; done ; }
+

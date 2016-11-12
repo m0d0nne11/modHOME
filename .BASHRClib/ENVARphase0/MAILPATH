@@ -1,0 +1,2 @@
+ export MAILPATH=/var/mail/$(id -un)
+

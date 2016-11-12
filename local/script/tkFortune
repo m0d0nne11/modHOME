@@ -1,0 +1,12 @@
+wish -name `basename $0` <<EOF
+button .fortune \
+    -background black -activebackground black \
+    -foreground white -activeforeground white \
+    -command {.fortune configure -text [exec fortune -ea] } \
+    -font -bitstream-terminal-medium-r-normal--18-140-100-100-c-110-iso8859-1 \
+    -justify left
+pack .fortune
+bind .fortune <3> exit
+.fortune invoke
+EOF
+

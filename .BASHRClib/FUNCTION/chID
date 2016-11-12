@@ -1,0 +1,5 @@
+function chID
+{
+    sudo chfn -f "$*" mod
+}
+

@@ -1,0 +1,6 @@
+ shopt -s nullglob
+ shopt -u progcomp
+#umask 0
+ umask -S u=rwx,g=rx,o=rx > /dev/null
+#unset allow_null_glob_expansion
+

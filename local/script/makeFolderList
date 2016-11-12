@@ -1,0 +1,17 @@
+#!/bin/csh -f
+set verbose
+cd $HOME/.mail
+if ( -f context ) then
+    rm context
+endif
+set MAILDIR=$cwd
+touch .dummyFile$$
+rm `find . -type f | fgrep /.`
+find . -type d | sed 's/^\.\///'     >>$MAILDIR/.folders
+cd ccur/OSPREY
+touch .dummyFile$$
+rm `find . -type f | fgrep /.`
+find . -type d | sed 's/^\./ccur\/OSPREY/' >>$MAILDIR/.folders
+cd $MAILDIR
+sort -u <$MAILDIR/.folders | fgrep -vx . >$MAILDIR/.folders$$
+mv $MAILDIR/.folders$$ $MAILDIR/.folders

@@ -1,0 +1,10 @@
+
+echo Try using dadadodo && exit 1
+
+function rzq()  {
+	fmt -"$[($RANDOM % 200) + 45]"
+}
+
+sed -e 's/^/ /' -e 's/[]`^<=>,;:!?."('"'"')[{@|~}$*\\&\/#%+-]/ /g' -e 's/[	 ][	 ]*/ /g' | fmt -1 | sort -fd | uniq | rzq | sort -rfd | rzq | sort -fd | rzq | sort -rfd | rzq | sort -fd | fmt -500 | sed -e 's/$/\
+/' | fmt -65
+

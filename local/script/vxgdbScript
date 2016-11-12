@@ -1,0 +1,111 @@
+#!/bin/sh
+#
+# vxgdb: invoke an appropriate version of vxgdb or xvxgdb.
+#
+# modification history
+# --------------------
+# 01j,12mar91,c_s  Added "tron" to architecture-invalid error message 
+# 01i,05mar91,maf  Added support for TRON targets.
+# 01h,24oct91,maf  Removed unused usage () function, which was causing
+#                     problems on DECstation host.
+# 01g,19aug91,maf  Fixed bug with "-l" mode; no longer runs line debugger
+#                    in background.
+# 01f,29jul91,maf  No longer complains if defaultTargetArch is undefined
+#                    but VXGDB_DEBUGGER is defined.
+# 01e,27jul91,maf  Test for undefined default target arch no longer uses
+#                    expr; reduces debugger startup time.
+#                  Minor tweaks.
+# 01d,12jul91,c_s  No longer uses debuggerDir; complains if install script
+#		     has not provided a default target architecture and
+#		     none can be deduced from the shell; made consistent
+#		     with xvxgdb's using the path to find its debugger;
+#		     changed cat<<EOF to echo in usage statement; added 
+#		     sparc to list of recognized architectures; unused shell
+#		     arguments are passed to debugger; if VXGDB_DEBUGGER
+#		     is set, it is used as the debugger to execute.
+# 01c,30may91,maf  Now uses default target architecture provided during
+#                    installation by install script.
+# 01b,28may91,c_s  Brought up to WRS coding standard, put under RCS control,
+#                  made so that install script can modify path.
+# 01a,23may91,c_s  Initial version.
+#
+#*/
+
+defaultTargetArch=UNDEFINED
+
+if [ "$1" = "-t" ]
+then
+    case $2 in
+	68*)
+	    targetArch=68k
+	    shift
+            shift
+            ;;
+	960|i960)
+	    targetArch=960
+	    shift
+            shift
+            ;;
+	[Ss][Pp][Aa][Rr][Cc])
+	    targetArch=sparc
+	    shift
+	    shift
+	    ;;
+	[Tt][Rr][Oo][Nn])
+	    targetArch=tron
+	    shift
+	    shift
+	    ;;
+	*)
+	    echo Target architecture must be one of 68k, 960, sparc, tron. >&2
+	    exit 2
+            ;;
+    esac
+fi
+
+if [ "$targetArch" = "" ]
+then
+    if [ "$VX_CPU_FAMILY" != "" ]
+    then
+	targetArch=$VX_CPU_FAMILY
+    else
+	if [ "$defaultTargetArch" = "UNDEFINED" ]
+	then
+	    if [ "$VXGDB_DEBUGGER" = "" ]
+	    then
+	        echo "No default target architecture is defined for VxGDB."  >&2
+		echo "You must use the \"-t\" flag or define VX_CPU_FAMILY." >&2
+		exit 1
+	    fi
+	else
+	    targetArch=$defaultTargetArch
+	fi
+    fi
+fi
+
+if [ "$1" = "-l" ]
+then
+    lineDebugger=1
+    shift;
+fi
+
+vxgdbPath=vxgdb$targetArch
+xvxgdbPath=xvxgdb
+
+if [ $lineDebugger ]
+then
+    $vxgdbPath $@
+else
+    if [ "$VXGDB_DEBUGGER" != "" ] 
+    then
+echo "######## Checkpoint" 980601131417
+	$xvxgdbPath $@ &
+echo "######## Checkpoint" 980601131428
+    else
+echo "######## Checkpoint" 980601131437
+        $xvxgdbPath -xrm "*debugger: $vxgdbPath" $@ &
+echo "######## Checkpoint" 980601131439
+    fi
+fi
+
+wait

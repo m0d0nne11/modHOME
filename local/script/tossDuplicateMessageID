@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Standing in an MH mail directory (folder) toss duplicate
+# messages based on the message-id field in the headers.
+
+set -x
+for f in $(find . -type f -name "[0-9]*" | xargs -l50 cat | grep -i -e '^message-id:' | sed -e 's/^........... *//' | sort -fd | uniq -d)
+do
+    x=$(find . -type f -name "[0-9]*" | xargs -l50 fgrep -l -e "${f}" | tail -1)
+    rm $x
+done
+

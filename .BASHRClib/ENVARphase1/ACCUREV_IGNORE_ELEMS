@@ -1,0 +1,3 @@
+# Tell AccuRev which files to ignore (never add or keep)
+export ACCUREV_IGNORE_ELEMS='*/acopiaobj* *~ */#* */.*.swp */*.backup.fm ContenTable* makeLog* tags* .glimpse* cscope*'
+

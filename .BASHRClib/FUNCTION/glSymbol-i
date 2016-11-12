@@ -1,0 +1,4 @@
+function glSymbol-i()  {
+    gl -i "$@" | sed -e 's/^/ /' -e 's/[]`^<=>,;:!?."('"'"')[{@|~}$*\\&\/#%+-]/ /g' -e 's/[	 ][	 ]*/ /g' | fmt -1 | grep -i "$@" | sort -fd | uniq
+}
+

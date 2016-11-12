@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# Utter a date string suitable for use in
+# an RFC822 compliant email message header.
+#
+
+if [ $# -lt 1 ] ; then
+    dString="$(date)"
+else
+    dString="$1"
+fi
+
+#date '+%a, %d %b %Y %T %Z' --date="${dString}"
+ date --rfc-2822            --date="${dString}"
+

@@ -1,0 +1,95 @@
+#!/usr/bin/bash
+#!/u/bin/bash
+#!/opt/local/bin/bash
+#!/n/viewserver/home/merlin/home2/bin/sun4/sos4/bash
+
+####
+# This script is intended to be run in the root of an MC/OS source tree,
+# typically /vobs/mcos.  It arranges for the construction of a ctags
+# database describing the files mentioned in cscope.files - this script
+# will also generate some "artificial" entries in that ctags database
+# corresponding to the symbols declared in certain assembler-language
+# macros like _GLOBAL(), as well as those C-language symbols obscured
+# by such irritiating AKM as the type_{struct,declare,define} macros.
+#
+# Note: The Emacs etags facility seems to be far superior WRT handling
+#       of unusual constructs like we're trying to do here...
+#
+# The format of a ctags line is simply:
+#
+# symbol<TAB>file<TAB>pattern
+#
+# where symbol is the "thing" we're chasing, file is where it's found and
+# pattern is the regular expression that gets us to the line of interest.
+#
+# When we're generating the "artificial" entries we're assuming that
+# the layout of the constructs in question is such that we can just
+# blindly accept everything between the parentheses as the target symbol.
+# If that turns out to be insufficient then this script needs work,
+# because we just extract that entire parenthesized string intact...
+#
+
+
+
+####
+# The timeStamp is handy for generating any
+# unique-per-script-invocation temp files and such...
+#
+timeStamp=`date '+%Y%m%d%H%M%S'`
+ tempFile=tempFile$timeStamp
+
+cat /dev/null >$tempFile
+
+
+####
+# Preserve existing instances of tags, if any...
+#
+if [ -f tags ]
+then
+    mv                   tags              tags$timeStamp
+    echo "####" Existing tags preserved as tags$timeStamp
+fi
+
+
+####
+# First, the "easy" part, just allow the normal output of ctags to accrete:
+#
+xargs -l5 ctags -at <cscope.files
+
+
+echo "######## Generating tags for GLOBAL and type_{struct,declare,define}..."
+
+####
+# We'll later re-execute a search of all files mentioned in cscope.files
+# for the constructs of interest, so it's OK to just blindly toss all ctags
+# lines that currently mention those "troublesome" constructs...
+#
+grep    -e '^type_struct' -e '^type_define' -e '^type_declare' -e '^_\{0,1\}GLOBAL(' tags | fgrep '#define' >$tempFile
+grep -v -e '^type_struct' -e '^type_define' -e '^type_declare' -e '^_\{0,1\}GLOBAL(' tags                  >>$tempFile
+
+mv $tempFile tags
+
+
+####
+# We now re-execute the search of files mentioned in cscope.files, looking
+# for certain constructs that ctags doesn't understand.  For each one that
+# we find we'll generate an "artificial" tag-file entry:
+#
+xargs -l5 fgrep -e 'type_define'   \
+                -e 'type_struct'   \
+                -e 'GLOBAL(' /dev/null <cscope.files | while read line
+do
+    echo "$line"                # Continuing evidence that we're still alive...
+    pattern=`echo "$line"    | sed -e 's/: */RZQcolonRZQ/' -e 's/^.*RZQcolonRZQ//' `
+       file=`echo "$line"    | sed -e 's/:.*$//' `
+     symbol=`echo "$pattern" | sed -e 's/^.*type_struct(//'    \
+                                   -e 's/^.*type_define(//'    \
+                                   -e 's/^_\{0,1\}GLOBAL(//'   \
+                                   -e 's/).*$//' `
+    echo -e "$symbol\t$file\t/$pattern" >>tags
+done
+
+#sort -fd <tags | uniq >$tempFile
+ sort     <tags | uniq >$tempFile
+mv $tempFile tags
+

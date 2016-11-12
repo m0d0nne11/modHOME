@@ -1,0 +1,2 @@
+#export WORDLIST=$HOME/local/dict/words.gz
+ export WORDLIST=$modHOME/local/dict/words.local

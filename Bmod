@@ -1,0 +1,63 @@
+# This file (Bmod) is installed as part of the expansion of the
+# modHOME.tgz archive, something that I (mod=Michael O'Donnell)
+# sometimes inflict on systems so that I can have familiar
+# surroundings (aliases, functions, environment variables, init
+# scripts, etc) that reflect my preferences.  The modHOME
+# environment can be installed/initialized for any user after
+# expanding the archive in that account's home directory:
+#
+#  cd ~; tar xvzf modHOME.tgz; . Bmod; pathPreen; rememberPATH
+#
+# ...with subsequent uses then requiring only that this Bmod
+# script be sourced:
+#
+#    . Bmod
+#
+# It should be true that this modHOME stuff can be left in
+# place since it generally has no (well, OK - very little...)
+# effect on other users who do not explicitly put it into
+# effect via that Bmod script.  Also, please note that I try
+# not to leave precious files anywhere in the modHOME
+# hierarchy so it should always be OK to delete it without
+# notice if you feel the need to tidy things up, though it'd
+# be good manners to talk to me first, if possible...  ;->
+#
+# SEE ALSO: the Xmod script in modHOME to aid in removal.
+# Michael.ODonnell@ll.mit.edu  mod.modHOME@spineless.org
+
+startingDir=$PWD
+
+#HOME=$(eval "eval 'echo ~`whoami`'")
+
+if cd ~/modHOME/. ; then
+    modHOME="$PWD"
+    cd			# ASSUME: no symlinks involved.
+
+    # Force glob patterns that match nothing to expand to
+    # empty strings rather than their literal selves.
+    #
+    shopt -s nullglob
+
+    # Lose ALL curently defined aliases
+    #eval "$(alias | sed -e 's/=.*$//' -e 's/^.* //' | while read f; do if alias "${f}" > /dev/null 2>&1 ; then echo "unalias '${f}' ;" ; fi; done)"
+    unalias -a
+
+#   rm -rf   .config .dbus .gconf .gconfd .gnome2 .ICEauthority          .screen .ssh .Xauthority .xauth*
+#   for f in .config .dbus .gconf .gconfd .gnome2 .ICEauthority          .screen .ssh .Xauthority ; do
+#       ln -fs hostDir/$f ;
+#   done
+#
+#   unset x
+#   unset f
+
+#    export PS1_EXTRA=SITE_NAME
+    . $modHOME/.bashrc
+
+    history -c
+    history -r
+else
+    echo Cannot cd ~/modHOME/.
+fi
+
+cd $startingDir
+

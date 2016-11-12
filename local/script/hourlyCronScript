@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ -e ~/.hourlyLoggingActive ]
+then
+    echo Subject: "####" HOURLY... | mail mod >/dev/null 2>&1
+fi
+
+echo $0 '>/dev/null 2>&1' | at now next hour >/dev/null 2>&1

@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# Snapshot & compress the current contents of the deleted folder
+# in a newly-created-for-the-occasion subdirectory of deleted/SNAP
+#
+GNUTAR=tar
+NOW=`timeDateString`
+
+for f in $HOME/.mail/deleted/SNAP $HOME/DeletedMailSNAP
+do
+    if [ ! -d $f ]
+    then
+        echo You have no directory named $f
+        exit 1
+    fi
+done
+
+cd $HOME/.mail
+folder -pack +deleted \
+ && sortm -textfield subject -nolimit -verbose +deleted \
+ && mv           deleted $NOW \
+ && mkdir        deleted \
+ && mv $NOW/SNAP deleted \
+ && mv $NOW      deleted/SNAP \
+ && cd           deleted/SNAP \
+ && scan        +deleted/SNAP/$NOW >$NOW/scanList$NOW \
+ && find $NOW -type f -print | sort -t / +1 -nf >$NOW/ContenTable \
+ && $GNUTAR -c -v -z -f $NOW.tgz -T $NOW/ContenTable \
+ && rm -f $NOW/[0-9]* $NOW/.[em]* $NOW/ContenTable \
+ && mv $NOW.tgz $NOW \
+ && mv $NOW $HOME/DeletedMailSNAP/$NOW
+

@@ -1,0 +1,5 @@
+function xvl
+{
+    xv $(tail $* ~/News/IMAGELOG )
+}
+

@@ -1,0 +1,93 @@
+
+if [ -x ~/modHOME/local/bin/eat ]
+then
+    COLLAPSE_WHITESPACE=~/modHOME/local/bin/eat
+else
+    COLLAPSE_WHITESPACE="sed -e 's/[	 ][	 ]*/ /g' "
+fi
+
+
+####
+# The timeStamp is handy for generating any
+# unique-per-script-invocation temp files and such...
+#
+      timeStamp=`tds`
+        tempDir=/tmp
+        md5List=$tempDir/md5List$timeStamp
+       tempFile=$tempDir/tempFile$timeStamp
+      stdinList=$tempDir/stdinList$timeStamp
+     tagsOfDups=$tempDir/tagsOfDups$timeStamp
+representatives=$tempDir/representatives$timeStamp
+
+
+for f in $md5List $representatives $tagsOfDups $timeStamp
+do
+    cat /dev/null >$f
+done
+
+cat >$stdinList
+
+####
+# Use md5 to compute a signature value for each file and then look
+# for duplicates in a sorted list of those values.  Since each
+# such value can be relied upon to be unique for each unique file,
+# duplicate tags indicate duplicate files which may be removed
+# from our list.
+#
+#echo "#### Calculating md5 tag for each file..."
+xargs -l20 md5sum <$stdinList | sort >$md5List
+
+#echo "####" md5List...
+#cat $md5List
+
+
+####
+# From the $md5List, clip out a list of md5 tags which are
+# associated with duplicate files, one tag per group of
+# two-or-more duplicate files...
+#
+$COLLAPSE_WHITESPACE <$md5List | cut -f 1 -d ' ' | uniq -d >$tagsOfDups
+
+#echo "####" tagsOfDups...
+#ls -la $tagsOfDups
+#cat $tagsOfDups
+
+if [ ! -s $tagsOfDups ]
+then
+#   echo "####" No dups
+    cat $stdinList
+else
+
+#   echo "####" Selecting one representative from each set of duplicates...
+    for tag in `cat $tagsOfDups`
+    do
+#       echo "####" tag:$tag
+        fgrep $tag $md5List | head -1 >>$representatives
+    done
+
+#   echo "####" representatives...
+#   cat $representatives
+
+
+    ####
+    # Since $md5List is really just stdin with an md5 tag on each
+    # line we now delete ALL duplicates from $md5List and append what's
+    # left to our collection of retained-dup's, then sort the whole mess
+    # and overwrite $inputList with the no-duplicates version...
+    #
+#   echo "####" Discarding names of ALL duplicated files...
+    fgrep -f $tagsOfDups -v <$md5List >>$tempFile
+
+#   echo "####" tempFile is...
+#   cat $tempFile
+
+#   echo "####" Sorting representatives back into the list...
+#   $COLLAPSE_WHITESPACE < $tempFile | cut -f 2 -d ' ' | sort
+    cat $representatives  $tempFile | $COLLAPSE_WHITESPACE | cut -f 2 -d ' ' | sort
+
+fi
+
+rm -f $md5List $representatives $tagsOfDups $tempFile $timeStamp $stdinList
+
+exit 0
+

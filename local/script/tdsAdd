@@ -1,0 +1,70 @@
+###############################################################################
+# The specified tds values are added and normalized.
+#
+###############################################################################
+# Strip Leading Zero
+#
+function slz()  {
+    echo $1 | sed -e 's/^0\([[:digit:]]\)/\1/'
+}
+
+if [ -n "$MIKE_DEBUG" ]
+then
+  set -x ; set -v
+fi
+
+###############################################################################
+# Output of tdsAtoms is in this form: Y0=2008 M0=01 D0=26 H0=16 T0=12 S0=07
+#
+eval `echo $1 $2 | fmt -1 | tdsAtoms`
+
+ Y0=$(slz $Y0)
+ M0=$(slz $M0)
+ if [ $M0 -eq 0 ] ; then M0=1 ; fi
+ D0=$(slz $D0)
+ if [ $D0 -eq 0 ] ; then D0=1 ; fi                          # Days are 1-based.
+ H0=$(slz $H0)
+ T0=$(slz $T0)
+ S0=$(slz $S0)
+
+ Y1=$(slz $Y1)
+ M1=$(slz $M1)
+ if [ $M1 -eq 0 ] ; then M1=1 ; fi
+ D1=$(slz $D1)
+ if [ $D1 -eq 0 ] ; then D1=1 ; fi                          # Days are 1-based.
+ H1=$(slz $H1)
+ T1=$(slz $T1)
+ S1=$(slz $S1)
+
+ let S0+=$S1
+ let T0+=$T1
+ let H0+=$H1
+ let S0+=$S1
+ let M0+=$M1
+ let Y0+=$Y1
+
+ t=$[$S0 / 60]                          # Minutes initialized w/excess seconds.
+ s=$[$S0 % 60]                                                  # Trim seconds.
+
+ t=$[$T0 + $t]                                 # Intermediate total of minutes.
+ h=$[$t  / 60]                            # Hours initialized w/excess minutes.
+ t=$[$t  % 60]                                                  # Trim minutes.
+
+ h=$[$H0 + $h]                                   # Intermediate total of hours.
+ d=$[$h  / 24]                               # Days initialized w/excess hours.
+ h=$[$h  % 24]                                                    # Trim hours.
+
+ d=$[$D0 + $d]                                    # Intermediate total of days.
+ m=$[ ($d - 1) / 31]                        # Months initialized w/excess days.
+ d=$[(($d - 1) % 31) + 1]                                          # Trim days.
+
+ m=$[$M0 + $m]                                  # Intermediate total of months.
+ y=$[ ($m - 1) / 12]                        # Year initialized w/excess months.
+ m=$[(($m - 1) % 12) + 1]                                        # Trim months.
+
+ y=$[$Y0 + $y]                                         # Capture excess months.
+
+ printf "%04d%02d%02d%02d%02d%02d\n" $y $m $d $h $t $s
+
+ exit 0
+

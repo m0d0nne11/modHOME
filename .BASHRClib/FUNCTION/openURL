@@ -1,0 +1,2 @@
+function openURL()  { /usr/local/firefox/mozilla-xremote-client -a firefox 'openURL('$1',new-tab)' ; }
+

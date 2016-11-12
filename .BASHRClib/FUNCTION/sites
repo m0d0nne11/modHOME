@@ -1,0 +1,5 @@
+function sites
+{
+    cat ~/.siteList
+}
+

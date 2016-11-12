@@ -1,0 +1,2 @@
+ alias 80x44='rows 44 ; columns 80 ; export TERM=xterm'
+

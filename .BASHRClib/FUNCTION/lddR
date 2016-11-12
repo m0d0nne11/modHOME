@@ -1,0 +1,15 @@
+function lddR() {
+	if [ -z "$2" ] ; then
+		SEENlddrSEEN=""
+	fi
+	chain=$2'->'$1
+	candidates=$(ldd $1 | fmt -1 | fgrep / | tr -d '[:blank:]')
+	for c in $candidates ; do
+		if ! echo $SEENlddrSEEN | fmt -1 | fgrep -q -x $c ; then
+			export SEENlddrSEEN="$c $SEENlddrSEEN"
+			export SEENlddrSEEN=$(lddR $c $chain)
+		fi
+	done
+	echo $SEENlddrSEEN
+}
+

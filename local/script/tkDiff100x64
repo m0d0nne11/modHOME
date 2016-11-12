@@ -1,0 +1,2 @@
+echo $0 $@ > /dev/pts/16 2>&1
+tkdiff -geometry 100x64+-4+-4 $@

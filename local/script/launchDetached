@@ -1,0 +1,2 @@
+cd /tmp
+( $@ ) >>/tmp/detachedLog$$ 2>&1 &

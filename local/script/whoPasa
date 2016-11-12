@@ -1,0 +1,14 @@
+#!/bin/csh -f
+who >/tmp/whoNow
+
+while 1
+    mv /tmp/whoNow /tmp/whoLast
+    who >/tmp/whoNow
+    diff /tmp/whoLast /tmp/whoNow | sed -e '/^[0-9]/d' | sort
+
+    echo "########################################################"
+    sleep $argv
+end
+
+#    -e '/ mod    /d' \
+#

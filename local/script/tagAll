@@ -1,0 +1,109 @@
+#!/bin/csh -f
+#
+# *****************************************************************************
+# To use this script:
+# - cd to the root of a source hierarchy.  For best results, the
+#   hierarchy should be in straightforward, buildable condition -
+#   temp files and other clutter can confuse things.
+# - run this script.
+#
+# Normal results are a stream of warnings from the ctags program, a fair
+# amount of disk activity and then a tags-file, sometimes quite large.
+# Existing tags files are preserved automatically.  Improvements welcomed.
+#
+# *****************************************************************************
+# set verbose						# Mostly for debugging
+
+set allTags=/tmp/allTags$$
+set ctagsOutput=/tmp/ctagsOut$$
+set progBinary=/tmp/sTag$$
+set progSource=/tmp/sTag$$.c
+set scriptFile=/tmp/script$$
+
+onintr cleanUp
+
+#
+# Preserve an existing tags-file if found in the current directory.
+#
+if ( -f tags ) then
+    set count=0
+    set save="SAVEDtags0"
+    while ( -f $save )
+        @ count ++
+        set save="SAVEDtags"$count
+    end
+    echo "Preserving existing tags file as $save..."
+    mv tags $save || exit 1
+endif
+
+#
+# Build a shell script to be executed (with some exceptions) on every .c
+# and .h file from here on down the current hierarchy.  Then concatenate each
+# of the tags-files so generated onto what will become one huge tags-file.
+#
+touch $ctagsOutput
+echo "ctags -f $ctagsOutput "'$1'            >$scriptFile
+echo "cat $ctagsOutput >>$allTags"          >>$scriptFile
+
+chmod +x $scriptFile
+find . -name "*.[ch]" -print | fgrep -v SCCS | xargs -l1 $scriptFile
+
+##
+## Generate C source code for a trivial program which will
+## generate a tags-file line for each assembler label we hand
+## it.  Then generate the binary.  (I'm sure there's a way to
+## do this with {grep,sed,awk,whatever}, but I haven't gotten
+## around to it...)  Assembler tags not starting in the first
+## column don't get handled quite right.
+##
+#echo 'main( argc, argv )'				 >$progSource
+#echo 'int argc;'					>>$progSource
+#echo 'char **argv;'					>>$progSource
+#echo '{'						>>$progSource
+#echo '    char buffer[ 1000 ];'			>>$progSource
+#echo '    if( argc < 2 )  {'				>>$progSource
+#echo '        printf( "Need a filename argument.\\n" );>>$progSource
+#echo '        exit( 1 );'				>>$progSource
+#echo '    }'						>>$progSource
+#echo '    while( gets( buffer )  )  {'			>>$progSource
+#echo '        printf( "%s\t%s\t/^%s:/\\n", buffer, argv[ 1 ], buffer );' \
+#							>>$progSource
+#echo '    }'						>>$progSource
+#echo '    exit( 0 );'					>>$progSource
+#echo '}'						>>$progSource
+#( cd `dirname $progSource` ; make $progBinary )
+#
+##
+## For each .s file in this directory tree, crunch it such that
+## we extract its labels and construct a tags-file line for each.
+## The output of each pass is concatenated onto the tags-file
+## generated above for the .c/.h files.  (Only works if the number
+## of .s files is small enough to fit into the "foreach" parameter
+## list - have to take the approach used above if this fails.)
+##
+#foreach file ( `find . -name "*.s" -print | fgrep -v SCCS` )
+#    grep '^[	 ]*[_a-zA-z][_0-9a-zA-z]*:' $file        | \
+#    sed  -e 's/:.*$//'    -e '/^[	 ][	 ]*$/d'  | \
+#    $progBinary $file       >>$allTags
+#end
+
+#
+# Now sort the tags file, placing the results into the final tags-file.
+#
+sort -u <$allTags >/tmp/tags$$
+
+echo "#####################################"
+echo "### Resulting ctags file is /tmp/tags$$"
+echo "#####################################"
+
+#
+# One way or another, we're done.
+#
+cleanUp:
+rm -f          \
+    $allTags    \
+    $ctagsOutput \
+    $progBinary \
+    $progSource \
+    $scriptFile \
+

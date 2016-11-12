@@ -1,0 +1,12 @@
+function cdl
+{
+    clear
+    if [ -z "$CLEARCASE_ROOT" ]
+    then
+        echo "Directory $HOSTNAME:$PWD"
+    else
+        echo "#=->" $HOSTNAME"[$(basename $CLEARCASE_ROOT)]":$PWD
+    fi
+    l "$@"
+}
+

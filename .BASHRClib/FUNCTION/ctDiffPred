@@ -1,0 +1,5 @@
+function ctDiffPred
+{
+    ct diff -columns 80   -options ' -b' -pred "$@"
+}
+

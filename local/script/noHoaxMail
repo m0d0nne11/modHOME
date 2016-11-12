@@ -1,0 +1,12 @@
+cat <<EndOfAntiHoaxMessage
+
+Please do not propagate unverified email warnings about scams,
+viruses and such.  To date, it has turned out that the warning
+messages themselves are the harm, rather than the problems they
+purport to describe.  Unless you have personally been victimized
+by the scam or virus in question, you should assume (based on
+the history of several dozens of such false warnings now) that
+the warning messages are *themselves* the mechanism intended to
+victimize us all, by wasting our time, diskspace and bandwidth.
+
+EndOfAntiHoaxMessage

@@ -1,0 +1,18 @@
+###############################################################################
+function usage()  {
+
+    echo "Failed:" $@
+    cat
+    exit 1
+}
+
+###############################################################################
+
+read rzq f
+test "$rzq" != "function" && usage "Not function declaration"
+test -z "$f" && usage "No function name present"
+f=`echo $f | sed -e 's/[)(]*//g'`
+rzq=`tds`
+mkdir -p FUNCTION/$f
+echo "function $f" >FUNCTION/$f/$rzq
+cat               >>FUNCTION/$f/$rzq

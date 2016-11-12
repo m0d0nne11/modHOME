@@ -1,0 +1,8 @@
+function lynxDumpMODMACfunc() { 
+    local tmpFile=/tmp/$(tds).$$ ;
+    wget -O - "$@" > "${tmpFile}" 2> "${tmpFile}".stderr ;
+    lynx -dump -stdin < "${tmpFile}" ;
+    rm -f "${tmpFile}" "${tmpFile}".stderr ;
+}
+
+lynxDumpMODMACfunc "$@"

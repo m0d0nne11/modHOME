@@ -1,0 +1,6 @@
+if [ $# -ne 1 ] ; then
+	t=1
+else
+	t=$1
+fi
+awk '{print $'$t'}'

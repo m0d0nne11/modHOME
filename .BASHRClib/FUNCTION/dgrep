@@ -1,0 +1,4 @@
+function dgrep()  {
+    COLUMNS=300 dpkg -l | tr -s '[:blank:]' ' ' | grep -v -e '^Desired=' -e '^|' -e '^+++' | grep "$@"
+}
+

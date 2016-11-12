@@ -1,0 +1,15 @@
+function uniqLetters() { 
+echo $@ | sed -e 's/\(.\)/\1\
+/g' | sort -fdu | fmt -2000 | sed -e 's/ *//g'
+}
+
+if [ $# -gt 0 ]
+then
+	uniqLetters "$@"
+fi
+
+while read f
+do
+	uniqLetters "${f}"
+done
+

@@ -1,0 +1,133 @@
+#!/usr/bin/perl
+
+#  buildgrep
+#    -- parses the output of a build log; sensibly and consisely shows
+#       the user where problems in the build were experienced.
+#
+#  Author:  Kevin D. Clark <alumni.unh.edu!kdc>
+#
+#
+#
+#
+#  Example usages:      (these examples assume you are using bash)
+#
+#       $ make 2>&1 | buildgrep.pl
+#       $ make 2>&1 | tee complete-build-log.txt | buildgrep.pl
+#       $ buildgrep.pl complete-build-log.txt | more
+#       $ make 2>&1 | mailx -s "build log" fred barney BIFF@BIT.NET
+#
+#
+#  Example output:
+#  (from compiling the Linux kernel)
+#
+
+# make[4]: Entering directory `/home/kclark/work/linux-2.4.19/drivers/char/agp'
+# gcc -D__KERNEL__ -I/home/kclark/work/linux-2.4.19/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -mpreferred-stack-boundary=2 -march=i686   -nostdinc -I /usr/lib/gcc-lib/i386-redhat-linux/2.96/include -DKBUILD_BASENAME=agpgart_be  -DEXPORT_SYMTAB -c agpgart_be.c
+# agpgart_be.c:400: warning: unused variable `cap_id'
+# agpgart_be.c:4298: warning: unused variable `scratch'
+# agpgart_be.c:4298: warning: unused variable `cap_id'
+# make[3]: Entering directory `/home/kclark/work/linux-2.4.19/drivers/scsi'
+# gcc -D__KERNEL__ -I/home/kclark/work/linux-2.4.19/include -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -mpreferred-stack-boundary=2 -march=i686   -nostdinc -I /usr/lib/gcc-lib/i386-redhat-linux/2.96/include -DKBUILD_BASENAME=sym53c8xx  -c -o sym53c8xx.o sym53c8xx.c
+# sym53c8xx.c:6995: warning: `istat' might be used uninitialized in this function
+# .......
+#
+#
+#  Notes:
+#
+#  1:  I typically use this with GNU Make.
+#
+#  2:  When I use gcc, I find the following options to be useful:
+#
+#        -fmessage-length=0 -W -pedantic -Wall -Wfloat-equal -Wcast-qual
+#        -Wno-long-long -Winline -Wshadow
+#
+#  3:  This filter works well with build systems that build targets in a
+#      tree-like graph, and works less well with systems whose build targets
+#      have a cycle in their graph.  I'm not wild about such build systems.
+#
+#  4:  If your buold system is "cute" and hides details relevent to
+#      compilation, this script will be useless.  I'm not wild about such
+#      build systems.
+#
+#  5:  I'm thinking about re-structuring this to display stuff that
+#      (in general) is sent to stderr, but I'm still considering this.
+
+
+sub printLastEnterLeave {
+#  print $lastLeave unless $alreadyPrinted{$lastLeave}++;
+  print $lastEnter unless $alreadyPrinted{$lastEnter}++;
+}
+
+sub printLastCompile {
+  print $lastCompile unless $alreadyPrinted{$lastCompile}++;
+}
+
+
+while (<>) {
+
+  $lastEnter = $_ if (/make.*[Ee]ntering directory/);
+  $lastLeave = $_ if (/make.*[Ll]eaving directory/);
+
+  $lastCompile = $_ if (m{^\s*
+			  (?:g?cc|g\+\+|
+			      yacc|bison|f?lex|lemon|
+			      (?:/opt/SUNWspro/bin/)?(?i:cc))
+			 }x);
+
+  #
+  # errors/warning deliberately ignored (AND JUSTIFICATIONS)
+  #
+
+  # annoying Linux warning; harmless
+  next if (/warning: ANSI C\+\+ forbids zero-size array \`__cmsg_data\'/);
+  # related to use of 64-bit ints; not a problem
+  # next if (/warning: (?:ANSI C|ISO C\d+) does not support the \`ll\' length (?:modifier)?/);
+  # next if (/warning: (?:ANSI|ISO) C\+\+ does not support `long long'/);
+
+  next if (/warning: multi-line comment/);
+
+
+  # 19-jul-2002 kclark I am thinking about removing this next filter
+  #
+  # warning from the Sun C++ compiler that we are passing a pointer to a
+  # function in the C++ namespace into something that expects a pointer to
+  # a function in the C namespace.  This happens a lot with C++ and pthreads.
+  # next if (/Warning\s+\(Anachronism\):\s+Formal argument\s+\w+\s+of type\s+(?:extern "C")?\s*(.*)\s+in call to.*is being passed\s+(?:extern "C")?\s*\1/);
+  # next if (/Warning\s+\(Anachronism\):\s+Assigning (.*?)\s+to extern "C" \1/);
+
+
+  #
+  # make messages to flag
+  #
+
+  printLastEnterLeave, print
+    if (   /^Makefile:/i
+        || /^(?:clear)?make.*\*\*\*/i
+        || /^(?:clear)?make.*(?:error|warning):/i
+       );
+
+  #
+  # compile errors to flag
+  #
+
+  printLastEnterLeave, printLastCompile, print
+    if (   /(?:warning|error):/i
+        || /In function:/i
+	|| /At top level:/i
+	|| /In (?:method|function):/i
+	|| /\*Initialization*:/i
+	|| /^".*?", line \d+:/i
+	|| m,^(?:\w|/)*\w+\.\w+:\d+:,i
+       );
+
+  # linker errors are harder to parse, but not impossible...
+
+  $printNoMatterWhat = 1
+    if (   /^\s*Undefined/
+        || m,/usr/bin/ld:,
+        || m/^ld:/);
+
+  printLastEnterLeave, printLastCompile, print if ($printNoMatterWhat);
+
+  $printNoMatterWhat = 0 if (/make.+error/i);
+}

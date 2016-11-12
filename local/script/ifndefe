@@ -1,0 +1,5 @@
+#echo "#define	$@	0"
+echo "#ifndef	$@"
+cat
+echo "#else       /* #ifndef $1 */" | rjc
+echo "#endif      /* else #ifndef $1 */" | rjc

@@ -1,0 +1,5 @@
+function xvjf
+{
+    bunzip2 <$* | tar xvf -
+}
+

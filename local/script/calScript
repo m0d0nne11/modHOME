@@ -1,0 +1,19 @@
+if [ $# -lt 1 ]
+then
+    YEAR=`date '+%Y'`
+else
+    YEAR=$1
+fi
+
+for f in 01 02 03 04 05 06 07 08 09 10 11 12
+do
+    cal -h $f $YEAR             \
+    | eat                       \
+    | fmt -1                    \
+    | sed -e 1,9d               \
+          -e 's/ //g'           \
+          -e '/^[0-9]$/s/^/0/'  \
+          -e '/^$/d'            \
+    | rq $YEAR$f
+done
+

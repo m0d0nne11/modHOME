@@ -1,0 +1,12 @@
+cd /tmp
+cat <<EOF | while read mnt dev
+/mnt/hdh1 hdh1
+/mnt/hdg1 hdg1
+/mnt/hda4 hda4
+/mnt/hda3 hda3
+/boot     hda1
+/         hda2
+EOF
+do
+    ( sudo find $mnt -xdev >ContenTable.$dev ; sort <ContenTable.$dev >ContenTableSORT.$dev ; mv ContenTableSORT.$dev ContenTable.$dev ; gzip ContenTable.$dev ) >/tmp/rzqLog.$dev 2>&1 &
+done

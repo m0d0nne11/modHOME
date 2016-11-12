@@ -1,0 +1,5 @@
+function showHTMLemailFunc()  { 
+    mhshow -form mhl.null -nopause $@ | lynx -dump -nolist -stdin
+}
+
+showHTMLemailFunc $@

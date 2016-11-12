@@ -1,0 +1,16 @@
+#!/bin/bash
+
+NOTEROOT=~/modHOME/.foodNoteDir/
+BANNER="######foodNote######"
+REMINDER="BLDSMPX:Bkfst/Lunch/Din/Snak/Meds/Poop/Xrsiz"
+
+ function NotesFunc()  {
+	(cd $NOTEROOT && find . -type f | sort | while read f ; do cat "${f}" ; done ) | sed -e 's/^/  /' -e '/^  *'"${BANNER}"' [12]/s/  *//' -e 's/[[:space:]]*$//g' ;
+}
+
+# This alternative form uses process substitution but xargs is unhappy if the pipeline is closed before cat is finished:
+#function NotesFunc()  { sed -e 's/^/  /' -e 's/^  *########NOTE######## /########NOTE######## /' -e 's/[[:space:]]*$//g' <( cd ~/modHOME/.NoteDir && find . -type f -name "[12]*" | sort | xargs -l20 cat ); }
+
+test -n "${REMINDER}" && echo "${REMINDER}"
+NotesFunc
+test -n "${REMINDER}" && echo "${REMINDER}"

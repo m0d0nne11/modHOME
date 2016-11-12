@@ -1,0 +1,3 @@
+# Note: also sufficient to say 'cd -'
+ alias back='cd "${OLDPWD}"'
+

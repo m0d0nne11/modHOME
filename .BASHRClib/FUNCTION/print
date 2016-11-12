@@ -1,0 +1,5 @@
+function print
+{
+	mpage -1 -f | lpr 
+}
+

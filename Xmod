@@ -1,0 +1,16 @@
+# This file is part of the custom modHOME environment that I
+# (MOD=Michael O'Donnell) sometimes inflict on systems where
+# I'll be working for a while.  This Xmod script is sourced by
+# anybody who wants to remove that custom environment and (largely)
+# restore files to their state from just prior to its installation.
+#
+# Usage:  ./Xmod
+#
+# I try not to leave precious files anywhere in the modHOME
+# hierarchy so it should always be OK to delete it without notice
+# to reclaim disk space or just generally tidy things up, though
+# it'd be good manners to talk to me first, if possible... ;->
+#
+# "Michael.O'Donnell@ll.mit.edu" mod.modHOME@spineless.org
+
+echo $0 not yet properly implementd...  ':-/'

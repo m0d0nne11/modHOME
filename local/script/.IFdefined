@@ -1,0 +1,3 @@
+echo ".if defined($@)"
+cat
+echo ".endif #.if defined($@)" | rjshc

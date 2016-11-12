@@ -1,0 +1,2 @@
+echo print '"######## Checkpoint' `timeDateString`'"'
+noCR

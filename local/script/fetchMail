@@ -1,0 +1,2 @@
+#fetchmail -d 53 -v --logfile /tmp/fetchLog --all --limit 0 --fetchlimit 0
+ fetchmail -d 53 -v                         --all --limit 0 --fetchlimit 0

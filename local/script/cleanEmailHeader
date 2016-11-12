@@ -1,0 +1,110 @@
+#!/bin/bash
+
+function stripHeaderMIMEfunc()  {
+sed							\
+	-e	'/^[Mm]ime-[Vv]ersion:/d'		\
+	-e	'/^Encoding:/d'				\
+	-e	'/^Content-[Tt]ype:/d'			\
+	-e	'/^Content-[Tt]ransfer-[Ee]ncoding:/d'	\
+	-e	'/^Content-[Ll]ength:/d'		\
+	-e	'/^Content-language:/d'			\
+	-e	'/^Content-Disposition:/d'		\
+	-e	'/^Content-Description:/d'		\
+
+}
+
+function stripHeaderGeneralFunc()  {
+formail -c -z -f | sed					\
+	-e	's/[	 ][	 ]*/ /g'		\
+	-e	's/ $//'				\
+	-e	's/\([Rr][Ee]: *\)\1*/Re: /'		\
+	-e	'/^[Aa]utoforwarded:/d'			\
+	-e	'/^Apparently-To:/d'			\
+	-e	'/^Approved:/d'				\
+	-e	'/^Article:/d'				\
+	-e	'/^Comments:/d'				\
+	-e	'/^Delivered-To:/d'			\
+	-e	'/^Distribution:/d'			\
+	-e	'/^DKIM-SignatuRe:/d'			\
+	-e	'/^DomainKey-SignatuRe:/d'		\
+	-e	'/^Errors-To:/d'			\
+	-e	'/^From /d'				\
+	-e	'/^[Ii]mportance:/d'			\
+	-e	'/^In-[Rr]eply-[Tt]o:/d'		\
+	-e	'/^Keywords:/d'				\
+	-e	'/^Lines:/d'				\
+	-e	'/^Mail-System-Version:/d'		\
+	-e	'/^NNTP.*:/d'				\
+	-e	'/^Old-Return-Path:/d'			\
+	-e	'/^Organization:/d'			\
+	-e	'/^Original-Encoded-Information-.*:/d'	\
+	-e	'/^Path:/d'				\
+	-e	'/^[Pp]riority:/d'			\
+	-e	'/^Precedence:/d'			\
+	-e	'/^Received:/d'				\
+	-e	'/^Replied:/d'				\
+	-e	'/^Reply-[Tt]o:/d'			\
+	-e	'/^Resent-Date:/d'			\
+	-e	'/^Resent-From:/d'			\
+	-e	'/^Resent-Message-[Ii][Dd]:/d'		\
+	-e	'/^Resent-Sender:/d'			\
+	-e	'/^Resent-To:/d'			\
+	-e	'/^Return-[Pp]ath:/d'			\
+	-e	'/^Sender:/d'				\
+	-e	'/^Status:/d'				\
+	-e	'/^Thread-index:/d'			\
+	-e	'/^User-Agent:/d'			\
+	-e	'/^[Uu]a-Content-Id:/d'			\
+	-e	'/^X-[Aa]ccept-[Ll]anguage:/d'		\
+	-e	'/^X-[Aa]uthentication-[Ww]arning:/d'	\
+	-e	'/^X-Authority-Analysis:/d'		\
+	-e	'/^X-CAA-SPAM:/d'			\
+	-e	'/^X-Corel-.*:/d'			\
+	-e	'/^X-[Ff]ace:/d'			\
+	-e	'/^X-Incognito-.*:/d'			\
+	-e	'/^X-Juno-.*:/d'			\
+	-e	'/^X-Listprocessor-Version:/d'		\
+	-e	'/^X-Loop:/d'				\
+	-e	'/^X-Mail-Agent:/d'			\
+	-e	'/^X-Mailing-List:/d'			\
+	-e	'/^X-Mimeole:/d'			\
+	-e	'/^X-[Mm]ailer:/d'			\
+	-e	'/^X-Mozilla-Status:/d'			\
+	-e	'/^X-Msmail.*:/d'			\
+	-e	'/^X-Mts:/d'				\
+	-e	'/^X-Newsreader:/d'			\
+	-e	'/^X-Pgp-Fingerprint:/d'		\
+	-e	'/^X-PH:/d'				\
+	-e	'/^X-Pmd-Folder:/d'			\
+	-e	'/^X-Priority:/d'			\
+	-e	'/^Xref:/d'				\
+	-e	'/^X-SA-Exim-Connect-IP:/d'		\
+	-e	'/^X-SA-Exim-Mail-From:/d'		\
+	-e	'/^X-SA-Exim-Scanned:/d'		\
+	-e	'/^X-SA-Exim-Version:/d'		\
+	-e	'/^X-Sender:/d'				\
+	-e	'/^X-Spam-Checker-Version:/d'		\
+	-e	'/^X-Spam-Level:/d'			\
+	-e	'/^X-Spam-Status:/d'			\
+	-e	'/^X-UIDL:/d'				\
+	-e	'/^X-[Uu][Rr][IiLl]:/d'			\
+	-e	'/^X-WTID:/d'				\
+	-e	'/^X-WTVersion:/d'			\
+	-e	'/^X-Yahoo-Newman-Id:/d'		\
+	-e	'/^X-Yahoo-Newman-Property:/d'		\
+	-e	'/^X-Yahoo-Profile:/d'			\
+
+#	-e	'/^Message-[Ii][Dd]:/d'			\
+#	-e	'/^[Rr][Ee][Ff][Ee][Rr][Ee][Nn].*:/d'	\
+
+}
+
+if [ $# -gt 0 ] ; then
+	stripHeaderGeneralFunc | stripHeaderMIMEfunc
+else
+	stripHeaderGeneralFunc
+fi
+
+#	-e	'/^[Mm][Ii][Mm][Ee].*:/d'		\
+#	-e	'/^[Ss][Uu][Bb][Jj][Ee][Cc][Tt]:/s
+

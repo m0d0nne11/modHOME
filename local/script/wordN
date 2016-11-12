@@ -1,0 +1,6 @@
+if [ $# -ne 1 ] ; then
+    n=1
+else
+    n=$1
+fi
+exec awk '{ print $'$n' }'

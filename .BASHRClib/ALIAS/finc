@@ -1,0 +1,5 @@
+#alias finc='fetchmail; sleep 2 ; inc'
+
+ alias finc='fetchmail; sleep 2 ; inc ; flist -all -sequence unseen -recurse -noshowzero'
+
+

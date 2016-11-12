@@ -1,0 +1,28 @@
+#!/bin/csh -f
+if ( $argv == "" ) then
+	echo $0 needs folder arg
+	exit 1
+endif
+if ( ! -d $HOME/.mail/$argv ) then
+	echo $0 Folder arg must be a directory - $argv
+	exit 1
+endif
+cd $HOME/.mail/$argv
+
+set tempMHfile=/tmp/tempMHfile$$
+
+onintr cleanUp
+
+cp /dev/null $tempMHfile
+packf +$argv -file $tempMHfile \
+	&& rm $HOME/.mail/$argv/* \
+	&& inc +$argv -nosilent -file $tempMHfile \
+	&& rm $tempMHfile
+
+#
+# One way or another, we're done.
+#
+cleanUp:
+rm -f          \
+    $tempMHfile
+

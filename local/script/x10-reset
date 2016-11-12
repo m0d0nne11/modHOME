@@ -1,0 +1,171 @@
+#!/bin/bash
+#!/usr/bin/bash
+
+#
+# Script to allow remote-reset of systems via X10-connected
+# relays and power modules.
+#
+
+myName=$0
+
+
+###############################################################################
+# This dataBase is the sole source for all info in this script.
+# No more uncoordinated usage of multiple, stale databases -
+# just this ONE single stale database.  Progress!
+#
+# If you modify the database, please maintain tabular,
+# alphabetized layout for readability's sake...
+#
+# Triples represent {hostname,x10houseCode,x10unitCode}
+#
+
+dataBase=( \
+	"[A1]		A	1"	\
+	"[A2]		A	2"	\
+	"[A3]		A	3"	\
+	"[A4]		A	4"	\
+	"lab21		A	5"	\
+	"[A6]		A	6"	\
+	"[A7]		A	7"	\
+	"[A8]		A	8"	\
+	"[A9]		A	9"	\
+	"[A10]		A	10"	\
+	"[A11]		A	11"	\
+	"[A12]		A	12"	\
+	"[A13]		A	13"	\
+	"[A14]		A	14"	\
+	"[A15]		A	15"	\
+	"testing	A	16"	\
+    )
+
+###############################################################################
+function dbTripleForKey()  {
+    if [ $# -ne 2 ]
+    then
+        echo "Internal error - dbTripleForKey() needs key and value"
+        exit 1
+    fi
+
+    indexLimit=${#dataBase[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${dataBase[$index]} )       # Index the database for a triple.
+        case "$1" in
+        1|2|3)
+           if [ ${triple[$[$1 - 1]]} == $2 ]        # Index triple for a field.
+           then
+               echo ${dataBase[$index]}
+               return 0
+           fi;;
+        *)
+            echo "BOGUS key value specified in dbTripleForKey()"
+            exit 1;;
+        esac
+
+        index=$[$index + 1]
+    done
+    return 1
+}
+
+###############################################################################
+function dbTripleForHostname()  {
+    if [ $# -ne 1 ]
+    then
+        echo "Internal error - dbTripleForHostname() needs Hostname"
+        exit 1
+    fi
+
+    dbTripleForKey 1 $1
+}
+
+###############################################################################
+function allHostnames()  {
+    indexLimit=${#dataBase[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${dataBase[$index]} )
+        echo ${triple[0]}
+        index=$[$index + 1]
+    done
+}
+
+###############################################################################
+function allHouseCodes()  {
+    indexLimit=${#dataBase[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${dataBase[$index]} )
+        echo ${triple[1]}
+        index=$[$index + 1]
+    done
+}
+
+###############################################################################
+function allUnitCodes()  {
+    indexLimit=${#dataBase[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${dataBase[$index]} )
+        echo ${triple[2]}
+        index=$[$index + 1]
+    done
+}
+
+###############################################################################
+function allDataBaseEntries()  {
+    indexLimit=${#dataBase[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        echo ${dataBase[$index]}
+        index=$[$index + 1]
+    done
+}
+
+###############################################################################
+function usage()  {
+
+    echo "Failed:" $@
+    echo ""
+    echo "Usage:"
+    echo "        $myName Hostname"
+    echo ""
+
+    echo "where Hostname specifies a system capable of being"
+    echo "reset by means of an X10-connected relay.  The Reset"
+    echo "logic of the specified machine will be activated if"
+    echo "the machine is found in a list of known systems..."
+    echo ""
+
+    allHostnames | fmt
+    exit 1
+}
+
+###############################################################################
+# True execution actually begins here...
+#
+
+if [ $# -eq 1 ]                                       # Number of args correct?
+then
+    triple=( `dbTripleForHostname $1` )   # Fetch desired triple from dataBase.
+    if [ $? -eq 0 ]                                   # Found specified system?
+    then
+        echo     ${triple[*]}                         # Announce what we found.
+        target=${triple[1]}${triple[2]}
+        heyu turn $target on
+        heyu turn $target on
+        heyu turn $target off
+        heyu turn $target off
+        exit 0
+    else
+        usage "Couldn't find system '$1'"
+    fi
+else
+    usage "exactly one systemName must be specified"
+fi
+

@@ -1,0 +1,4 @@
+ export LOGNAME="LOGNAMEnotSetInBASHRC"
+
+#export LOGNAME="postmaster@localhost, abuse@localhost, postmaster%fbi.gov" # WARNING: confuses fetchmail
+

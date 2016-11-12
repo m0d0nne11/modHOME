@@ -1,0 +1,5 @@
+
+function vi2()  {
+    vi -O2 $*
+}
+

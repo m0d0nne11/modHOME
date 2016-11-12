@@ -1,0 +1,20 @@
+###############################################################################
+# treeCopy sourcePath destDir
+#
+# Copy sourcePath (including all intermediate pathname nodes) to destDir,
+# preserving all attributes.  Can be used to copy single files or entire trees.
+#
+function treeCopy()  {
+  if [ $# -ne 2 ] ; then
+    echo $FUNCNAME: ERROR - wrong number of args "($*)"
+    return 1
+  fi
+
+  if ! [ -d $2/. ] ; then
+    echo $FUNCNAME: ERROR - second arg must be a directory "($*)"
+    return 1
+  fi
+
+  tar cf - $1 | tar xf - -C $2
+}                                                             # IMPLICIT RETURN
+

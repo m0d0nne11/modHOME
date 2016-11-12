@@ -1,0 +1,10 @@
+# Script that uses sed to force all name=value assignments present on
+# stdin to have the "value" part in double-quotes.  NOTICE: assumes no
+# double-quotes in the "value" portion and just a single input line.
+
+echo "#######" clunky, needs REWRITE - $0 $@
+exit 1
+
+read  __rzqpzqrzq__
+echo $__rzqpzqrzq__ | sed -e 's/\([^	 ]*=\)/\
+\1/g' | sed -e 's/[	 ][	 ]*$//' -e '/^$/d' -e '/=[^"]/ { s/=/="/ ; s/$/"/ }' | fmt -2000

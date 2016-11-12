@@ -1,0 +1,11 @@
+
+function openInFirefoxTab()  {
+    if [ $# -ne 1 ] ; then
+        echo $FUNCNAME: ERROR - wrong number of args "($@)"
+        return 1
+    fi
+
+    mozilla-xremote-client -a firefox "openURL($1,new-tab)"
+}
+
+openInFirefoxTab $@

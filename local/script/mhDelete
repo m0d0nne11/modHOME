@@ -1,0 +1,4 @@
+echo "#### $@"                                >>/tmp/mhDeleteLOG
+echo $PWD                                     >>/tmp/mhDeleteLOG
+folder                                        >>/tmp/mhDeleteLOG
+refile +deleted -nolink -normmproc -unlink $@ >>/tmp/mhDeleteLOG

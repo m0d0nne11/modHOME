@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+tty=$1
+row=0
+while [ $row -lt 25 ]
+do
+    dd bs=80 count=1 if=/dev/vcs$tty skip=$row 2>/dev/null
+    echo
+    let row++
+done

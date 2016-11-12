@@ -1,0 +1,16 @@
+tds=$1
+
+#if   echo   $tds   | grep       -x '[0-9]\{14\}' >/dev/null
+#if ! echo "${tds}" | grep    -q -x '[0-9]\{14\}'
+ if ! echo "${tds}" | grep -E -q -x '[0-9]{14}'
+then
+    echo ERROR: arg1 must be in TDS form: yyyymmddhhmmss
+    echo usage: $0 yyyymmddhhmmss fileName
+    exit 1
+fi
+
+#tds=`echo $tds | sed 's/\(..$\)/.\1/'`
+#tds=`echo $tds | sed 's/^\(....\)\(..\)\(..\)\(..\)\(..\)\(..\)$/\2\3\4\5\1.\6/'`
+ tds=`echo $tds | sed 's/^\(....\)\(..\)\(..\)\(..\)\(..\)\(..\)$/\1\2\3\4\5.\6/'`
+
+touch -t $tds $2

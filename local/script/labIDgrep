@@ -1,0 +1,3 @@
+#!/bin/bash
+
+grep "$@" < ~/Desktop/LDAP/LabIDs.txt

@@ -1,0 +1,94 @@
+#!/bin/bash
+
+WORK IN PROGRESS - adding the ability to limit the number of tokens being considered, basically lineup1, lineup2, etc...
+
+# This shell script employs AWK to read through a text file, treating
+# the Nth whitespace-separated token (as recognized by AWK) in each
+# line as an element of the corresponding Nth tabular column.  That
+# is, the Nth elements of all lines are regarded as being members of
+# the Nth column of the input.
+#
+# After capturing stdin in a temp file, we note the widest token in
+# each column, using that information to generate an AWK format string
+# suitable for use during a second pass, in which we actually emit (as
+# stdout) the text from that same temp file, tabularized.
+#
+# This version of this script is my first attempt at it - improvements
+# are undoubtedly possible...
+#
+# Michael O'Donnell 19980312
+#
+# HACK: supplying ANY args on the command line is regarded as a
+#       request that the format string itself be displayed before
+#       the results, in a form suitable for use inside VI.
+#
+
+test -n "$MIKE_DEBUG" && set -xv
+
+      myName=$0
+        argv="$@"
+   timeStamp=`date '+%Y%m%d%H%M%S'`
+    tempFile=/tmp/$$tempFile$timeStamp
+formatString=/tmp/$$format$timeStamp
+
+###############################################################################
+#
+function FAIL()  {
+cat <<EOF
+$FUNCNAME: $@
+usage:  $myName myOptions
+        -a option a
+        -b option b
+        -c option c
+EXAMPLE:
+    To show what this program does:
+        $myName
+EOF
+
+    exit 1
+}
+
+###############################################################################
+# Functions defined; commence actual execution...
+#
+
+unset SHOW_FORMAT_STRING
+COLUMN_MAX=0
+currentOptArg=""
+while :
+do
+    getopts "c:f" currentOptArg
+
+    case "$currentOptArg" in
+    '?')                                                # End of supplied args.
+        break
+        ;;
+    f)                                                       # debugging output
+	SHOW_FORMAT_STRING="setFromCommandLine"
+        ;;
+    c)
+        COLUMN_MAX="$OPTARG"
+        ;;
+    *)
+        failed "Unexpected commandline parameter: $currentOptArg"
+        ;;
+    esac
+done
+
+cat > $tempFile
+
+awk ' BEGIN { fieldMax = 0; } ; { if( NF > fieldMax ) { fieldMax = NF; } for( i = 1; i <= NF; ++i ) { width = length( $i ); if( width > widest[ i ] ) { widest[ i ] = width; } } } ; END { if( fieldMax > 0 ) { printf( "{ printf( \"%%-%ds", widest[ 1 ] ); if( fieldMax > 1 ) { for( i = 2; i <= fieldMax; ++i ) { printf( " %%-%ds", widest[ i ] ); } } printf( "\\n\"" ); for( i = 1; i <= fieldMax; ++i ) { printf( ", $%d", i ); } printf( " ); }\n" ); } } ' <$tempFile >$formatString
+
+#
+# Presence of args means Please Show Format String,
+# so generate a complete awk commandline from it...
+#
+if [ -n "$SHOW_FORMAT_STRING" ]
+then
+    sed -e 's/%/\\%/g' -e "s/^/awk '/" -e "s/$/ '/" <$formatString
+fi
+
+awk -f $formatString <$tempFile | sed -e 's/[[:space:]][[:space:]]*$//'
+
+rm   -f $formatString  $tempFile
+

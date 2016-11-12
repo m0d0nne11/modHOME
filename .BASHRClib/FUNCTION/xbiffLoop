@@ -1,0 +1,9 @@
+function xbiffLoop
+{
+    while :
+    do
+        xbiff -file /var/mail/mod -bg black -fg yellow -geometry 35x63--3--4 >/tmp/xbiffLog$$ 2>&1
+        sleep 30
+    done
+}
+

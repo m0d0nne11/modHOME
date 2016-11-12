@@ -1,0 +1,6 @@
+function whomc
+{
+ ASSOCIATE_FILE=~/LIST/MERCURYphoneList20000127
+    grep $* $ASSOCIATE_FILE
+}
+

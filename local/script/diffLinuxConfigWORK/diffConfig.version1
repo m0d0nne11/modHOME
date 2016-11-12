@@ -1,0 +1,90 @@
+
+function usage()  {
+    echo usage: $0 configFile1 configFile2
+    exit 1
+}
+
+####
+# The timeStamp is handy for generating any
+# unique-per-script-invocation temp files and such...
+#
+timeStamp=`date '+%Y%m%d%H%M%S'`
+  md5List=md5List$timeStamp
+  tempDir=/tmp/tempDir$timeStamp
+ tempFile=$tempDir/tempFile$timeStamp
+     dir1=$tempDir/dir1
+     dir2=$tempDir/dir2
+
+allow_null_glob_expansion=setInScriptFile
+
+if [ ! $# -eq 2 ]
+then
+    echo must mention two config files
+    usage
+fi
+
+if [ ! -f $1 ]
+then
+    echo $1 not a file
+    usage
+fi
+
+if [ ! -f $2 ]
+then
+    echo $2 not a file
+    usage
+fi
+
+mkdir -p $dir1/ONLY
+mkdir    $dir1/COMMON
+mkdir -p $dir2/ONLY
+mkdir    $dir2/COMMON
+
+fgrep CONFIG $1 | sed -e '/^[	 ]*#/d' | while read line
+do
+    token=`echo $line | sed -e 's/=.*$//' `
+    echo $line >$dir1/COMMON/$token
+done
+
+fgrep CONFIG $2 | sed -e '/^[	 ]*#/d' | while read line
+do
+    token=`echo $line | sed -e 's/=.*$//' `
+    if [ ! -f $dir1/COMMON/$token ]
+    then
+        echo $line >$dir2/ONLY/$token
+    else
+        echo $line >$dir2/COMMON/$token
+    fi
+done
+
+cd $dir1/COMMON
+for token in *
+do
+    if [ ! -f $dir2/COMMON/$token ]
+    then
+        mv $token $dir1/ONLY
+    fi
+done
+
+cd $dir1/ONLY
+echo "############# ONLY in $1":
+ls -C
+
+cd $dir2/ONLY
+echo "############# ONLY in $2":
+ls -C
+
+cd $dir1/COMMON
+for token in *
+do
+    if ! diff -q $dir1/COMMON/$token $dir2/COMMON/$token >>$tempFile
+    then
+        echo "############ begin ############" $1 $token $2
+        diff $dir1/COMMON/$token $dir2/COMMON/$token
+        echo "############  end  ############" $1 $token $2
+    fi
+rm $token $dir2/COMMON/$token
+done
+
+#rm -rf $tempDir
+

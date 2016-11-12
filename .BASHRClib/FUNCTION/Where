@@ -1,0 +1,18 @@
+function where
+{
+    for fileListFile in /Cont*
+    do
+        gunzip <$fileListFile | grep $*
+        echo "###############" DONE $fileListFile
+    done
+}
+
+function Where
+{
+    for fileListFile in /Cont*
+    do
+        gunzip <$fileListFile | grep $*
+        echo "###############" DONE $fileListFile
+    done
+}
+

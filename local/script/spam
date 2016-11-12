@@ -1,0 +1,7 @@
+if [ $# -gt 0 ]
+then
+	folder +inbox $1
+fi
+
+show | sed -e 1d | missed-spam ; refile +ARCHIVE/junkEmail
+

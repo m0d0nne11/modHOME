@@ -1,0 +1,9 @@
+echo SYSTEM:
+read response
+echo response is $response
+sleep 5
+echo doing launchDetached $@ $response
+sleep 5
+launchDetached $@ $response
+sleep 5
+exit 0

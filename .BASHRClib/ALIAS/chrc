@@ -1,0 +1,2 @@
+ alias chrc='vi $modHOME/.bashrc;rc'
+

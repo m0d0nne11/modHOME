@@ -1,0 +1,8 @@
+for f in $@
+do
+	echo "<P>"
+	echo "<H1>$f</H1>"
+	echo "<img src=$f>"
+	echo ""
+done
+

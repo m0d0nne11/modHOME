@@ -1,0 +1,20 @@
+function diffLinuxTreesRAW
+{
+    diff -r -W $COLUMNS --side-by-side --suppress-common-lines \
+         -x '*.[ao]'      \
+         -x '*BitKeeper*' \
+         -x '*cscope*'    \
+         -x '*CVS*'       \
+         -x '*depend*'    \
+         -x '*flags'      \
+         -x '*glimpse*'   \
+         -x '*makeLog*'   \
+         -x  SCCS         \
+         -x '*.stamp'     \
+         -x 'System.map'  \
+         -x 'tags'        \
+         -x '*.ver'       \
+         -x '*vmlinu*'    \
+         "$@"
+}
+

@@ -1,0 +1,101 @@
+#!/bin/bash
+#!/usr/bin/bash
+#!/opt/local/bin/bash
+#!/n/viewserver/home/merlin/home2/bin/sun4/sos4/bash
+
+############################################################################
+# Given a list of source files in cscope.files
+# this script will build tne necessary databases
+# used by Glimpse, ctags and cscope
+#
+
+####
+# The timeStamp is handy for generating any
+# unique-per-script-invocation temp files and such...
+#
+ timeStamp=`date '+%Y%m%d%H%M%S'`
+  tempFile=tempFile$timeStamp
+      cTmp=cflowTemp$timeStamp
+
+function gatherCflow()  {
+    local f
+    local x
+
+    rm -f cflowResults cflowErrors
+    for f in `cat cscope.files `
+    do
+        echo "###############################" BEGIN $f  >$cTmp
+        echo "###############################" BEGIN $f          >>cflowErrors
+        cflow -X -x -v -g -d 30 $f                      >>$cTmp 2>>cflowErrors
+        echo "###############################"   END $f >>$cTmp
+        echo "###############################"   END $f          >>cflowErrors
+        x=`wc -l <$cTmp`
+        if [ $x -gt 2 ]
+        then
+            cat $cTmp >>cflowResults
+        fi
+    done
+}
+
+
+function gatherCtags()  {
+    local file
+
+    #
+    # Generate the ctags stuff piece-by-piece and then merge...
+    #
+    cat cscope.files | while read file
+    do
+        ctags --append                                                            $file
+    #   ctags --append --defines --globals --members --no-warn --typedefs-and-c++ $file
+    #   ctags --append                                         --c-types=cdefgmnstuvx $file
+        cat tags >>$tempFile
+        rm tags
+    done
+}
+
+if [ ! -z "$1" ]                      # If any args supplied on command line...
+then
+
+####
+# Preserve existing instance of cscope.files, if any...
+#
+ if [ -f cscope.files ]
+ then
+     mv                   cscope.files              cscope.files$timeStamp
+     echo "####" Existing cscope.files preserved as cscope.files$timeStamp
+ fi
+fi                                                           # if [ ! -z "$1" ]
+
+####
+# Preserve existing instance of tags file, if any...
+#
+ if [ -f tags ]
+ then
+     mv                   tags              tags$timeStamp
+     echo "####" Existing tags preserved as tags$timeStamp
+ fi
+
+#
+# Generate the Glimpse and cscope databases in the background...
+#
+ glimpseindex -F -H . -E -B -n -o <cscope.files >.glimpseLog 2>&1 &
+ cscope -b -u >cscopeDBgen.log 2>&1 &
+#gatherCflow &                         # NOTE: accumulates results in  cflowLog
+ gatherCtags &                         # NOTE: accumulates results in $tempFile
+
+ wait
+
+ gl '_GLOBAL'                           \
+    | fgrep -v '#define'                \
+    | fgrep -e '_GLOBAL('               \
+    | sed -e 's/[:(]/ /g' -e 's/).*$//' \
+    | while read file global tag ;      \
+    do                                  \
+        printf "%s	%s	/_GLOBAL(%s)/\n" $tag $file $tag >>$tempFile; \
+    done
+
+ sort -fd <$tempFile >tags
+
+ rm -f $cTmp $tempFile
+

@@ -1,0 +1,5 @@
+
+function vi4()  {
+    vi -O4 $*
+}
+

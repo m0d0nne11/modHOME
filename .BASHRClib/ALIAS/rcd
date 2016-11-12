@@ -1,0 +1,2 @@
+ alias rcd='cd $(pwd)'
+

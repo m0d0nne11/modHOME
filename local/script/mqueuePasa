@@ -1,0 +1,13 @@
+#!/bin/csh -f
+mailq >/tmp/mailq
+
+
+while 1
+	mv /tmp/mailq /tmp/mailqLast
+	mailq >/tmp/mailq
+	diff /tmp/mailqLast /tmp/mailq | grep '^>' | sed \
+		-e '/no control file/d'
+	echo "########################################################"
+	sleep $argv
+end
+

@@ -1,0 +1,5 @@
+function diffLinuxTrees
+{
+    diffLinuxTreesRAW -w -b -B "$@"
+}
+

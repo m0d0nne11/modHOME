@@ -1,0 +1,7 @@
+function jsdr
+{
+    echo "##############################" "$@" versus $jnk/"$@"
+    sdiff -W -b -w $COLUMNS "$@" $jnk/"$@"
+    echo "#####################" That was "$@" versus $jnk/"$@"
+}
+

@@ -1,0 +1,254 @@
+grep -ix -e '[0123456789abcdefilosz][0123456789abcdefilosz]*' \
+   | sed -e 's/[LlIi]/1/g' \
+         -e 's/[Oo]/0/g'   \
+         -e 's/[Ss]/5/g'   \
+         -e 's/[Zz]/2/g'
+
+exit 0
+
+Need a Hex constant?
+
+13
+61AC101061CA1 = glaciological
+
+12
+C1A551F1AB1E = classifiable
+DEC1A551F1ED = declassified
+DE5011D1F1ED = desolidified
+F1E1D61A55E5 = fieldglasses
+50C101061CA1 = sociological
+
+11
+CABBA6E1EAF = cabbageleaf
+C01DB100DED = coldblooded
+D1550C1AB1E = dissociable
+FA151F1AB1E = falsifiable
+1DE01061CA1 = ideological
+1D10610551A = idioglossia
+0FF1C1A1E5E = officialese
+5EBAC1CAC1D = sebacicacid
+
+10
+AB1EB0D1ED = ablebodied
+ACCE551B1E = accessible
+A1C1B1ADE5 = Alcibiades
+A55A11AB1E = assailable
+BA55F1DD1E = bassfiddle
+B1110F5A1E = billofsale
+B101061CA1 = biological
+C1A551F1ED = classified
+C1A551F1E5 = classifies
+DE11CAC1E5 = delicacies
+D1AB011CA1 = diabolical
+D1A10615ED = dialogised
+D1A10612ED = dialogized
+EC01061CA1 = ecological
+EFFACEAB1E = effaceable
+F0551115ED = fossilised
+6A111CAC1D = gallicacid
+6E01061CA1 = geological
+6E010615ED = geologised
+601DF1E1D5 = goldfields
+1DE01061E5 = ideologies
+5ADD1EBA65 = saddlebags
+5ADD1EB111 = saddlebill
+51DE5ADD1E = sidesaddle
+50C1A115ED = socialised
+50C1A112E5 = socializes
+50C1A111FE = sociallife
+5011D1F1ED = solidified
+5011D1F1E5 = solidifies
+2001061CA1 = zoological
+
+9
+AB5C155AE = abscissae
+ACC01ADE5 = accolades
+A110CAB1E = allocable
+BA1DEA61E = baldeagle
+BA5EBA115 = baseballs
+BEDA221ED = bedazzled
+BE111C05E = bellicose
+B111F01D5 = billfolds
+B100DCE11 = bloodcell
+B100D1E55 = bloodless
+B01DFACED = boldfaced
+CEA5E1E55 = ceaseless
+C1A551CA1 = classical
+C105ECA11 = closecall
+C0A1E5CED = coalesced
+C0FFEEBA6 = coffeebag
+C01101DA1 = colloidal
+DAFF0D115 = daffodils
+DEC1DAB1E = decidable
+D1E5E1011 = dieseloil
+D15BE11EF = disbelief
+D15CA1CED = discalced
+D15C105ED = disclosed
+D1510D6ED = dislodged
+FA11AC1E5 = fallacies
+FA15EFACE = falseface
+FA151F1ED = falsified
+F1E1D60A1 = fieldgoal
+F011CAC1D = folicacid
+F0015601D = foolsgold
+F0551112E = fossilize
+6A5F111ED = gasfilled
+60DDE55E5 = goddesses
+600D512ED = goodsized
+1DEA112ED = idealized
+111E61B1E = illegible
+111061CA1 = illogical
+1505CE1E5 = isosceles
+1E6A112ED = legalized
+11FEB100D = lifeblood
+11FE512ED = lifesized
+10CA112ED = localized
+1005E1EAF = looseleaf
+0FF1C1A15 = officials
+01E1CAC1D = oleicacid
+5ADD1EBA6 = saddlebag
+5CAFF01D5 = scaffolds
+51DE10BE5 = sidelobes
+5111C0515 = silicosis
+50C1A112E = socialize
+2162A66ED = zigzagged
+
+8
+AB5C155A = abscissa
+ACCE55ED = accessed
+ACC01ADE = accolade
+AD11BBED = adlibbed
+BABBA6E5 = babbages
+BADB100D = badblood
+BA111FF5 = bailiffs
+BA5EBA11 = baseball
+BA5E1E55 = baseless
+BA5111CA = basilica
+BEDA221E = bedazzle
+BEF066ED = befogged
+BE51E6ED = besieged
+B1B11CA1 = biblical
+B1F0CA15 = bifocals
+B111AB1E = billable
+B111F01D = billfold
+B100D1ED = bloodied
+B0D11E55 = bodiless
+CABBA6E5 = cabbages
+CAB00D1E = caboodle
+CA5CADE5 = cascades
+C1A551C5 = classics
+C0A1E5CE = coalesce
+C0CAC01A = cocacola
+C0D1C115 = codicils
+C011A6E5 = collages
+C011E6E5 = colleges
+C0111DED = collided
+C01101D5 = colloids
+C01055A1 = colossal
+DAFF0D11 = daffodil
+DEADFA11 = deadfall
+DEBAC1E5 = debacles
+DECEA5ED = deceased
+DEC1BE15 = decibels
+D1AB011C = diabolic
+D10CE5E5 = dioceses
+D15AB1ED = disabled
+D15C105E = disclose
+D15EA5ED = diseased
+D1510D6E = dislodge
+ED1F1CE5 = edifices
+EFF161E5 = effigies
+E665A1AD = eggsalad
+E1161B1E = eligible
+FACE1E55 = faceless
+FA115AFE = failsafe
+FA111B1E = fallible
+FEA51B1E = feasible
+F1A5C0E5 = fiascoes
+F1A6E11A = flagella
+F0111C1E = follicle
+6A51F1ED = gasified
+6A2EB0E5 = gazeboes
+6A2E11E5 = gazelles
+6E0DE51C = geodesic
+601FBA11 = golfball
+6005EE66 = gooseegg
+1DEA16A5 = idealgas
+1DEA112E = idealize
+1D10C1E5 = idiocies
+1D0115ED = idolised
+1ABE11ED = labelled
+1EA5AB1E = leasable
+1E6A112E = legalize
+11BE11ED = libelled
+11FE1E55 = lifeless
+10ADAB1E = loadable
+10CA112E = localize
+1061C15E = logicise
+0B5E55ED = obsessed
+0FF1C1A1 = official
+011F1E1D = oilfield
+0551F1ED = ossified
+5A1EAB1E = saleable
+5CAFF01D = scaffold
+5EED1E55 = seedless
+5E1F1E55 = selfless
+5111C1DE = silicide
+512EAB1E = sizeable
+50CA11ED = socalled
+50C1AB1E = sociable
+501E1E55 = soleless
+20D1ACA1 = zodiacal
+
+7
+AB16A11 = abigail
+AB5CE55 = abscess
+A6E1E55 = ageless
+A11A5ED = aliased
+A11E6ED = alleged
+BABBA6E = babbage
+BA66A6E = baggage
+BA111FF = bailiff
+B1A55ED = biassed
+B1F0CA1 = bifocal
+B16DEA1 = bigdeal
+B1E55ED = blessed
+CABBA6E = cabbage
+C1066ED = clogged
+C0111DE = collide
+DA151E5 = daisies
+DEBAC1E = debacle
+DECEA5E = decease
+DEC1BE1 = decibel
+DEC1DED = decided
+DEFACED = defaced
+D10CE5E = diocese
+D15AB1E = disable
+D15EA5E = disease
+FEEDBA6 = feedbag
+F1A5C05 = fiascos
+F161EAF = figleaf
+F10021E = floozie
+F01B1E5 = foibles
+F011A6E = foliage
+60A11E5 = goalies
+60DDE55 = goddess
+60D1E55 = godless
+601FBA6 = golfbag
+600D60D = Goodgod
+600F0FF = goofoff
+1CEC01D = icecold
+1C1C1E5 = icicles
+1D0112E = idolize
+111E6A1 = illegal
+111061C = illogic
+1061CA1 = logical
+0DDBA11 = oddball
+0FF1CE5 = offices
+5ADD1E5 = saddles
+5CA1DED = scalded
+512AB1E = sizable
+20D1AC5 = zodiacs
+
+If you feel that using A-F is cheating, try 6160105!
+

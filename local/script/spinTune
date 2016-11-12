@@ -1,0 +1,2 @@
+echo "##################" `tds` >> ~/modHOME/lisaMusic
+echo current-track | xmms-shell >> ~/modHOME/lisaMusic

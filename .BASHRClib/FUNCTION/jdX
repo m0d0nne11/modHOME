@@ -1,0 +1,6 @@
+function jdX
+{
+#   xcleardiff -b $jnk/"$@" "$@"      &
+    tkdiff        "$@"      $jnk/"$@" &
+}
+

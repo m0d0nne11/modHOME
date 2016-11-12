@@ -1,0 +1,4 @@
+function Ctoken()  {
+    Ctokens | grep "$@"
+}
+

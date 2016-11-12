@@ -1,0 +1,9 @@
+function pss
+{
+    folder -pack $*
+    sortMailBySubject
+    scan
+    folder
+    d
+}
+

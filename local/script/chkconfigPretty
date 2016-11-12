@@ -1,0 +1,22 @@
+
+###########################################################################
+# Why does col insist on multiple spaces between columns?
+#
+function colDoubleSpaceFix()  {
+    sed -r -e 's/([^ ])  /\1 /g'
+}
+
+function chkconfigPrettyFunc()  {
+    chkconfig --list | sed -r -e '/:$/,$d' -e 's/[0-9]:off/ - /g' -e 's/([0-9]):on/ \1 /g' | column -t | sort
+    chkconfig --list | grep ':$'
+    chkconfig --list | sed -r -e '1,/:$/d' -e 's/[[:space:]]off/ -/g'  | column -t | sort | sed -e 's/^/      /'
+}
+
+chkconfigPrettyFunc | colDoubleSpaceFix
+exit 0
+
+# Old version that uses my "lineup" and "rq" programs...
+
+chkconfig --list | sed -r -e '/:$/,$d' -e 's/[0-9]:off/ - /g' -e 's/([0-9]):on/ \1 /g' | lineup | sort
+chkconfig --list | grep ':$'
+chkconfig --list | sed -r -e '1,/:$/d' -e 's/[[:space:]]off/ /g'  | lineup | sort | rq '   '

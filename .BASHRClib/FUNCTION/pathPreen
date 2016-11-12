@@ -1,0 +1,36 @@
+function pathPreen()
+{
+    local d
+    local temPath=""
+    if [ -z "$ARCH" ] ; then
+        echo ARCH envar not set
+    fi
+
+    for d in $ALL_POSSIBLE_PATH_DIRS "$@" ; do
+        d=$(eval echo $d)
+        if [ "$d" = ARCH_DEPENDENT_LOCAL_BIN ] ; then
+                d=~/local/bin.$ARCH
+                d=$(eval echo $d)
+        fi
+        if [ -d $d/. ] ; then
+            echo "INCLUDE $d"
+            temPath="$temPath:$d"
+        else
+            echo "EXCLUDE                       $d"
+        fi
+    done
+
+    export PATH=$(echo $temPath | sed -e 's/::*/:/g' -e 's/^::*//' -e 's/::*$//')
+}
+
+function rememberPATH()  { 
+    local f="$modHOME"/.BASHRClib/ENVARphase1/PATH ;
+    if ! [ -r "${f}" ] ; then
+        echo Cannot find PATH environment definition file... ;
+        return ;
+    fi ;
+    echo " PATH=${PATH}" > $f ;
+    echo $f
+    cat  $f
+}
+

@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+#!/u/bin/bash
+#!/opt/local/bin/bash
+#!/n/viewserver/home/merlin/home2/bin/sun4/sos4/bash
+
+timeStamp=`date '+%Y%m%d%H%M%S'`
+ tempFile=tempFile$timeStamp
+
+genCscopeFileList
+sed -e 's;/n/bach/;/;' <cscope.files >$tempFile ; mv $tempFile cscope.files
+glimpseindex -F -H /vobs/mcos -E -B -n -o <cscope.files >.glimpseLog 2>&1 &
+
+rm -f TAGS
+etags - <cscope.files &
+
+genCtagsForAKM &
+

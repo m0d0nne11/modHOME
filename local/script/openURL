@@ -1,0 +1,16 @@
+#!/bin/sh
+
+Usage="Usage: url <url>    supply no args to use the X-selection"
+url=$1
+
+if [ "$url" = "" ]; then
+	url=`echo 'wm withdraw .; set X ""; catch {set X [selection get]}; puts $X; exit 0' | wish -`
+fi
+
+if [ "$url" != "" ]; then
+	netscape -noraise -remote openURL\($url,new-window\)
+else
+	echo "$Usage"
+	exit 1
+fi
+

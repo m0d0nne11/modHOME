@@ -1,0 +1,27 @@
+#!/bin/bash
+
+function sortByStringLengthFunc() {
+    awk '{ x = length($0) ; printf( "%d:%s\n", x, $0 ); }' | sort -n | sed -e 's/[0-9][0-9]*://'
+}
+
+sortByStringLengthFunc
+
+exit
+
+# EXAMPLE:
+# word . | grep -Eix -e '[0123456789abcdefilosz]+' | sortByLength > /tmp/hexWordsRaw ; paste /tmp/hexWordsRaw <(sed -e 's/[LlIi]/1/g' -e 's/[Oo]/0/g' -e 's/[Ss]/5/g' -e 's/[Zz]/2/g' < /tmp/hexWordsRaw) | lineup > /tmp/hexWords
+
+# Previous clunky (and incorrect! due to whitespace handling) version...
+
+   timeStamp=`date '+%Y%m%d%H%M%S'`
+    tempFile=/tmp/"$$"tempFile$timeStamp
+formatString=/tmp/"$$"format$timeStamp
+
+rq ' ' | eat | fmt -1 | sed -e 's/^ //' >$tempFile
+
+formatString=`lineup dummyArg <$tempFile | head -1 | sed -e 's/-//' -e 's;\\\%;%;'`
+
+eval $formatString <$tempFile | LANG=C sort | tr -s '[:blank:]' | sed -e 's/^ //'
+
+rm   -f $formatString  $tempFile
+

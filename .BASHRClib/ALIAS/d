@@ -1,0 +1,2 @@
+ alias d="date '+######## %A %d %B %Y (day %j) %T'"
+

@@ -1,0 +1,6 @@
+#!/bin/bash
+#
+# A pipe that tidies up the output of a cc -E run a little bit...
+# Usage: cc -E someFile.c | thisScript > someFile.cc-E
+#
+sed -e 's/[[:space:]]*$//' -e '/^[[:space:]]*#/ { s_^_/* _ ; s_$_ */_ }' | cat -s

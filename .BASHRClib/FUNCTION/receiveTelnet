@@ -1,0 +1,10 @@
+function receiveTelnet
+{
+    while :
+    do
+        echo "################" START in.telnetd $(date) ;
+        sudo in.telnetd -debug ;
+        echo "################" FINISH in.telnetd $(date) ;
+    done
+}
+

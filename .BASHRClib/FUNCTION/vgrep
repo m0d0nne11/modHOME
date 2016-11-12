@@ -1,0 +1,5 @@
+function vgrep
+{
+    vi +/$* $(grep -l $*)
+}
+

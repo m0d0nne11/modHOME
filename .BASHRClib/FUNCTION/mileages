@@ -1,0 +1,5 @@
+function mileages
+{
+    cat ~/.mileageList
+}
+

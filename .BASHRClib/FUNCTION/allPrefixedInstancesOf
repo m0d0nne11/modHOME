@@ -1,0 +1,6 @@
+function allPrefixedInstancesOf
+{
+    gl $1 | fmt -1 | grep $1 | sed -e 's/[]=,"/.><[)(;*-]/\
+/g' | grep $1'$' | sort -fdu
+}
+

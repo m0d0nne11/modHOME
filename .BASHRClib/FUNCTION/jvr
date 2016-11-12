@@ -1,0 +1,5 @@
+function jvr
+{
+    vi $1 $jnk/$1
+}
+

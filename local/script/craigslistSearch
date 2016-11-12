@@ -1,0 +1,185 @@
+sed -e 's/query=rzq/query='"$1"'/' <<EOF
+<DT><H3>craigslistSearch query=rzq</H3>
+<DL><p>
+  <DT><a href="http://amsterdam.craigslist.org/search/sss?query=rzq"     >amsterdam</a>
+  <DT><a href="http://athens.craigslist.gr/search/sss?query=rzq"         >athens</a>
+  <DT><a href="http://atlanta.craigslist.org/search/sss?query=rzq"       >atlanta</a>
+  <DT><a href="http://austin.craigslist.org/search/sss?query=rzq"        >austin</a>
+  <DT><a href="http://bangalore.craigslist.co.in/search/sss?query=rzq"   >bangalore</a>
+  <DT><a href="http://bangkok.craigslist.org/search/sss?query=rzq"       >bangkok</a>
+  <DT><a href="http://barcelona.craigslist.org/search/sss?query=rzq"     >barcelona</a>
+  <DT><a href="http://beijing.craigslist.com.cn/search/sss?query=rzq"    >beijing</a>
+  <DT><a href="http://berlin.craigslist.org/search/sss?query=rzq"        >berlin</a>
+  <DT><a href="http://boston.craigslist.org/search/sss?query=rzq"        >boston</a>
+  <DT><a href="http://buenosaires.craigslist.org/search/sss?query=rzq"   >buenos aires</a>
+  <DT><a href="http://calgary.craigslist.ca/search/sss?query=rzq"        >calgary</a>
+  <DT><a href="http://caribbean.craigslist.org/search/sss?query=rzq"     >caribbean</a>
+  <DT><a href="http://chicago.craigslist.org/search/sss?query=rzq"       >chicago</a>
+  <DT><a href="http://dallas.craigslist.org/search/sss?query=rzq"        >dallas</a>
+  <DT><a href="http://delhi.craigslist.co.in/search/sss?query=rzq"       >delhi</a>
+  <DT><a href="http://denver.craigslist.org/search/sss?query=rzq"        >denver</a>
+  <DT><a href="http://detroit.craigslist.org/search/sss?query=rzq"       >detroit</a>
+  <DT><a href="http://dublin.craigslist.org/search/sss?query=rzq"        >dublin</a>
+  <DT><a href="http://edmonton.craigslist.ca/search/sss?query=rzq"       >edmonton</a>
+  <DT><a href="http://geo.craigslist.org/iso/ae/search/sss?query=rzq"     >UAE</a>
+  <DT><a href="http://geo.craigslist.org/iso/ar/search/sss?query=rzq"     >argentina</a>
+  <DT><a href="http://geo.craigslist.org/iso/at/search/sss?query=rzq"     >austria</a>
+  <DT><a href="http://geo.craigslist.org/iso/au/search/sss?query=rzq"     >australia</a>
+  <DT><a href="http://geo.craigslist.org/iso/bd/search/sss?query=rzq"     >bangladesh</a>
+  <DT><a href="http://geo.craigslist.org/iso/be/search/sss?query=rzq"     >belgium</a>
+  <DT><a href="http://geo.craigslist.org/iso/br/search/sss?query=rzq"     >brazil</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/ab/search/sss?query=rzq"  >alberta</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/bc/search/sss?query=rzq"  >brit columbia</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/mb/search/sss?query=rzq"  >manitoba</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/search/sss?query=rzq"     >more ..</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/nb/search/sss?query=rzq"  >n brunswick</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/nl/search/sss?query=rzq"  >newf &amp; lab</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/ns/search/sss?query=rzq"  >nova scotia</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/on/search/sss?query=rzq"  >ontario</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/pe/search/sss?query=rzq"  >pei</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/qc/search/sss?query=rzq"  >quebec</a>
+  <DT><a href="http://geo.craigslist.org/iso/ca/sk/search/sss?query=rzq"  >saskatchwn</a>
+  <DT><a href="http://geo.craigslist.org/iso/ch/search/sss?query=rzq"     >switzerland</a>
+  <DT><a href="http://geo.craigslist.org/iso/cl/search/sss?query=rzq"     >chile</a>
+  <DT><a href="http://geo.craigslist.org/iso/cn/search/sss?query=rzq"     >china</a>
+  <DT><a href="http://geo.craigslist.org/iso/co/search/sss?query=rzq"     >colombia</a>
+  <DT><a href="http://geo.craigslist.org/iso/cr/search/sss?query=rzq"     >costa rica</a>
+  <DT><a href="http://geo.craigslist.org/iso/cz/search/sss?query=rzq"     >czech repub</a>
+  <DT><a href="http://geo.craigslist.org/iso/de/search/sss?query=rzq"     >germany</a>
+  <DT><a href="http://geo.craigslist.org/iso/dk/search/sss?query=rzq"     >denmark</a>
+  <DT><a href="http://geo.craigslist.org/iso/eg/search/sss?query=rzq"     >egypt</a>
+  <DT><a href="http://geo.craigslist.org/iso/es/search/sss?query=rzq"     >spain</a>
+  <DT><a href="http://geo.craigslist.org/iso/fi/search/sss?query=rzq"     >finland</a>
+  <DT><a href="http://geo.craigslist.org/iso/fr/search/sss?query=rzq"     >france</a>
+  <DT><a href="http://geo.craigslist.org/iso/gb/search/sss?query=rzq"     >great britain</a>
+  <DT><a href="http://geo.craigslist.org/iso/gb/search/sss?query=rzq"     >UK</a>
+  <DT><a href="http://geo.craigslist.org/iso/gr/search/sss?query=rzq"     >greece</a>
+  <DT><a href="http://geo.craigslist.org/iso/hu/search/sss?query=rzq"     >hungary</a>
+  <DT><a href="http://geo.craigslist.org/iso/id/search/sss?query=rzq"     >indonesia</a>
+  <DT><a href="http://geo.craigslist.org/iso/ie/search/sss?query=rzq"     >ireland</a>
+  <DT><a href="http://geo.craigslist.org/iso/il/search/sss?query=rzq"     >israel</a>
+  <DT><a href="http://geo.craigslist.org/iso/in/search/sss?query=rzq"     >india</a>
+  <DT><a href="http://geo.craigslist.org/iso/it/search/sss?query=rzq"     >italy</a>
+  <DT><a href="http://geo.craigslist.org/iso/jp/search/sss?query=rzq"     >japan</a>
+  <DT><a href="http://geo.craigslist.org/iso/kr/search/sss?query=rzq"     >korea</a>
+  <DT><a href="http://geo.craigslist.org/iso/lb/search/sss?query=rzq"     >lebanon</a>
+  <DT><a href="http://geo.craigslist.org/iso/mx/search/sss?query=rzq"     >mexico</a>
+  <DT><a href="http://geo.craigslist.org/iso/my/search/sss?query=rzq"     >malaysia</a>
+  <DT><a href="http://geo.craigslist.org/iso/nl/search/sss?query=rzq"     >netherlands</a>
+  <DT><a href="http://geo.craigslist.org/iso/no/search/sss?query=rzq"     >norway</a>
+  <DT><a href="http://geo.craigslist.org/iso/nz/search/sss?query=rzq"     >new zealand</a>
+  <DT><a href="http://geo.craigslist.org/iso/pa/search/sss?query=rzq"     >panama</a>
+  <DT><a href="http://geo.craigslist.org/iso/pe/search/sss?query=rzq"     >peru</a>
+  <DT><a href="http://geo.craigslist.org/iso/ph/search/sss?query=rzq"     >philippines</a>
+  <DT><a href="http://geo.craigslist.org/iso/pk/search/sss?query=rzq"     >pakistan</a>
+  <DT><a href="http://geo.craigslist.org/iso/pl/search/sss?query=rzq"     >poland</a>
+  <DT><a href="http://geo.craigslist.org/iso/pr/search/sss?query=rzq"     >puerto rico</a>
+  <DT><a href="http://geo.craigslist.org/iso/pt/search/sss?query=rzq"     >portugal</a>
+  <DT><a href="http://geo.craigslist.org/iso/ru/search/sss?query=rzq"     >russia</a>
+  <DT><a href="http://geo.craigslist.org/iso/se/search/sss?query=rzq"     >sweden</a>
+  <DT><a href="http://geo.craigslist.org/iso/sg/search/sss?query=rzq"     >singapore</a>
+  <DT><a href="http://geo.craigslist.org/iso/th/search/sss?query=rzq"     >thailand</a>
+  <DT><a href="http://geo.craigslist.org/iso/tr/search/sss?query=rzq"     >turkey</a>
+  <DT><a href="http://geo.craigslist.org/iso/tw/search/sss?query=rzq"     >taiwan</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ak/search/sss?query=rzq"  >alaska</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/al/search/sss?query=rzq"  >alabama</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ar/search/sss?query=rzq"  >arkansas</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/az/search/sss?query=rzq"  >arizona</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ca/search/sss?query=rzq"  >california</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/co/search/sss?query=rzq"  >colorado</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ct/search/sss?query=rzq"  >connecticut</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/dc/search/sss?query=rzq"  >dc</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/de/search/sss?query=rzq"  >delaware</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/fl/search/sss?query=rzq"  >florida</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ga/search/sss?query=rzq"  >georgia</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/hi/search/sss?query=rzq"  >hawaii</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ia/search/sss?query=rzq"  >iowa</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/id/search/sss?query=rzq"  >idaho</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/il/search/sss?query=rzq"  >illinois</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/in/search/sss?query=rzq"  >indiana</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ks/search/sss?query=rzq"  >kansas</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ky/search/sss?query=rzq"  >kentucky</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/la/search/sss?query=rzq"  >louisiana</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ma/search/sss?query=rzq"  >mass</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/md/search/sss?query=rzq"  >maryland</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/me/search/sss?query=rzq"  >maine</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/mi/search/sss?query=rzq"  >michigan</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/mn/search/sss?query=rzq"  >minnesota</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/mo/search/sss?query=rzq"  >missouri</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/search/sss?query=rzq"     >more ..</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ms/search/sss?query=rzq"  >mississippi</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/mt/search/sss?query=rzq"  >montana</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/nc/search/sss?query=rzq"  >n carolina</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/nd/search/sss?query=rzq"  >north dakota</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ne/search/sss?query=rzq"  >nebraska</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/nh/search/sss?query=rzq"  >n hampshire</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/nj/search/sss?query=rzq"  >new jersey</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/nm/search/sss?query=rzq"  >new mexico</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/nv/search/sss?query=rzq"  >nevada</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ny/search/sss?query=rzq"  >new york</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/oh/search/sss?query=rzq"  >ohio</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ok/search/sss?query=rzq"  >oklahoma</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/or/search/sss?query=rzq"  >oregon</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/pa/search/sss?query=rzq"  >pennsylvania</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ri/search/sss?query=rzq"  >rhode island</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/sc/search/sss?query=rzq"  >s carolina</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/sd/search/sss?query=rzq"  >south dakota</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/tn/search/sss?query=rzq"  >tennessee</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/tx/search/sss?query=rzq"  >texas</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/ut/search/sss?query=rzq"  >utah</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/va/search/sss?query=rzq"  >virginia</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/vt/search/sss?query=rzq"  >vermont</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/wa/search/sss?query=rzq"  >washington</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/wi/search/sss?query=rzq"  >wisconsin</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/wv/search/sss?query=rzq"  >west virginia</a>
+  <DT><a href="http://geo.craigslist.org/iso/us/wy/search/sss?query=rzq"  >wyoming</a>
+  <DT><a href="http://geo.craigslist.org/iso/ve/search/sss?query=rzq"     >venezuela</a>
+  <DT><a href="http://geo.craigslist.org/iso/vn/search/sss?query=rzq"     >vietnam</a>
+  <DT><a href="http://geo.craigslist.org/iso/za/search/sss?query=rzq"     >south africa</a>
+  <DT><a href="http://halifax.craigslist.ca/search/sss?query=rzq"        >halifax</a>
+  <DT><a href="http://hongkong.craigslist.org/search/sss?query=rzq"      >hong kong</a>
+  <DT><a href="http://honolulu.craigslist.org/search/sss?query=rzq"      >honolulu</a>
+  <DT><a href="http://houston.craigslist.org/search/sss?query=rzq"       >houston</a>
+  <DT><a href="http://lasvegas.craigslist.org/search/sss?query=rzq"      >las vegas</a>
+  <DT><a href="http://london.craigslist.co.uk/search/sss?query=rzq"      >london</a>
+  <DT><a href="http://losangeles.craigslist.org/search/sss?query=rzq"    >los angeles</a>
+  <DT><a href="http://madrid.craigslist.es/search/sss?query=rzq"         >madrid</a>
+  <DT><a href="http://manila.craigslist.com.ph/search/sss?query=rzq"     >manila</a>
+  <DT><a href="http://mexicocity.craigslist.com.mx/search/sss?query=rzq" >mexico</a>
+  <DT><a href="http://miami.craigslist.org/search/sss?query=rzq"         >miami</a>
+  <DT><a href="http://micronesia.craigslist.org/search/sss?query=rzq"     >guam</a>
+  <DT><a href="http://micronesia.craigslist.org/search/sss?query=rzq"    >micronesia</a>
+  <DT><a href="http://minneapolis.craigslist.org/search/sss?query=rzq"   >minneapolis</a>
+  <DT><a href="http://moscow.craigslist.org/search/sss?query=rzq"        >moscow</a>
+  <DT><a href="http://newyork.craigslist.org/search/sss?query=rzq"       >new york</a>
+  <DT><a href="http://orangecounty.craigslist.org/search/sss?query=rzq"  >orange co</a>
+  <DT><a href="http://ottawa.craigslist.ca/search/sss?query=rzq"         >ottawa</a>
+  <DT><a href="http://paris.craigslist.org/search/sss?query=rzq"         >paris</a>
+  <DT><a href="http://philadelphia.craigslist.org/search/sss?query=rzq"  >philadelphia</a>
+  <DT><a href="http://phoenix.craigslist.org/search/sss?query=rzq"       >phoenix</a>
+  <DT><a href="http://portland.craigslist.org/search/sss?query=rzq"      >portland</a>
+  <DT><a href="http://quebec.craigslist.ca/search/sss?query=rzq"         >quebec</a>
+  <DT><a href="http://raleigh.craigslist.org/search/sss?query=rzq"       >raleigh</a>
+  <DT><a href="http://rio.craigslist.org/search/sss?query=rzq"           >rio de janeiro</a>
+  <DT><a href="http://rome.craigslist.org/search/sss?query=rzq"          >rome</a>
+  <DT><a href="https://accounts.craigslist.org/search/sss?query=rzq"     >login</a>
+  <DT><a href="http://sacramento.craigslist.org/search/sss?query=rzq"    >sacramento</a>
+  <DT><a href="http://sandiego.craigslist.org/search/sss?query=rzq"      >san diego</a>
+  <DT><a href="http://seattle.craigslist.org/search/sss?query=rzq"       >seattle</a>
+  <DT><a href="http://seoul.craigslist.org/search/sss?query=rzq"         >seoul</a>
+  <DT><a href="http://sfbay.craigslist.org/search/sss?query=rzq"         >sf bayarea</a>
+  <DT><a href="http://shanghai.craigslist.com.tw/search/sss?query=rzq"   >shanghai</a>
+  <DT><a href="http://singapore.craigslist.org/search/sss?query=rzq"     >singapore</a>
+  <DT><a href="http://stlouis.craigslist.org/search/sss?query=rzq"       >st louis</a>
+  <DT><a href="http://sydney.craigslist.org/search/sss?query=rzq"        >sydney</a>
+  <DT><a href="http://telaviv.craigslist.org/search/sss?query=rzq"       >tel aviv</a>
+  <DT><a href="http://tokyo.craigslist.jp/search/sss?query=rzq"          >tokyo</a>
+  <DT><a href="http://toronto.craigslist.ca/search/sss?query=rzq"        >toronto</a>
+  <DT><a href="http://vancouver.craigslist.ca/search/sss?query=rzq"      >vancouver</a>
+  <DT><a href="http://victoria.craigslist.ca/search/sss?query=rzq"       >victoria</a>
+  <DT><a href="http://washingtondc.craigslist.org/search/sss?query=rzq"  >wash dc</a>
+  <DT><a href="http://winnipeg.craigslist.ca/search/sss?query=rzq"       >winnipeg</a>
+  <DT><a href="http://zurich.craigslist.ch/search/sss?query=rzq"         >zurich</a>
+</DL><p>
+EOF
+

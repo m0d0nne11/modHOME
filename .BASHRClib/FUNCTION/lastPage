@@ -1,0 +1,4 @@
+function lastPage()  {
+	tail -"$[$[$[$[$LINES * 100] / 100] * 95] / 100]"
+}
+

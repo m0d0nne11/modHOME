@@ -1,0 +1,51 @@
+###############################################################################
+# The specified tds value is normalized such that all the fields
+# fall within acceptable ranges and values that are out-of-range
+# are "carried" into the next most significant field.
+#
+###############################################################################
+# Strip Leading Zero
+#
+function slz()  {
+    echo $1 | sed -e 's/^0\([[:digit:]]\)/\1/'
+}
+
+###############################################################################
+# Output of tdsAtoms is in this form: Y0=2008 M0=01 D0=26 H0=16 T0=12 S0=07
+#
+eval `echo $1 | tdsAtoms`
+
+#Y0=$(slz $Y0)
+ M0=$(slz $M0)
+ if [ $M0 -eq 0 ] ; then M0=1 ; fi
+ D0=$(slz $D0)
+ if [ $D0 -eq 0 ] ; then D0=1 ; fi                          # Days are 1-based.
+ H0=$(slz $H0)
+ T0=$(slz $T0)
+ S0=$(slz $S0)
+
+t=$[$S0 / 60]                                         # Capture excess seconds.
+s=$[$S0 % 60]                                                    # clip second.
+
+t=$[$T0 + $t]                                         # Capture excess minutes.
+h=$[$t  / 60]                                          # hour = excess minutes.
+t=$[$t  % 60]                                                    # clip minute.
+
+h=$[$H0 + $h]                                           # Capture excess hours.
+d=$[$h  / 24]                                             # day = excess hours.
+h=$[$h  % 24]                                                      # clip hour.
+
+d=$[$D0 + $d]                                            # Capture excess days.
+m=$[ ($d - 1) / 31]                                      # month = excess days.
+d=$[(($d - 1) % 31) + 1]                                            # clip day.
+
+m=$[$M0 + $m]                                          # Capture excess months.
+y=$[ ($m - 1) / 12]                                     # year = excess months.
+m=$[(($m - 1) % 12) + 1]                                            # clip day.
+
+y=$[$Y0 + $y]                                          # Capture excess months.
+
+printf "%04d%02d%02d%02d%02d%02d\n" $y $m $d $h $t $s
+
+exit 0
+

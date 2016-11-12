@@ -1,0 +1,2 @@
+ export NO_ORIGINATOR=setInBASHRC     # Something to do w/Debian bug reporting?
+

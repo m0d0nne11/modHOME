@@ -1,0 +1,4 @@
+function Ctokens()  {
+    sed -e 's/^/ /' -e 's/[]`^<=>,;:!?."('"'"')[{@|~}$*\\&\/#%+-]/ /g' -e 's/[	 ][	 ]*/ /g' | fmt -1 | sort -fd | uniq
+}
+

@@ -1,0 +1,5 @@
+function tapes
+{
+    cat ~/.tapeInfo
+}
+

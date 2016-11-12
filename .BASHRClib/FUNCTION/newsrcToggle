@@ -1,0 +1,103 @@
+function newsrcToggle
+{
+    pd ~
+    bits=0
+    ls -l .newsrcJob .newsrcNOjob .newsrc
+
+    if [ -e .newsrc ]       ; then
+        bits=$[ $bits | (1<<0) ]
+    fi
+    if [ -e .newsrcJob ]    ; then
+        bits=$[ $bits | (1<<1) ]
+    fi
+    if [ -e .newsrcNOjob ]  ; then
+        bits=$[ $bits | (1<<2) ]
+    fi
+
+    case $bits in
+    0)
+        echo "HAVE:" ;
+        echo "LACK:" ;
+        echo "	.newsrc"
+        echo "	.newsrcJob"
+        echo "	.newsrcNOjob"
+
+        echo "Can't decide what to do..."
+        ;;
+    1)
+        echo "HAVE:" ;
+        echo "	.newsrc"
+        echo "LACK:" ;
+        echo "	.newsrcJob"
+        echo "	.newsrcNOjob"
+
+        echo "Can't decide what to do..."
+        ;;
+    2)
+        echo "HAVE:" ;
+        echo "	.newsrcJob"
+        echo "LACK:" ;
+        echo "	.newsrc"
+        echo "	.newsrcNOjob"
+
+        echo "Can't decide what to do..."
+        ;;
+    3)
+        echo "HAVE:" ;
+        echo "	.newsrc"
+        echo "	.newsrcJob"
+        echo "LACK:" ;
+        echo "	.newsrcNOjob"
+
+        echo "Switching from .newsrcNOjob to .newsrcJob"
+        mv .newsrc .newsrcNOjob
+        mv .newsrcJob .newsrc
+        ;;
+    4)
+        echo "HAVE:" ;
+        echo "	.newsrcNOjob"
+        echo "LACK:" ;
+        echo "	.newsrc"
+        echo "	.newsrcJob"
+
+        echo "Can't decide what to do..."
+        ;;
+    5)
+        echo "HAVE:" ;
+        echo "	.newsrc"
+        echo "	.newsrcNOjob"
+        echo "LACK:" ;
+        echo "	.newsrcJob"
+
+        echo "Switching from .newsrcJob to .newsrcNOjob"
+        mv .newsrc .newsrcJob
+        mv .newsrcNOjob .newsrc
+        ;;
+    6)
+        echo "HAVE:" ;
+        echo "	.newsrcJob"
+        echo "	.newsrcNOjob"
+        echo "LACK:" ;
+        echo "	.newsrc"
+
+        echo "Can't decide what to do..."
+        ;;
+    7)
+        echo "HAVE:" ;
+        echo "	.newsrc"
+        echo "	.newsrcJob"
+        echo "	.newsrcNOjob"
+        echo "LACK:" ;
+
+        echo "Can't decide what to do..."
+        ;;
+    *)
+        echo "HUH? - WEIRD CASE VALUE:" $bits
+        echo "Can't decide what to do..."
+        ;;
+    esac
+
+    ls -l .newsrcJob .newsrcNOjob .newsrc
+    popd
+}
+

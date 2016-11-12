@@ -1,0 +1,15 @@
+function o2
+{
+    if [ -z "$@" ]
+    then
+        echo No destination specified...
+    else
+        if [ -d ../"$@" ]
+        then
+            cd ../"$@"
+        else
+            echo "Can't glob ../$@"
+        fi
+    fi
+}
+

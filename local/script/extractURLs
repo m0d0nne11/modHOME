@@ -1,0 +1,8 @@
+tr "'"'[:space:])(><"\r' '\n'			\
+    |  sed  -e 's@[Hh][Tt][Tt][Pp]:/@\
+http:/@g'   -e 's@[Hh][Tt][Tt][Pp][Ss]:/@\
+https:/@g'  -e 's@[Ff][Ii][Ll][Ee]:/@\
+file:/@g'   -e 's@[Ff][Tt][Pp]:/@\
+ftp:/@g'					\
+    | fgrep -e 'http:' -e 'https:' -e 'ftp:' -e 'file:'
+

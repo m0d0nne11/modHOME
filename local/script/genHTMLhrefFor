@@ -1,0 +1,10 @@
+for f in $@
+do
+	echo '<P> <a href="'$f'">'$f'</a>'
+done
+
+while read f
+do
+	echo '<P> <a href="'$f'">'$f'</a>'
+done
+

@@ -1,0 +1,69 @@
+#!/bin/bash
+#
+
+###############################################################################
+#
+
+EXTERNAL_IP_REPORTING_URL=http://ipchicken.com/
+
+function externallyVisibleIPaddr()  {
+    lynx -dump $EXTERNAL_IP_REPORTING_URL | sed -r -e 's/[[:space:]]+/\
+/g' | grep -E '[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+'
+}
+
+###############################################################################
+#
+function eth0ipAddr()  {
+  local line=(`/sbin/ifconfig eth0 | fgrep 'inet addr'`)
+  echo ${line[1]} | sed -e 's/^.*://'
+}
+
+###############################################################################
+# True execution actually begins here...
+#
+
+unset showIPextern
+unset showIPeth0
+
+currentOptArg=""
+while :
+do
+    getopts "axe" currentOptArg
+
+    case "$currentOptArg" in
+    '?')                                                # End of supplied args.
+        break
+        ;;
+    a)                     # All.
+        showIPextern=1
+        showIPeth0=1
+        ;;
+    x)
+        showIPextern=1
+        ;;
+    e)
+        showIPeth0=1
+        ;;
+    *)
+        echo "Unexpected commandline parameter: $currentOptArg"
+        echo "usage: $0 [-a] [-x] [-e] (All/Extern/eth0)"
+        exit 1
+        ;;
+    esac
+done
+
+if [ -z "$showIPextern"  -a -z "$showIPeth0" ]
+then
+        showIPeth0=1
+fi
+
+if [ "$showIPextern" = "1" ]
+then
+        externallyVisibleIPaddr
+fi
+
+if [ "$showIPeth0" = "1" ]
+then
+        eth0ipAddr
+fi
+

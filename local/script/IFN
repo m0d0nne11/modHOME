@@ -1,0 +1,4 @@
+#echo "#define	$*	0"
+echo "#if	!$*"
+cat
+echo "#endif /* #if !$* */" | rjc

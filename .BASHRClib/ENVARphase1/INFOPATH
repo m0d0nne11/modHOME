@@ -1,0 +1,6 @@
+ export INFOPATH=/u/info:/usr/info/OLD:/usr/info/emacs-info:/usr/info:/usr/local/info
+
+#export INFOPATH=/usr/info:/usr/info/emacs-info:/usr/info/OLD
+
+#export INFOPATH=/usr/local/info:/u/info
+

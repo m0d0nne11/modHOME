@@ -1,0 +1,21 @@
+#!/bin/csh -f
+
+set incFiles=/tmp/incFiles$$
+
+onintr cleanUp
+
+cat >$incFiles
+echo '#if OSF_INTEL'
+sed -e 's;i860paragon;i860/PARAGON;' <$incFiles
+echo ""
+echo '#else                                                       /* #if OSF_INTEL */'
+cat $incFiles
+echo '#endif                                                /* #else #if OSF_INTEL */'
+
+#
+# One way or another, we're done.
+#
+cleanUp:
+rm -f          \
+    $incFiles
+

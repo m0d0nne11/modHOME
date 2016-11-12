@@ -1,0 +1,5 @@
+function envForProc()  {
+        # extract & prettify environment values for specified proc
+        xargs -0 -l1 echo < /proc/$1/environ | sort -bfd ;
+}
+

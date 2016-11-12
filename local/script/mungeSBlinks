@@ -1,0 +1,40 @@
+#!/bin/csh -f
+#set verbose
+
+if ( ! -e ../O ) then
+	echo "This script must be run in the"
+	echo "root of the sandbox in question"
+	echo "and the links O and S must exist"
+	echo "in the appropriate places."
+	exit 1
+endif
+set sb=`basename $cwd`
+echo "Munging export/obj links in sandbox $sb"
+
+set exportDirs=`find export -type d -print`
+set objDirs=`find obj -type d -print`
+
+mkdir -p ../O/$sb/export ../O/$sb/obj
+
+rm -rf         export
+ln -sf ../O/$sb/export export
+pushd  ../O/$sb
+foreach dir ( $exportDirs )
+	mkdir -p $dir
+end
+popd
+
+rm -rf         obj
+ln -sf ../O/$sb/obj obj
+pushd  ../O/$sb
+foreach dir ( $objDirs )
+	mkdir -p $dir
+end
+popd
+
+pushd ../O/$sb
+foreach dir ( link rc_files src tools )
+	ln -s ../S/$sb/$dir $dir
+end
+popd
+

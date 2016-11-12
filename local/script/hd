@@ -1,0 +1,6 @@
+if [ $# -ge 1 ] ; then
+	f="$1"
+	exec hexdump -C < "${f}"
+else
+	exec hexdump -C
+fi

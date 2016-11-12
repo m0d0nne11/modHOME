@@ -1,0 +1,5 @@
+#!/bin/bash
+#
+function isLinuxFunc() { uname -a | fgrep -qi -e linux ; }
+
+isLinuxFunc

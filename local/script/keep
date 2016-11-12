@@ -1,0 +1,4 @@
+#!/bin/csh -f
+echo "" >>$HOME/keepMailMH
+cat             >>$HOME/keepMailMH
+echo "" >>$HOME/keepMailMH

@@ -1,0 +1,2319 @@
+###############################################################################
+
+for a in `alias | sed -e 's/=.*$//' -e 's/^.* //'` ; do unalias "${a}" ; done
+
+shopt -s nullglob
+
+#set -x ; set -v
+
+ export            SHELL=/bin/bash
+ export             PATH="/root/autoinstall/bin:/sbin/:${PATH}"
+#export  LD_LIBRARY_PATH=/root/autoinstall/usr/lib                    # For rpm
+ export sessionTimeStamp="`date '+%Y%m%d%H%M%S'`"
+
+  # Spot the hardcoded values!
+  #
+        bootstart=0                         ; bootsize=100
+        rootstart=$[$bootstart + $bootsize] ; rootsize=20480
+        swapstart=$[$rootstart + $rootsize] ; swapsize=4096
+ logicaldiskstart=$[$swapstart + $swapsize]
+
+       wxdiskend0=wxdiskend0_NotYetDefined
+       wxdiskend1=wxdiskend1_NotYetDefined
+     wxdiskendMIN=wxdiskendMIN_NotYetDefined
+
+          hdsize0=hdsize0_NotYetDefined
+          hdsize1=hdsize1_NotYetDefined
+      wxdisksize0=wxdisksize0_NotYetDefined
+      wxdisksize1=wxdisksize1_NotYetDefined
+     wxdiskstart0=wxdiskstart0_NotYetDefined
+     wxdiskstart1=wxdiskstart1_NotYetDefined
+
+       ARCHIVEdev=ARCHIVEdevNotYetDefined      # Whichever RAID we've selected.
+       ARCHIVEdir=ARCHIVEdirNotYetDefined        # Corresponding to ARCHIVEdev.
+      ARCHIVEpath=ARCHIVEpathNotYetDefined          # Session-specific storage.
+         BOOT0dev=doNotUseBOOT0youBozo
+         BOOT0dir=/mnt/BOOT0
+         BOOT1dev=doNotUseBOOT1youBozo
+         BOOT1dir=/mnt/BOOT1
+           MD0dev=/dev/md0
+           MD0dir=/mnt/MD0
+         ROOT0dev=ROOT0devNotYetDefined
+         ROOT0dir=/mnt/ROOT0
+         ROOT1dev=ROOT1devNotYetDefined
+         ROOT1dir=/mnt/ROOT1
+        sessionID=unknown
+         TARCHIVE=unknown
+          TARLIST=unknown
+       WXDISK0dev=WXDISK0devNotYetDefined
+       WXDISK0dir=/mnt/WXDISK0
+
+# To maintain the following list of functions, position (in vi) the cursor on
+# the first line in the list and then execute one of the following verbatim:
+#
+# !}grep -e '^function ' % | awk '{ print $2 }' | sort -bfd | sed -e 's/^/\# /'
+# !}grep -e '^function ' % | awk '{ print $2 }' |             sed -e 's/^/\# /'
+# FUNCTIONS:
+
+# iDEBUG()
+# activeLinesInScript()
+# treeCopy()
+# learnSYSTYPE()
+# prepHD()
+# determineDRIVEassignments()
+# previouslyDualBoot()
+# determineARCHIVE()
+# labelFS()
+# makeFS()
+# hostRelativeMTAB0()
+# hostRelativeMTAB1()
+# isMounted()
+# rewriteFSTABswapLines()
+# AmountWXDISK0()
+# AmountMD0()
+# AmountBOOT0()
+# AmountBOOT1()
+# AmountROOT0()
+# AmountROOT1()
+# AmountARCHIVE()
+# NmountMD0onROOT0()
+# NmountMD0onROOT1()
+# NmountARCHIVE0()
+# NmountARCHIVE1()
+# NmountBOOT0()
+# NmountBOOT1()
+# isWINSYS_RAID()
+# isPromiseVTRAK()
+# RAIDcensus()
+# determineWXDISK0dev()
+# detectExternalRAIDinUse()
+# saveLocalizedFiles0()
+# saveLocalizedRHELfiles0()
+# touchup()
+# touchupROOTcommon()
+# touchupROOT0()
+# touchupROOT1()
+# touchupBOOT0()
+# touchupBOOT1()
+# cloneBOOT0toBOOT1()
+# cloneBOOT1toBOOT0()
+# cloneROOT1toROOT0()
+# preloadBOOT0()
+# cloneROOT0toROOT1()
+# preloadBOOT1()
+# preloadROOT0()
+# preloadROOT1()
+# preloadMD0()
+# fixupMYSQLpwdGrpFiles()
+# localizeROOT0()
+# makeBootable0()
+# makeBootable1()
+# verifyARCHIVEpath()
+# writeMBR()
+# driveMBfor()
+# exactPartitionStartMBfor()
+# partitionStartMBfor()
+# exactPartitionEndMBfor()
+# partitionEndMBfor()
+# exactPartitionMBfor()
+# partitionMBfor()
+# learnDRIVE0size()
+# learnDRIVE1size()
+# learnDRIVEsizes()
+# partitionDisk()
+# cribPartitionLayoutFrom()
+# createRAIDprimaryDegraded()
+# createRAIDnormal()
+# startRAIDnormal()
+# startRAIDprimaryAddVirginSecondary()
+# startRAIDsecondaryAddVirginPrimary()
+# update_updateRAIDconfigFiles()
+# chrootROOT0()
+# chrootROOT1()
+# HWspecificNVIDIAhax0()
+# HWspecificNVIDIAhax1()
+
+#
+# Mounting conventions:
+#
+# The devices containing the root partitions (0/1 -> primary/secondary
+# disks) will be referred to as ROOT[01]dev and will always be mounted
+# "Absolute" on the corresponding ROOT[01]dir
+#
+# The devices containing the boot partitions (0/1 -> primary/secondary
+# disks) will be referred to as BOOT[01]dev and will either be mounted
+# "Absolute" on the corresponding BOOT[01]dir or else Nested on the
+# corresponding ROOT[01]dir/boot
+#
+###############################################################################
+# IMPLICIT RETURN is the silent propagation of the return status from the
+# last command executed in a function as the return status of that function.
+#
+###############################################################################
+# Drop into an interactive DEBUG shell
+#
+function iDEBUG()  {
+  echo "###### BEGIN DEBUG ######" $@
+  echo "##############  spawning interactive shell (exit shell to resume)"
+  /bin/sh -i
+  echo "######## END DEBUG ######" $@ "...resuming."
+}
+
+###############################################################################
+# Show lines from the specified file that do not have a hash mark as
+# their first non-whitespace character i.e. lines that have not been
+# commented out.
+#
+function activeLinesInScript()  {
+  grep -E -v -e '^[[:space:]]*#' < "$1"
+}
+
+###############################################################################
+# treeCopy sourcePath destDir
+#
+# Copy sourcePath (including all intermediate pathname nodes) to destDir,
+# preserving all attributes.  Can be used to copy single files or entire trees.
+#
+function treeCopy()  {
+  if [ $# -ne 2 ] ; then
+    echo $FUNCNAME: ERROR - wrong number of args "($@)"
+    return 1
+  fi
+
+  if ! [ -d $2/. ] ; then
+    echo $FUNCNAME: ERROR - second arg must be a directory "($@)"
+    return 1
+  fi
+
+  tar cf - $1 | tar xf - -C $2
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+#
+#
+  DMIDECODE_OUTPUT=DMIDECODE_OUTPUT_notYetDefined
+           SYSTYPE=SYSTYPE_notYetDefined
+SYSTYPE_FILESTRING=SYSTYPE_FILESTRING_notYetDefined
+
+function learnSYSTYPE()  {
+  local result=1
+
+  # Blindly attempt to create, OK to fail...
+  #
+  ( /usr/sbin/dmidecode > /etc/dmidecode.output ) >/dev/null 2>&1
+  ( chmod 444             /etc/dmidecode.output ) >/dev/null 2>&1
+
+  if   [ -f /etc/dmidecode.output ] ; then
+    DMIDECODE_OUTPUT=/etc/dmidecode.output
+  else                                # Can't find/create one in /etc? try /tmp
+    /usr/sbin/dmidecode > /tmp/dmidecode.output
+    if [ -f /tmp/dmidecode.output ] ; then
+      DMIDECODE_OUTPUT=/tmp/dmidecode.output
+    else
+      SYSTYPE="unknown"
+      echo "ERROR: Can't find/capture dmidecode data - SYSTYPE unknown."
+      return $result
+    fi
+  fi
+
+  result=0
+  if   grep -q 'WorkStation 370'    $DMIDECODE_OUTPUT ; then
+    SYSTYPE="Dell 370"
+    CDROM="/dev/hda"
+    modprobe tg3
+  elif grep -q 'WorkStation 380'    $DMIDECODE_OUTPUT ; then
+    SYSTYPE="Dell 380"
+    CDROM="/dev/hdc"
+    modprobe tg3
+  elif grep -q 'WorkStation 390'    $DMIDECODE_OUTPUT ; then
+    SYSTYPE="Dell 390"
+    CDROM="/dev/hda"
+    modprobe tg3
+  elif grep -q 'WorkStation 530'    $DMIDECODE_OUTPUT ; then
+    SYSTYPE="Dell 530"
+    CDROM="/dev/hdd"
+  elif grep -q 'WorkStation 650'    $DMIDECODE_OUTPUT ; then
+    SYSTYPE="Dell 650"
+    CDROM="/dev/hdd"
+  elif grep -q 'WorkStation 670'    $DMIDECODE_OUTPUT ; then
+    SYSTYPE="Dell 670"
+    CDROM="/dev/hdc"
+  elif grep -q 'WorkStation 690'    $DMIDECODE_OUTPUT ; then
+    SYSTYPE="Dell 690"
+    CDROM="/dev/hda"
+    modprobe tg3
+#   modprobe --verbose mptscsih
+  elif grep -q 'xw4600 Workstation' $DMIDECODE_OUTPUT ; then
+    SYSTYPE="HP xw4600"
+#   CDROM="/dev/scd0"
+    CDROM="/dev/hda"                   # IDE emulation makes scd0 appear as hda
+    modprobe tg3                                # xw4600 has integral BroadCom.
+#   modprobe e1000               # HP's MP tables botch requires add-in card...
+#   modprobe --verbose mptscsih
+  elif grep -q 'xw8600 Workstation' $DMIDECODE_OUTPUT ; then
+    SYSTYPE="HP xw8600"
+    CDROM="/dev/scd0"
+    modprobe tg3
+#   modprobe --verbose mptscsih
+  else
+    SYSTYPE="unknown"
+    result=0
+  fi
+
+  SYSTYPE_FILESTRING=`echo $SYSTYPE | tr ' ' '_'`
+  return $result
+}
+
+###############################################################################
+# ASSUME: SYSTYPE has already been determined.
+#
+function prepHD()  {                     # Supposedly speeds up IDE settings...
+  if [  \( "$SYSTYPE" = "Dell 650" \) -o \( "$SYSTYPE" = "Dell 530" \)  ] ; then
+    hdparm -m 16 -d 1 -c 3 -X69 -u 1 /dev/hda
+    hdparm -m 16 -d 1 -c 3 -X69 -u 1 /dev/hdc
+  fi
+}
+
+###############################################################################
+# ASSUME: SYSTYPE has already been determined.
+#
+function determineDRIVEassignments()  {
+  if [ \( "$SYSTYPE" = "Dell 650" \) -o \( "$SYSTYPE" = "Dell 530" \) ] ; then
+    DRIVE0="/dev/hda"
+    DRIVE1="/dev/hdc"
+  else
+    DRIVE0="/dev/sda"
+    DRIVE1="/dev/sdb"
+  fi
+
+  # Partitions
+  BOOT0dev="$DRIVE0"1            # A.K.A WSI-A1, filesys therein S/B so tagged.
+  BOOT1dev="$DRIVE1"1            # A.K.A WSI-B1, filesys therein S/B so tagged.
+  ROOT0dev="$DRIVE0"2            # A.K.A WSI-A2, filesys therein S/B so tagged.
+  ROOT1dev="$DRIVE1"2            # A.K.A WSI-B2, filesys therein S/B so tagged.
+}
+
+###############################################################################
+# During an upgrade we look for "chainloader" in /boot/grub/grub.conf to
+# see if we should assume this machine was a dual-boot system.
+#
+# NOTE: This function is expected to be called early on the first time it's
+#       used, at which time it will specifically mount and unmount BOOT0dev
+#       to make its determination (based on whether we saw "chainloader"
+#       in /boot/grub/grub.conf) with all subsequent calls using a cached
+#       return value and NOT doing any mount/unmount operations.
+#
+previouslyDualBootReturnCode="unknown"
+
+function previouslyDualBoot()  {
+  if [ "$previouslyDualBootReturnCode" != "unknown" ] ; then
+    return $previouslyDualBootReturnCode
+  fi
+
+  if ! AmountBOOT0 ; then                           # Partition not accessible?
+    previouslyDualBootReturnCode=1            # We'll return False from now on.
+    return $previouslyDualBootReturnCode
+  fi
+
+  if ! activeLinesInScript $BOOT0dir/grub/grub.conf | fgrep -q chainloader
+  then
+    previouslyDualBootReturnCode=1            # We'll return False from now on.
+  else
+    previouslyDualBootReturnCode=0             # We'll return True from now on.
+  fi
+
+  umount $BOOT0dev
+  return $previouslyDualBootReturnCode
+}
+
+###############################################################################
+#
+function determineARCHIVE()  {
+  if [ "$WXDISK0dev" != "WXDISK0devNotYetDefined" -a detectExternalRAIDinUse ]
+  then
+    ARCHIVEdev=$WXDISK0dev
+    ARCHIVEdir=$WXDISK0dir
+  else
+    ARCHIVEdev=$MD0dev
+    ARCHIVEdir=$MD0dir
+  fi
+  mkdir -p $ARCHIVEdir/ARCHIVE
+  ARCHIVEpath=$ARCHIVEdir/ARCHIVE/$sessionTimeStamp
+  echo ARCHIVEdev:$ARCHIVEdev ARCHIVEdir:$ARCHIVEdir ARCHIVEpath:$ARCHIVEpath
+  sessionID=systemImage.`head -1 /root/autoinstall/IMAGEVERSION | tr -d '[[:space:]]'`.$sessionTimeStamp
+  TARLIST=$sessionID.tarList
+  TARCHIVE=$sessionID.tgz
+}
+
+###############################################################################
+# usage: labelFS dev label
+#
+function labelFS()  {
+  if [ $# -ne 2 ] ; then
+    echo $FUNCNAME: ERROR - wrong number of args "($@)"
+    return 1
+  fi
+
+  echo "Labelling filesystem on $1 as $2 ..."
+  while ! e2label $1 $2 ; do
+    echo "ERROR: Could not label filesystem on $1 - "
+    echo "dropping to shell for diagnosis - exit shell to resume."
+    echo "FYI: failed command was: e2label $1 $2"
+    echo
+    bash -l -i
+  done
+}
+
+###############################################################################
+# usage: makeFS dev label
+#
+function makeFS()  {
+  if [ $# -ne 2 ] ; then
+    echo $FUNCNAME: ERROR - wrong number of args "($@)"
+    return 1
+  fi
+
+  echo "Creating filesystem on $1  ..."
+  while ! mkfs.ext3 $1 ; do
+    echo "ERROR: Could not create filesystem on $1 - "
+    echo "dropping to shell for diagnosis - exit shell to resume."
+    echo "FYI: failed command was: mkfs.ext3 $1"
+    echo
+    bash -l -i
+  done
+
+  if ! echo "$1" | fgrep -q -e "$MD0dev" ; then
+    labelFS $1 $2
+  fi
+}
+
+###############################################################################
+# Translates the "real" mtab (the rescue kernel's /proc/mounts) into a
+# form that can be used on the host disk while chroot'd onto that disk.
+#
+# In other words, if /dev/sda2 is mounted on /mnt/ROOT0 you can say
+#    hostRelativeMTAB0 > /mnt/ROOT0dir/etc/mtab
+# ...after which this:
+#    chroot /mnt/ROOT0 cat /etc/mtab
+# ...will show /dev/sda2 mounted on /
+#
+function hostRelativeMTAB0()  {
+  fgrep -e ${ARCHIVEdev:-UnLiKeLyStRiNg}                         \
+	-e   ${BOOT0dev:-UnLiKeLyStRiNg}                         \
+	-e     ${MD0dev:-UnLiKeLyStRiNg}                         \
+	-e   ${ROOT0dev:-UnLiKeLyStRiNg}                         \
+	-e ${WXDISK0dev:-UnLiKeLyStRiNg} < /proc/mounts | sed -r \
+	-e 's;[[:space:]]+/mnt/[BR]OOT[01][[:space:]]; / ;'  \
+	-e 's;[[:space:]]+/mnt/[BR]OOT[01]; ;'
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Translates the "real" mtab (the rescue kernel's /proc/mounts) into a
+# form that can be used on the host disk while chroot'd onto that disk.
+#
+# In other words, if /dev/sdb2 is mounted on /mnt/ROOT1 you can say
+#    hostRelativeMTAB1 > /mnt/ROOT1dir/etc/mtab
+# ...after which this:
+#    chroot /mnt/ROOT1 cat /etc/mtab
+# ...will show /dev/sdb2 mounted on /
+#
+function hostRelativeMTAB1()  {
+  fgrep -e ${ARCHIVEdev:-UnLiKeLyStRiNg}                         \
+	-e   ${BOOT1dev:-UnLiKeLyStRiNg}                         \
+	-e     ${MD1dev:-UnLiKeLyStRiNg}                         \
+	-e   ${ROOT1dev:-UnLiKeLyStRiNg}                         \
+	-e ${WXDISK1dev:-UnLiKeLyStRiNg} < /proc/mounts | sed -r \
+	-e 's;[[:space:]]+/mnt/[BR]OOT[01][[:space:]]; / ;'  \
+	-e 's;[[:space:]]+/mnt/[BR]OOT[01]; ;'
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# usage: isMounted deviceName mountPoint
+# Returns boolean indication of whether deviceName is mounted on mountPoint
+#
+function isMounted()  {
+  if [ $# -ne 2 ] ; then
+    echo $FUNCNAME: ERROR - wrong number of args "($@)"
+    return 1
+  fi
+  local dev=$1
+  local mnt=$2
+
+  grep -q -E "^$dev[[:space:]]+$mnt[[:space:]]+" /proc/mounts
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Assume stdin is an fstab file and first delete all lines that appear to
+# be swap directives and then insert two new ones that are in the format
+# that we expect.  This deals with some old files that refer to explicit
+# /dev entries rather than using the LABEL= notation.  This also deals
+# with fstabs that may not have both entries present.
+#
+# Rewritten file is uttered on stdout.
+#
+function rewriteFSTABswapLines()  {
+  sed -r -e '/^[[:space:]]*[^#[:space:]].*[[:space:]]+swap[[:space:]].*$/d' | sed -e '/ \/dev\/shm /s/$/\
+LABEL=SWAP0    swap        swap        defaults                                     0 0\
+LABEL=SWAP1    swap        swap        defaults                                     0 0/'
+}
+
+###############################################################################
+# Perform/Confirm the Absolute mount of WXDISK0dev on WXDISK0dir
+#
+function AmountWXDISK0() {     # Absolute mount of /dev/WXDISK0 on /mnt/WXDISK0
+  isMounted     $WXDISK0dev $WXDISK0dir && return 0
+  mount -t ext3 $WXDISK0dev $WXDISK0dir
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Absolute mount of MD0dev on MD0dir
+#
+function AmountMD0()  {                 # Absolute mount of $MD0dev on /mnt/MD0
+  isMounted     $MD0dev $MD0dir && return 0
+  mount -t ext3 $MD0dev $MD0dir
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Absolute mount of BOOT0dev on BOOT0dir
+#
+function AmountBOOT0()  {          # Absolute mount of ${DRIVE0}1 on /mnt/BOOT0
+  isMounted     $BOOT0dev $BOOT0dir && return 0
+  mount -t ext3 $BOOT0dev $BOOT0dir
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Absolute mount of BOOT1dev on BOOT1dir
+#
+function AmountBOOT1()  {          # Absolute mount of ${DRIVE1}1 on /mnt/BOOT1
+  isMounted     $BOOT1dev $BOOT1dir && return 0
+  mount -t ext3 $BOOT1dev $BOOT1dir
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Absolute mount of ROOT0dev on ROOT0dir
+#
+function AmountROOT0()  {          # Absolute mount of ${DRIVE0}2 on /mnt/ROOT0
+  isMounted     $ROOT0dev $ROOT0dir && return 0
+  mount -t ext3 $ROOT0dev $ROOT0dir
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Absolute mount of ROOT1dev on ROOT1dir
+#
+function AmountROOT1()  {          # Absolute mount of ${DRIVE1}2 on /mnt/ROOT1
+  isMounted     $ROOT1dev $ROOT1dir && return 0
+  mount -t ext3 $ROOT1dev $ROOT1dir
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Absolute mount of ARCHIVEdev on ARCHIVEdir
+#
+function AmountARCHIVE()  {
+  isMounted     $ARCHIVEdev $ARCHIVEdir && return 0
+  mount -t ext3 $ARCHIVEdev $ARCHIVEdir
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Nested mount of $MD0dev on $ROOT0dir/mnt/MD0
+# Note: parent filesystem must already be mounted.
+#
+function NmountMD0onROOT0()  {
+  if ! isMounted $ROOT0dev $ROOT0dir ; then
+    echo "Can't mount $ARCHIVEdev because $ROOT0dir not mounted"
+    return 1
+  fi
+
+  isMounted     $MD0dev $ROOT0dir/mnt/MD0     && return 0
+  mkdir              -p $ROOT0dir/mnt/MD0
+  mount -t ext3 $MD0dev $ROOT0dir/mnt/MD0
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Nested mount of $MD0dev on $ROOT1dir/mnt/MD0
+# Note: parent filesystem must already be mounted.
+#
+function NmountMD0onROOT1()  {
+  if ! isMounted $ROOT1dev $ROOT1dir ; then
+    echo "Can't mount $ARCHIVEdev because $ROOT1dir not mounted"
+    return 1
+  fi
+
+  isMounted     $MD0dev $ROOT1dir/mnt/MD0     && return 0
+  mkdir              -p $ROOT1dir/mnt/MD0
+  mount -t ext3 $MD0dev $ROOT1dir/mnt/MD0
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Nested mount of $ARCHIVEdev on $ROOT0dir/tmp/ARCHIVE
+# which we create specifically for this purpose
+# Note: parent dir must already be mounted.
+#
+function NmountARCHIVE0()  {
+  if ! isMounted $ROOT0dev $ROOT0dir ; then
+    echo "Can't mount $ARCHIVEdev because $ROOT0dir not mounted"
+    return 1
+  fi
+
+  isMounted     $ARCHIVEdev $ROOT0dir/tmp/ARCHIVE && return 0
+  mkdir                  -p $ROOT0dir/tmp/ARCHIVE
+  mount -t ext3 $ARCHIVEdev $ROOT0dir/tmp/ARCHIVE
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Nested mount of $ARCHIVEdev on $ROOT1dir/tmp/ARCHIVE
+# which we create specifically for this purpose
+# Note: parent dir must already be mounted.
+#
+function NmountARCHIVE1()  {
+  if ! isMounted $ROOT1dev $ROOT1dir ; then
+    echo "Can't mount $ARCHIVEdev because $ROOT1dir not mounted"
+    return 1
+  fi
+
+  isMounted     $ARCHIVEdev $ROOT1dir/tmp/ARCHIVE && return 0
+  mkdir                  -p $ROOT1dir/tmp/ARCHIVE
+  mount -t ext3 $ARCHIVEdev $ROOT1dir/tmp/ARCHIVE
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Nested mount of ${DRIVE0}1 on /mnt/ROOT0dir/boot
+# Note: parent dir must already be mounted.
+#
+function NmountBOOT0()  {
+  if ! isMounted $ROOT0dev $ROOT0dir ; then
+    echo "Can't mount $BOOT0dev because $ROOT0dir not mounted"
+    return 1
+  fi
+
+  isMounted     $BOOT0dev $ROOT0dir/boot && return 0
+  mount -t ext3 $BOOT0dev $ROOT0dir/boot
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Perform/Confirm the Nested mount of ${DRIVE1}1 on /mnt/ROOT1/boot
+# Note: parent dir must already be mounted.
+#
+function NmountBOOT1()  {
+  if ! isMounted $ROOT1dev $ROOT1dir ; then
+    echo "Can't mount $BOOT1dev because $ROOT1dir not mounted"
+    return 1
+  fi
+
+  isMounted     $BOOT1dev $ROOT1dir/boot && return 0
+  mount -t ext3 $BOOT1dev $ROOT1dir/boot                      # IMPLICIT RETURN
+}
+
+###############################################################################
+# Completion status ($?) indicates whether specified
+# device is a Winchester Systems RAID (as long as they
+# haven't changed the ID string on us again...   >-/  )
+#
+function isWINSYS_RAID()  {
+  scsi_info $1 2>/dev/null | grep -iq -e 'MODEL="WINSYS'
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Completion status ($?) indicates whether specified
+# device is a Promise VTRAK.
+#
+function isPromiseVTRAK()  {
+  scsi_info $1 2>/dev/null | grep -iq -e 'Promise.*VTrak'
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Query all devices accessible as /dev/sd?
+# and tally those that seem to be RAIDs.
+#
+
+RAID_COUNT=-1
+ RAID_LIST=""
+
+function RAIDcensus()  {
+  if ! [ $RAID_COUNT -lt 0 ] ; then
+    echo $RAID_COUNT
+    return 0
+  fi
+
+  # We currently only expect to find SCSI adapters in high-end boxes.
+  #
+  if ! [ "$SYSTYPE" = "Dell 690" -o "$SYSTYPE" = "HP xw8600" ] ; then
+    RAID_COUNT=0
+    echo ${RAID_COUNT}
+    return 0
+  fi
+
+  local x # Count
+  local f # /dev entry
+  local n # Node list
+
+  x=0
+  n=""
+  for f in /dev/sd?
+  do
+    if isWINSYS_RAID "${f}" || isPromiseVTRAK "${f}" ; then
+      let x++
+      n="${n} ${f}"    # We're just mentioning the raw device, not a partition.
+    fi
+  done
+
+  RAID_COUNT=${x}
+  RAID_LIST="${n}"
+
+  echo $RAID_COUNT
+  return 0
+}
+
+###############################################################################
+# See if we have a RAID and establish it as the WXDISK0dev if so.
+#
+function determineWXDISK0dev()  {
+  local x
+
+  if [ "$WXDISK0dev" != "WXDISK0devNotYetDefined" ] ; then
+    return 0
+  fi
+
+  RAIDcensus                                                   # init variables
+  x=$(RAIDcensus)
+
+  if [ $x -lt 1 ] ; then
+    echo No external RAID devices found
+    return 1
+  fi
+
+  if [ $x -gt 1 ] ; then
+    echo "Too many RAIDs ($RAID_LIST) during install/upgrade"
+    echo "Please disconnect all but the one desired and restart."
+    return 1
+  fi
+
+  WXDISK0dev=$(echo "$RAID_LIST 1" | tr -d '[[:space:]]')
+  echo WXDISK0dev mapped to external RAID $WXDISK0dev
+}
+
+###############################################################################
+# Returns boolean indication of whether the /wxdisk currently resides
+# on an external RAID rather than the internal $MD0dev
+#
+# NOTE: This function is expected to be called early on the first time
+#       it's used, at which time it will specifically mount and unmount
+#       ROOT0dev to make its determination (based on the referent of
+#       the /wxdisk symlink) with all subsequent calls using a cached
+#       return value and NOT doing any mount/unmount operations.
+#
+detectExternalRAIDinUseReturnCode="unknown"
+
+function detectExternalRAIDinUse()  {
+  if [ "$detectExternalRAIDinUseReturnCode" != "unknown" ] ; then
+    return $detectExternalRAIDinUseReturnCode
+  fi
+
+  if ! AmountROOT0 ; then                           # Partition not accessible?
+    detectExternalRAIDinUseReturnCode=1       # We'll return False from now on.
+    return $detectExternalRAIDinUseReturnCode
+  fi
+
+  if ! [ -L $ROOT0dir/wxdisk ] ; then                   # Symlink never set up?
+    umount $ROOT0dev
+    detectExternalRAIDinUseReturnCode=1       # We'll return False from now on.
+    return $detectExternalRAIDinUseReturnCode
+  fi
+
+  if readlink $ROOT0dir/wxdisk | fgrep -q /MD0
+  then               # Symlink is specifically NOT pointed at an external RAID.
+    umount $ROOT0dev
+    detectExternalRAIDinUseReturnCode=1       # We'll return False from now on.
+    return $detectExternalRAIDinUseReturnCode
+  fi
+
+  # We can see the root filesystem, it has a symlink named /wxdisk
+  # and it's not pointed at /mnt/MD0, so we assume that it's OK to
+  # report forever after that an external RAID was in use.
+
+  umount $ROOT0dev
+  detectExternalRAIDinUseReturnCode=0          # We'll return True from now on.
+  return $detectExternalRAIDinUseReturnCode
+}
+
+###############################################################################
+# Before we reload the filesystem(s) we preserve some site-specific files.
+#
+function saveLocalizedFiles0()  {
+  cd /
+
+  if ! AmountROOT0 ; then
+    echo "ERROR: Could not mount $ROOT0dev on $ROOT0dir"
+    read n
+    exit 1
+  fi
+
+  cd $ROOT0dir
+
+  umount $ARCHIVEdev
+  umount $MD0dev
+  find mnt -xdev -type d | cpio --create > tmp/mntDirsB4upgrade.cpio
+
+  if ! AmountARCHIVE ; then
+    echo "ERROR: Could not mount $ARCHIVEdev on $ARCHIVEdir ? "
+    read n
+    exit 1
+  fi
+
+  if ! verifyARCHIVEpath ; then
+    echo "ERROR: Can't reach/create $ARCHIVEpath ? "
+    read n
+    exit 1
+  fi
+
+  if ! cat /dev/null > $ARCHIVEpath/$TARLIST ; then
+    echo "##### ERROR - Can't write $ARCHIVEpath/$TARLIST"
+    read n
+    exit 1
+  fi
+
+  # OK to make these local modifications because we're about to toss
+  # the entire filesystem anyway and we want the tarball to have
+  # the right stuff in it so we can just blindly extract it later.
+  #
+  rm -f usr/share/pixmaps/wsi/Cloud.*.jpg	\
+        usr/share/pixmaps/wsi/scheduler.*.xpm	\
+        usr/share/pixmaps/wsi/showfx.*.xpm	\
+        usr/share/pixmaps/wsi/skytracker.*.xpm	\
+        usr/share/pixmaps/wsi/start_menu.*.xpm	\
+        usr/share/pixmaps/wsi/user.*.xpm
+
+  echo "#### Preserving selected system files in $ARCHIVEpath..."
+
+  for f in                                    \
+    etc/alchemist/namespace/printconf         \
+    etc/cron.daily/qa                         \
+    etc/cups                                  \
+    etc/exports                               \
+    etc/fstab                                 \
+    etc/group                                 \
+    etc/gshadow                               \
+    etc/gvimrc                                \
+    etc/hosts                                 \
+    etc/httpd                                 \
+    etc/inittab                               \
+    etc/keyboard                              \
+    etc/localtime                             \
+    etc/mgetty+sendfax/login.config           \
+    etc/modules.conf                          \
+    etc/ntp*                                  \
+    etc/passwd                                \
+    etc/ppp/chap-secrets                      \
+    etc/ppp/options                           \
+    etc/resolv.conf                           \
+    etc/rsyncd.conf                           \
+    etc/security/limits.conf                  \
+    etc/services                              \
+    etc/shadow                                \
+    etc/ssh                                   \
+    etc/sysconfig/clock                       \
+    etc/sysconfig/i18n                        \
+    etc/sysconfig/netdump*                    \
+    etc/sysconfig/network                     \
+    etc/sysconfig/network-scripts/ifcfg-eth0* \
+    etc/sysconfig/network-scripts/ifcfg-eth1* \
+    etc/X11/xorg.conf*                        \
+    etc/xinetd.d/rsync                        \
+    root/.ssh                                 \
+    tmp/mntDirsB4upgrade.cpio                 \
+    usr/lib/DPS/outline/base                  \
+    usr/share/fonts/local                     \
+    usr/share/pixmaps/wsi                     \
+    var/cache/alchemist                       \
+    var/log/install.log                       \
+    var/log/messages                          \
+    var/log/WSI                               \
+    var/spool/cron/root                       \
+    var/spool/cron/wxws*
+  do
+    find "${f}" -xdev \! -type d -print   >> $ARCHIVEpath/$TARLIST 2>/dev/null
+  done
+  sort -bfd < $ARCHIVEpath/$TARLIST | uniq > $ARCHIVEpath/sortedTARLIST
+  mv          $ARCHIVEpath/sortedTARLIST     $ARCHIVEpath/$TARLIST
+
+  tar cvzf    $ARCHIVEpath/$TARCHIVE      -T $ARCHIVEpath/$TARLIST
+
+  # Check to see if /var/lib/wsi-rpms is a symlink to a
+  # directory on the /wxdisk and make it so if not...
+  #
+  # Yes, we create a symlink on a filesystem that's about to be
+  # rebuilt, but that makes the logic following it a bit simpler.
+  #
+  # No, we don't address the bloat problem related to the
+  # "historical" directories.
+  #
+  if ! [ -e var/lib/wsi-rpms ] ; then
+    mkdir -p      var/lib
+    chown 0.0 var var/lib
+    chmod 755 var var/lib
+    ln -s /wxdisk/install/wsi-rpms var/lib/wsi-rpms
+  fi
+
+  chmod a+rx $ARCHIVEdir/.
+  if ! [ -L var/lib/wsi-rpms ] ; then
+    if ! [ -d $ARCHIVEdir/install/wsi-rpms ] ; then
+      mkdir -p                           $ARCHIVEdir/install/wsi-rpms
+      chown 1112.100 $ARCHIVEdir/install $ARCHIVEdir/install/wsi-rpms
+      chmod ug+rwx   $ARCHIVEdir/install $ARCHIVEdir/install/wsi-rpms
+    fi
+    pushd var/lib/wsi-rpms
+    for f in `find . -type f`
+    do
+      if file "${f}" | grep -q 'RPM v3' ; then
+        treeCopy "${f}" $ARCHIVEdir/install/wsi-rpms
+      elif ! [ -e       $ARCHIVEdir/install/wsi-rpms/"${f}" ] ; then
+        treeCopy "${f}" $ARCHIVEdir/install/wsi-rpms
+      fi
+    done
+    popd
+
+#   rm -rf                         var/lib/wsi-rpms
+#   ln -s /wxdisk/install/wsi-rpms var/lib/wsi-rpms
+  fi
+
+  treeCopy var/lib/rpm $ARCHIVEpath
+
+  cd /root
+  sleep 1
+  umount $ARCHIVEdev
+  umount $ROOT0dev
+}
+
+###############################################################################
+# Before we convert over to CentOS (Phase2) we preserve some site-specific
+# files that are forward compatible from RHEL3->CentOS5.2
+#
+function saveLocalizedRHELfiles0()  {
+  cd /
+
+  if ! AmountROOT0 ; then
+    echo "ERROR: Could not mount $ROOT0dev on $ROOT0dir"
+    read n
+    exit 1
+  fi
+
+  cd $ROOT0dir
+
+  umount $ARCHIVEdev
+  umount $MD0dev
+  find mnt -xdev -type d | cpio --create > tmp/mntDirsB4upgrade.cpio
+
+  if ! AmountARCHIVE ; then
+    echo "ERROR: Could not mount $ARCHIVEdev on $ARCHIVEdir ? "
+    read n
+    exit 1
+  fi
+
+  if ! verifyARCHIVEpath ; then
+    echo "ERROR: Can't reach/create $ARCHIVEpath ? "
+    read n
+    exit 1
+  fi
+
+  if ! cat /dev/null > $ARCHIVEpath/$TARLIST ; then
+    echo "##### ERROR - Can't write $ARCHIVEpath/$TARLIST"
+    read n
+    exit 1
+  fi
+
+  # Flag this as an "inter-species" upgrade...
+  #
+  echo RHELtoCentOSupgrade > $ARCHIVEpath/RHELtoCentOSupgrade
+
+  # OK to make these local modifications because we're about to toss
+  # the entire filesystem anyway and we want the tarball to have
+  # the right stuff in it so we can just blindly extract it later.
+  #
+  rm -f usr/share/pixmaps/wsi/Cloud.*.jpg	\
+        usr/share/pixmaps/wsi/scheduler.*.xpm	\
+        usr/share/pixmaps/wsi/showfx.*.xpm	\
+        usr/share/pixmaps/wsi/skytracker.*.xpm	\
+        usr/share/pixmaps/wsi/start_menu.*.xpm	\
+        usr/share/pixmaps/wsi/user.*.xpm
+
+  echo "#### Preserving selected system files in $ARCHIVEpath..."
+
+  for f in                                    \
+    etc/cron.daily/qa                         \
+    etc/exports                               \
+    etc/fstab                                 \
+    etc/gvimrc                                \
+    etc/hosts                                 \
+    etc/httpd                                 \
+    etc/inittab                               \
+    etc/keyboard                              \
+    etc/localtime                             \
+    etc/mgetty+sendfax/login.config           \
+    etc/ntp*                                  \
+    etc/ppp/chap-secrets                      \
+    etc/ppp/options                           \
+    etc/resolv.conf                           \
+    etc/rsyncd.conf                           \
+    etc/services                              \
+    etc/ssh                                   \
+    etc/sysconfig/clock                       \
+    etc/sysconfig/i18n                        \
+    etc/sysconfig/network                     \
+    etc/sysconfig/network-scripts/ifcfg-eth0* \
+    etc/sysconfig/network-scripts/ifcfg-eth1* \
+    root/.ssh                                 \
+    tmp/mntDirsB4upgrade.cpio                 \
+    usr/lib/DPS/outline/base                  \
+    usr/share/fonts/local                     \
+    usr/share/pixmaps/wsi                     \
+    var/log/install.log                       \
+    var/log/messages                          \
+    var/log/WSI                               \
+    var/spool/cron/root                       \
+    var/spool/cron/wxws*
+  do
+    find "${f}" -xdev \! -type d -print   >> $ARCHIVEpath/$TARLIST 2>/dev/null
+  done
+  sort -bfd < $ARCHIVEpath/$TARLIST | uniq > $ARCHIVEpath/sortedTARLIST
+  mv          $ARCHIVEpath/sortedTARLIST     $ARCHIVEpath/$TARLIST
+
+  tar cvzf    $ARCHIVEpath/$TARCHIVE      -T $ARCHIVEpath/$TARLIST
+
+  # Check to see if /var/lib/wsi-rpms is a symlink to a
+  # directory on the /wxdisk and, if not, make it so...
+  #
+  # Yes, we create a symlink on a filesystem that's about to be
+  # rebuilt, but that makes the logic following it a bit simpler.
+  #
+  # No, we don't address the bloat problem related to the
+  # "historical" directories.
+  #
+  if ! [ -e var/lib/wsi-rpms ] ; then
+    mkdir -p      var/lib
+    chown 0.0 var var/lib
+    chmod 755 var var/lib
+    ln -s /wxdisk/install/wsi-rpms var/lib/wsi-rpms
+  fi
+
+  chmod a+rx $ARCHIVEdir/.
+  if ! [ -L var/lib/wsi-rpms ] ; then
+    if ! [ -d $ARCHIVEdir/install/wsi-rpms ] ; then
+      mkdir -p                           $ARCHIVEdir/install/wsi-rpms
+      chown 1112.100 $ARCHIVEdir/install $ARCHIVEdir/install/wsi-rpms
+      chmod ug+rwx   $ARCHIVEdir/install $ARCHIVEdir/install/wsi-rpms
+    fi
+    pushd var/lib/wsi-rpms
+    for f in `find . -type f`
+    do
+      if file "${f}" | grep -q 'RPM v3' ; then
+        treeCopy "${f}" $ARCHIVEdir/install/wsi-rpms
+      elif ! [ -e       $ARCHIVEdir/install/wsi-rpms/"${f}" ] ; then
+        treeCopy "${f}" $ARCHIVEdir/install/wsi-rpms
+      fi
+    done
+    popd
+
+#   rm -rf                         var/lib/wsi-rpms
+#   ln -s /wxdisk/install/wsi-rpms var/lib/wsi-rpms
+  fi
+
+  treeCopy var/lib/rpm $ARCHIVEpath
+
+  cd /root
+  sleep 1
+  umount $ARCHIVEdev
+  umount $ROOT0dev
+}
+
+###############################################################################
+# Execute the TOUCHUP script corresponding to the specified target - which
+# could be a directory, a file, a symlink, whatever...
+# ASSUME: target might be relative to where we're standing so stay put.
+#
+function touchup()  {
+  if ! [ -x /root/autoinstall/TOUCHUP/$1/touchup.sh ] ; then
+    echo FAIL: Cannot find TOUCHUP file for $1
+    return 1
+  fi
+  /root/autoinstall/TOUCHUP/$1/touchup.sh "$1"
+}
+
+###############################################################################
+# After preloadROOT[0-1] we touchup the filesystem in question.
+# ASSUME:
+#      -  The current directory is the root of that filesystem.
+#      -  It's OK to leave that filesystem mounted when finished.
+#
+function touchupROOTcommon()  {
+
+  rm -f restore*
+  /usr/sbin/dmidecode > etc/dmidecode.output
+  chmod 444             etc/dmidecode.output
+
+  cat /dev/null       > etc/mtab
+  chmod 644             etc/mtab
+
+  cat /root/autoinstall/IMAGEVERSION > root/imageVersion.txt
+  chmod a+rx root ; chmod a+rx         root/imageVersion.txt
+
+  touchup etc/sysconfig/network
+  touchup etc/sysconfig/network-scripts/ifcfg-eth0
+  touchup etc/sysconfig/network-scripts/'ifcfg-eth0:1'
+}
+
+###############################################################################
+# ASSUME: filesystem already created on ROOT0 & we're standing in its root.
+#
+function touchupROOT0()  {
+  echo "$ROOT0dev touchup..."
+
+  echo "Initializing swap..."
+  mkswap -L SWAP0 ${DRIVE0}3
+
+  touchupROOTcommon
+
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on ROOT1 & we're standing in its root.
+#
+function touchupROOT1()  {
+  echo "$ROOT1dev touchup..."
+
+  echo "Initializing swap..."
+  mkswap -L SWAP1 ${DRIVE1}3
+
+  touchupROOTcommon
+
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on BOOT0 & we're standing in its root.
+#
+function touchupBOOT0()  {
+  echo "$BOOT0dev touchup..."
+  rm -f restore*
+
+  if previouslyDualBoot ; then
+    if [ -e grub/grub.conf.dual-boot ] ; then
+      echo Bringing Dual-Boot config forward...
+      cat grub/grub.conf.dual-boot > grub/grub.conf
+    fi
+  fi
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on BOOT1 & we're standing in its root.
+#
+function touchupBOOT1()  {
+  echo "$BOOT1dev touchup..."
+  rm -f restore*
+
+  if previouslyDualBoot ; then
+    if [ -e grub/grub.conf.dual-boot ] ; then
+      echo Configuring for Dual-Boot
+      cat grub/grub.conf.dual-boot > grub/grub.conf
+    fi
+  fi
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on BOOT0.
+# Use rsync to clone that filesystem, then perform
+# any touchups specific to this filesystem.
+#
+function cloneBOOT0toBOOT1()  {
+  cd /
+
+  if ! AmountBOOT0 ; then
+    echo "ERROR: Can't mount /boot filesystem from $BOOT0dev"
+    read n
+    exit 1
+  fi
+
+  if ! AmountBOOT1 ; then
+    echo "ERROR: Can't mount /boot filesystem from $BOOT1dev"
+    read n
+    exit 1
+  fi
+
+  echo "Cloning $BOOT1dev from $BOOT0dev..."
+
+  cd $BOOT1dir
+  if ! rsync -ax $BOOT0dir/. . ; then
+    echo "ERROR; trouble cloning $BOOT1dev from $BOOT0dev..."
+    read n
+    exit 1
+  fi
+
+  touchupBOOT1
+  cd /
+  umount $BOOT0dev
+  umount $BOOT1dev
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on BOOT1.
+# Use rsync to clone that filesystem, then perform
+# any touchups specific to this filesystem.
+#
+function cloneBOOT1toBOOT0()  {
+  cd /
+
+  if ! AmountBOOT1 ; then
+    echo "ERROR: Can't mount /boot filesystem from $BOOT1dev"
+    read n
+    exit 1
+  fi
+
+  if ! AmountBOOT0 ; then
+    echo "ERROR: Can't mount /boot filesystem from $BOOT0dev"
+    read n
+    exit 1
+  fi
+
+  echo "Cloning $BOOT0dev from $BOOT1dev..."
+
+  cd $BOOT0dir
+  if ! rsync -ax $BOOT1dir/. . ; then
+    echo "ERROR; trouble cloning $BOOT0dev from $BOOT1dev..."
+    read n
+    exit 1
+  fi
+
+  touchupBOOT0
+  cd /
+  umount $BOOT1dev
+  umount $BOOT0dev
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on ROOT1,
+# Use rsync to clone that filesystem, then perform
+# any touchups specific to this filesystem.
+#
+function cloneROOT1toROOT0()  {
+  cd /
+
+  if ! AmountROOT1 ; then
+    echo "ERROR: Can't mount root filesystem from $ROOT1dev"
+    read n
+    exit 1
+  fi
+
+  if ! AmountROOT0 ; then
+    echo "ERROR: Can't mount root filesystem from $ROOT0dev"
+    read n
+    exit 1
+  fi
+
+  echo "Cloning $ROOT0dev from $ROOT1dev..."
+
+  cd $ROOT0dir
+  if ! rsync -ax $ROOT1dir/. . ; then
+    echo "ERROR; trouble cloning $ROOT0dev from $ROOT1dev..."
+    read n
+    exit 1
+  fi
+
+  touchupROOT0
+  cd /
+  umount $ROOT1dev
+  umount $ROOT0dev
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on BOOT0,
+# extract the files from the dump image and then perform
+# any touchups specific to this filesystem.
+#
+function preloadBOOT0()  {
+  cd /
+
+  echo "Reloading filesystem in $BOOT0dev..."
+  # BOOT0
+  if ! AmountBOOT0 ; then
+    echo "ERROR: Can't mount /boot filesystem from $BOOT0dev"
+    read n
+    exit 1
+  fi
+
+  cd $BOOT0dir
+  if ! bzcat /mnt/cdrom/images/bootDumpImage.bz2 | restore -rf - ; then
+    echo "ERROR: Can't restore /boot filesystem $BOOT0dev"
+    read n
+    exit 1
+  fi
+
+  touchupBOOT0
+  cd /
+  umount $BOOT0dev
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on ROOT0,
+# Use rsync to clone that filesystem, then perform
+# any touchups specific to this filesystem.
+#
+function cloneROOT0toROOT1()  {
+  cd /
+
+  if ! AmountROOT0 ; then
+    echo "ERROR: Can't mount root filesystem from $ROOT0dev"
+    read n
+    exit 1
+  fi
+
+  if ! AmountROOT1 ; then
+    echo "ERROR: Can't mount root filesystem from $ROOT1dev"
+    read n
+    exit 1
+  fi
+
+  echo "Cloning $ROOT1dev from $ROOT0dev..."
+
+  cd $ROOT1dir
+  if ! rsync -ax $ROOT0dir/. . ; then
+    echo "ERROR; trouble cloning $ROOT1dev from $ROOT0dev..."
+    read n
+    exit 1
+  fi
+
+  touchupROOT1
+  cd /
+  umount $ROOT0dev
+  umount $ROOT1dev
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on BOOT1,
+# extract the files from the dump image and then perform
+# any touchups specific to this filesystem.
+#
+function preloadBOOT1()  {
+  cd /
+
+  echo "Reloading filesystem in $BOOT1dev..."
+  # BOOT1
+  if ! AmountBOOT1 ; then
+    echo "ERROR: Can't mount /boot filesystem from $BOOT1dev"
+    read n
+    exit 1
+  fi
+
+  cd $BOOT1dir
+  if ! bzcat /mnt/cdrom/images/bootDumpImage.bz2 | restore -rf - ; then
+    echo "ERROR: Can't restore /boot filesystem $BOOT1dev"
+    read n
+    exit 1
+  fi
+
+  touchupBOOT1
+  cd /
+  umount $BOOT1dev
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on ROOT0,
+# extract the files from the dump image and then perform
+# any touchups specific to this filesystem.
+#
+function preloadROOT0()  {
+  cd /
+
+  echo "Reloading filesystem in $ROOT0dev..."
+  # ROOT0
+  if ! AmountROOT0 ; then
+    echo "ERROR: Can't mount root filesystem from $ROOT0dev"
+    read n
+    exit 1
+  fi
+
+  cd $ROOT0dir
+  if ! bzcat /mnt/cdrom/images/rootDumpImage.bz2 | restore -rf - ; then
+    echo "ERROR: Can't reload root filesystem $ROOT0dev"
+    read n
+    exit 1
+  fi
+
+  touchupROOT0
+
+  cd /
+  umount $ROOT0dev
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on ROOT1,
+# extract the files from the dump image and then perform
+# any touchups specific to this filesystem.
+#
+function preloadROOT1()  {
+  cd /
+
+  echo "Reloading filesystem in $ROOT1dev..."
+  # ROOT1
+  if ! AmountROOT1 ; then
+    echo "ERROR: Can't mount root filesystem from $ROOT1dev"
+    read n
+    exit 1
+  fi
+
+  cd $ROOT1dir
+  if ! bzcat /mnt/cdrom/images/rootDumpImage.bz2 | restore -rf - ; then
+    echo "ERROR: Can't reload root filesystem $ROOT1dev"
+    read n
+    exit 1
+  fi
+
+  touchupROOT1
+
+  cd /
+  umount $ROOT1dev
+  return 0
+}
+
+###############################################################################
+# ASSUME: filesystem already created on ROOT1,
+# extract the files from the dump image and then perform
+# any touchups specific to this filesystem.
+#
+function preloadMD0()  {
+  cd /
+
+  echo "Reloading filesystem in $MD0dev..."
+  # MD0
+  if ! AmountMD0 ; then
+    echo "ERROR: Can't mount /wxdisk filesystem from $MD0dev"
+    read n
+    exit 1
+  fi
+
+  cd $MD0dir
+  if ! bzcat /mnt/cdrom/images/wxdiskDumpImage.bz2 | restore -rf - ; then
+    echo "ERROR: Can't reload /wxdisk filesystem $MD0dev"
+    read n
+    exit 1
+  fi
+
+  # Touchup...
+  #
+  rm -f restore*
+
+  cd /
+  umount $MD0dev
+  return 0
+}
+
+###############################################################################
+# Intended to deal with Bug5655 by ensuring that the mysql
+# account info is in the password/group files even if they've
+# been dragged forward from systems that didn't have it.
+#
+# ASSUME: Currently in same directory as the files in question,
+#         typically (some version of) /etc
+#
+function fixupMYSQLpwdGrpFiles()  {
+
+  if [ -f passwd ] ; then
+    if ! fgrep -e 'mysql:x:27:27:'                                  passwd
+    then
+      echo 'mysql:x:27:27:MySQL Server:/var/lib/mysql:/bin/bash' >> passwd
+    fi
+  fi
+
+  if [ -f shadow ] ; then
+    if ! fgrep -e 'mysql:!!:'          shadow ; then
+      echo        'mysql:!!:::::::' >> shadow
+    fi
+  fi
+
+  if [ -f group ] ; then
+    if ! fgrep -e 'mysql:x:27:'    group ; then
+      echo        'mysql:x:27:' >> group
+    fi
+  fi
+
+  if [ -f gshadow ] ; then
+    if ! fgrep -e 'mysql:!::'    gshadow ; then
+      echo        'mysql:!::' >> gshadow
+    fi
+  fi
+}
+
+###############################################################################
+# Retrieve site-specific files during an upgrade.
+# ASSUME: filesystem already created on ROOT0
+# XXX_MIKE localizeROOT0 should watch out for fstab & such if cloned to be localizeROOT1
+#
+function localizeROOT0()  {
+  cd /
+
+  echo "Retrieving local instances of various files..."
+
+  if ! AmountROOT0 ; then
+    echo "ERROR: Can't mount root filesystem from $ROOT0dev"
+    read n
+    exit 1
+  fi
+
+  if ! AmountARCHIVE ; then
+    echo "ERROR: Could not mount $ARCHIVEdev on $ARCHIVEdir ? "
+    read n
+    exit 1
+  fi
+
+  if ! verifyARCHIVEpath ; then
+    echo "ERROR: Can't reach/create $ARCHIVEpath ? "
+    read n
+    exit 1
+  fi
+
+  cd $ROOT0dir
+
+# if [ -L dev/mouse ] ; then
+#   (cd dev ; rm -f mouse ; ln -s input/mice mouse)
+# fi
+
+  # In case we lose anything important when we overwrite
+  # the distributed versions of files in /etc with the local
+  # versions we preserve copies of the distributed versions...
+  #
+  grep -e '^etc/' < $ARCHIVEpath/$TARLIST       > tmp/overwrittenEtcFiles
+  tar czf $ARCHIVEpath/overwrittenEtcFiles.tgz -T tmp/overwrittenEtcFiles
+
+  # Now retrieve local files from the TARCHIVE with the understanding
+  # that the distributed versions of these files will be overwritten
+  # with the local versions...
+  #
+  tar xvzf $ARCHIVEpath/$TARCHIVE
+  cpio --extract --verbose < tmp/mntDirsB4upgrade.cpio
+
+  # Remount $ARCHIVEdev nested in $ROOT0dir and point /wxdisk at it
+  #
+  umount $ARCHIVEdev
+  if ! NmountARCHIVE0 ; then
+    read n
+    exit 1
+  fi
+  rm -rf            wxdisk
+  ln -s tmp/ARCHIVE wxdisk      # So we don't have to care what $ARCHIVEdev is.
+  local tmpARCHIVEdir=wxdisk/ARCHIVE/$sessionTimeStamp  # Alias for ARCHIVEpath
+
+  # Since this is an upgrade we now rewrite selected portions
+  # of the existing fstab to ensure it works with either the
+  # internal RAID (/dev/md0) or an external SCSI RAID.
+  #
+  # ASSUME: the updateRAIDconfigFiles script does NOT modify the /wxdisk symlink
+  #
+  hostRelativeMTAB0 > etc/mtab                            # Needed by rpm (!?!)
+  mount -t proc proc proc                                 # Needed by rpm (!?!)
+
+  cp /root/autoinstall/updateRAIDconfigFiles root/updateRAIDconfigFiles
+  chmod 544                                  root/updateRAIDconfigFiles
+  chroot .                                  /root/updateRAIDconfigFiles
+
+  rewriteFSTABswapLines < etc/fstab > /tmp/swapRewrite
+  cat /tmp/swapRewrite  > etc/fstab
+
+  # Recover info about previously installed packages from the archived RPM
+  # database and then fold that info into the newly installed RPM database.
+  #
+  cd $ROOT0dir
+  cat /dev/null                     > /tmp/rpmFileList
+  find wxdisk/install -type d | while read d
+  do                                   # ...append any additional RPM filenames
+    cd $ROOT0dir/"${d}"
+    for f in *.rpm ; do
+      if file "${f}" | grep -q 'RPM v3' ; then
+        echo "${d}"/"${f}"         >> /tmp/rpmFileList
+      fi
+    done
+  done
+
+  cd $ROOT0dir
+  sort -bfd < /tmp/rpmFileList      > /tmp/rpmFileList.sorted
+  mv          /tmp/rpmFileList.sorted /tmp/rpmFileList
+
+  cat /dev/null                     > /tmp/RPMbasenameFullname.map
+  while read f
+  do
+    echo `basename "${f}"` "${f}"  >> /tmp/RPMbasenameFullname.map
+  done                              < /tmp/rpmFileList
+  rm                                  /tmp/rpmFileList
+
+  # Generate a list of previously-installed WSI packages (in the Weather
+  # group)
+  #
+  cat /dev/null                                  >  /tmp/previousWeatherPkgList
+  chroot $ROOT0dir rpm -q --dbpath $tmpARCHIVEdir/var/lib/rpm -g Weather \
+                                          | sort >> /tmp/previousWeatherPkgList
+
+  # Try to find an RPM file for each previously installed package and
+  # use info from that file to reconstruct an entry in the new RPM database...
+  #
+  while read pkg rpmFile
+  do
+    pkg=$(echo "${pkg}" | sed -e 's/\.noarch\.rpm$//' -e 's/\.i686\.rpm$//')
+    if fgrep -q -x "${pkg}" /tmp/previousWeatherPkgList
+    then           # ...this pkg was previously installed, so refresh the DB...
+      echo Restoring RPM database entry for "${pkg}" from "${rpmFile}"
+      chroot $ROOT0dir rpm -U --justdb "${rpmFile}"
+    fi
+  done < /tmp/RPMbasenameFullname.map
+
+  tar cvzf $tmpARCHIVEdir/rpmDBrefreshWorkFiles.tgz \
+                       /tmp/previousWeatherPkgList /tmp/RPMbasenameFullname.map
+
+  chroot $ROOT0dir rpm -q -g Weather | sort > /tmp/currentWeatherPkgList
+
+  touchup var/spool/cron/root
+
+  umount proc
+  cat /dev/null > etc/mtab
+  chmod 644       etc/mtab
+
+  chown 0.6 sbin/e2label                                            # root.disk
+  chmod 555 sbin/e2label
+  chmod g+s sbin/e2label
+
+  ( pushd etc && fixupMYSQLpwdGrpFiles )                    # deal with Bug5655
+
+  if ! diff /tmp/previousWeatherPkgList /tmp/currentWeatherPkgList ; then cat <<EOF
+#########################################################################
+NOTICE: unexpected differences found in the set of packages mentioned
+        in the RPM database before and after this update, as shown above,
+        where '<' indicates 'before' and '>' indicates 'after'
+#########################################################################
+EOF
+  fi
+
+  rm -f wxdisk  # ASSUME: OK because we called detectExternalRAIDinUse earlier.
+  if detectExternalRAIDinUse ; then
+    ln -s mnt/WXDISK0 wxdisk
+  else
+    ln -s mnt/MD0     wxdisk
+  fi
+
+  cd /
+
+  umount $ARCHIVEdev
+  umount $ROOT0dev
+}
+
+###############################################################################
+# Setup GRUB on $DRIVE0
+#
+function makeBootable0()  {
+  echo "Installing bootloader on ${DRIVE0}"
+
+ # Install GRUB to the MBR
+ #
+ cd /
+ grub --no-curses <<EOF
+root  (hd0,0)
+setup (hd0)
+quit
+EOF
+
+  AmountROOT0 || exit 1
+  cat /dev/null > $ROOT0dir/etc/mtab
+  chmod 644       $ROOT0dir/etc/mtab
+  umount $ROOT0dev
+}
+
+###############################################################################
+# Setup GRUB on $DRIVE1
+#
+function makeBootable1()  {
+  echo "Installing bootloader on ${DRIVE1}"
+
+ # Install GRUB to the MBR
+ #
+ cd /
+ grub --no-curses <<EOF
+root  (hd1,0)
+setup (hd1)
+quit
+EOF
+
+  AmountROOT1 || exit 1
+  cat /dev/null > $ROOT1dir/etc/mtab
+  chmod 644       $ROOT1dir/etc/mtab
+  umount $ROOT1dev
+}
+
+###############################################################################
+#
+function verifyARCHIVEpath()  {
+  if ! isMounted $ARCHIVEdev $ARCHIVEdir ; then
+    echo "ERROR - $ARCHIVEdev not mounted on $ARCHIVEdir ?"
+    return 1
+  fi
+
+  mkdir -p $ARCHIVEpath
+}                                                             # IMPLICIT RETURN
+
+###############################################################################
+# Blindly (re)create a new MBR on the specified device, destroying
+# all current partition info.
+#
+function writeMBR()  {
+  echo "(re)Creating Master Boot Record on $1..."
+  if ! parted --script $1 mklabel msdos
+  then
+    echo "ERROR: Could not (re)create Master Boot Record on $1"
+    echo "Please shut down, verify all cables are connected properly, and retry."
+    read n
+    return 1
+  fi
+  return 0
+}
+
+###############################################################################
+# The parted tool reports sizes in terms of Mb with the dot
+# representing fractional portions.  Partitions are only ever created
+# on cylinder boundaries.  parted apparently feels free to round
+# up to the next cylinder boundary when the requested partition
+# start point is closer to the end of a cylinder than the beginning.
+#
+# For reference, here is some example "parted" output to help
+# understand what's being parsed in the following functions:
+#
+# Disk geometry for /dev/sda: 0.000-238418.579 megabytes
+# Disk label type: msdos
+# Minor    Start       End     Type      Filesystem  Flags
+# 1          0.031    101.975  primary   ext3
+# 2        101.975   8291.359  primary   ext3
+# 3       8291.360   9318.955  primary   linux-swap
+# 4       9318.955 238417.778  extended              lba
+# 5       9318.986 238339.335  logical   ext3
+#
+#  And, yes - that mmmm.fff notation really does mean whole
+#  Mbytes and fractional (decimal) Mbytes...
+
+###############################################################################
+# Report size (in Mb) of specified device.
+# Usage  : MbCount=`driveMBfor  device`
+# Example: MbCount=`driveMBfor /dev/sda`
+# NOTE: result is rounded down to integral Mb value.
+#
+function driveMBfor()  {
+  local x
+
+  if ! x="$(parted --script $1 print | fgrep -i geom)"
+  then
+    echo "FAILED_"$FUNCNAME"_$1"
+    return 1
+  fi
+
+  echo "${x}" | sed -e 's/^.*-//' -e 's/\..*$//'              # IMPLICIT RETURN
+}
+
+###############################################################################
+# Report offset (in MMM.kkk form) of the start of the specified partition
+# on the specified device.
+# Usage:   MbCount=`exactPartitionStartMBfor  device  partition`
+# Example: MbCount=`exactPartitionStartMBfor /dev/sda 5`
+#
+function exactPartitionStartMBfor()  {
+  local x
+
+  # Capture parted output, if possible...
+  #
+  if ! x="$(parted --script $1 print)"
+  then
+    echo $FUNCNAME_"partedFailure$2"on$1
+    return 1
+  fi
+
+  # Extract line of interest, if possible...
+  #
+  if ! x="$(echo "${x}" | grep '^'$2' ')"
+  then
+    echo $FUNCNAME_"noPartition$2"on$1
+    return 1
+  fi
+
+  # Utter the token of interest.
+  #
+  echo $x | awk '{print $2}'
+  return 0
+}
+
+###############################################################################
+# Report offset (in rounded-down Mb) of the start of the specified partition
+# on the specified device.
+# Usage:   MbCount=`partitionStartMBfor  device  partition`
+# Example: MbCount=`partitionStartMBfor /dev/sda 5`
+# NOTE: result is the truncated, integral Mb value.
+#
+function partitionStartMBfor()  {
+  local x
+
+  if ! x="$(exactPartitionStartMBfor $1 $2)"
+  then
+    echo $FUNCNAME_"Failure$2"on$1
+    return 1
+  fi
+
+  echo $x | tr '.' ' ' | awk '{print $1}'
+  return 0
+}
+
+###############################################################################
+# Report offset (in MMM.kkk form) of the end of the specified partition
+# on the specified device.
+# Usage:   MbCount=`exactPartitionEndMBfor  device  partition`
+# Example: MbCount=`exactPartitionEndMBfor /dev/sda 5`
+#
+function exactPartitionEndMBfor()  {
+  local x
+
+  # Capture parted output, if possible...
+  #
+  if ! x="$(parted --script $1 print)"
+  then
+    echo $FUNCNAME_"partedFailure$2"on$1
+    return 1
+  fi
+
+  # Extract line of interest, if possible...
+  #
+  if ! x="$(echo "${x}" | grep '^'$2' ')"
+  then
+    echo $FUNCNAME_"noPartition$2"on$1
+    return 1
+  fi
+
+  # Utter the token of interest.
+  #
+  echo $x | awk '{print $3}'
+  return 0
+}
+
+###############################################################################
+# Report offset (in rounded-down Mb) of the End of the specified partition
+# on the specified device.
+# Usage:   MbCount=`partitionEndFor  device  partition`
+# Example: MbCount=`partitionEndFor /dev/sda 5`
+# NOTE: result is the truncated, integral Mb value.
+#
+function partitionEndMBfor()  {
+  local x
+
+  if ! x="$(exactPartitionEndMBfor $1 $2)"
+  then
+    echo $FUNCNAME_"Failure$2"on$1
+    return 1
+  fi
+
+  echo $x | tr '.' ' ' | awk '{print $1}'
+  return 0
+}
+
+###############################################################################
+# Report size (in Mb) of specified partition on specified device.
+# Usage:   MbCount=`exactPartitionMBfor  device  partition`
+# Example: MbCount=`exactPartitionMBfor /dev/sda 5`
+#
+function exactPartitionMBfor()  {
+  local start
+  local end
+  local Mstart                 # Mbyte portion of the fractional representation
+  local Mend
+  local Kstart                                                  # Kbyte portion
+  local Kend
+
+  if ! start="$(exactPartitionStartMBfor $1 $2)"
+  then
+    echo $FUNCNAME_"partedFailure$2"on$1
+    return 1
+  fi
+  Mstart=$(echo "$start" | sed -e 's/\..*$//g' | sed -e 's/^00*\(..*\)/\1/')
+  Kstart=$(echo "$start" | sed -e 's/^.*\.//g' | sed -e 's/^00*\(..*\)/\1/')
+
+  if ! end="$(exactPartitionEndMBfor $1 $2)"
+  then
+    echo $FUNCNAME_"partedFailure$2"on$1
+    return 1
+  fi
+
+  # Need to strip leading zeroes so values not interpreted as octal...
+  #
+  Mend=$(echo "$end" | sed -e 's/\..*$//g' | sed -e 's/^00*\(..*\)/\1/')
+  Kend=$(echo "$end" | sed -e 's/^.*\.//g' | sed -e 's/^00*\(..*\)/\1/')
+
+  if [ $Kstart -gt $Kend ] ; then
+    let Kend+=1000
+    let Mend--
+  fi
+
+  printf "%u.%03u\n" $[$Mend - $Mstart] $[$Kend - $Kstart]
+
+  return 0
+}
+
+###############################################################################
+# Report size (in truncated Mb) of specified partition on specified device.
+# Usage:   MbCount=`partitionMBfor  device  partition`
+# Example: MbCount=`partitionMBfor /dev/sda 5`
+#
+function partitionMBfor()  {
+  local x
+
+  if ! x="$(exactPartitionMBfor $1 $2)"
+  then
+    echo $FUNCNAME_"Failure$2"on$1
+    return 1
+  fi
+
+  echo $x | tr '.' ' ' | awk '{print $1}'
+  return 0
+}
+
+###############################################################################
+#
+function learnDRIVE0size()  {
+  local tempSize
+
+  echo "Learning size of $DRIVE0...  "
+  if ! hdsize0=$(driveMBfor $DRIVE0) ; then
+    echo "ERROR: Could not read geometry/size for $DRIVE0"
+    echo "Please shut down, verify all cables are connected properly, and retry."
+    echo "(hit Return to proceed)"
+    read n
+    return 1
+  fi
+  wxdiskend0=$[$hdsize0 - 80]
+  echo "Primary Drive: $hdsize0 MB"
+}
+
+###############################################################################
+#
+function learnDRIVE1size()  {
+  local tempSize
+
+  echo "Learning size of $DRIVE1...  "
+  if ! hdsize1=$(driveMBfor $DRIVE1) ; then
+    echo "ERROR: Could not read geometry/size for $DRIVE1"
+    echo "Please shut down, verify all cables are connected properly, and retry."
+    echo "(hit Return to proceed)"
+    read n
+    return 1
+  fi
+  wxdiskend1=$[$hdsize1 - 80]
+  echo "Secondary Drive: $hdsize1 MB"
+}
+
+###############################################################################
+# Calculate partition sizes/locations based on some hardcoded values
+# in combination with whatever sizes the disks are.
+#
+function learnDRIVEsizes()  {
+  local tempSize
+
+  learnDRIVE0size || return 1
+  learnDRIVE1size || return 1
+
+  if [ $wxdiskend1 -lt $wxdiskend0 ] ; then
+    wxdiskendMIN=$wxdiskend1
+  else
+    wxdiskendMIN=$wxdiskend0
+  fi
+}
+
+###############################################################################
+# Write our standard set of partitions to the specified device.  If the
+# wxdiskMBneeded value (if present) is anything but 0 we check to see if
+# the resultant /wxdisk partition satisfies the requirement, otherwise
+# we just blindly create the WxDisk partition.
+#
+# Usage:   partitionDisk  device  [wxdiskMBneeded]
+# Example: partitionDisk /dev/sda 229099
+#
+function partitionDisk()  {
+  local wxdiskstart
+  local wxdisksize
+  local wxdiskMBneeded
+
+  if [ "$wxdiskendMIN" = "wxdiskendMIN_NotYetDefined" ] ; then
+    echo $FUNCNAME: ERROR - wxdiskendMIN_NotYetDefined
+    return 1
+  fi
+
+  if [ $# -lt 2 ] ; then
+    wxdiskMBneeded=0
+  else
+    wxdiskMBneeded=$2
+  fi
+
+  writeMBR $1                              # Clears all current partition info.
+
+  echo "Creating partitions on $1..."
+  if ! ( parted -s $1 mkpart primary  ext3       $bootstart        $rootstart        \
+     &&  parted -s $1 mkpart primary  ext3       $rootstart        $swapstart        \
+     &&  parted -s $1 mkpart primary  linux-swap $swapstart        $logicaldiskstart \
+     &&  parted -s $1 mkpart extended            $logicaldiskstart $hdsize0          )
+  then
+    echo "ERROR: Could not partition $1"
+    echo "Please power off, insure all cables are connected properly, and try again."
+    read n
+    exit 1
+  fi
+
+  parted -s $1 set 1 boot on    # Possibly unnecessary but we do this anyway...
+
+  # Only now that we've written the predetermined partitions to
+  # the disk can we compute the parameters for the WXDISK portion.
+
+  wxdiskstart=$(partitionStartMBfor $1 4)
+
+  if ! parted -s $1 mkpart logical ext3 $wxdiskstart $wxdiskendMIN
+  then
+    echo "ERROR: Could not create /wxdisk partition on $1"
+    echo "Please power off, insure all cables are connected properly, and try again."
+    read n
+    exit 1
+  fi
+
+  wxdisksize=`partitionMBfor $1 5`
+  if [ "$wxdiskMBneeded" != "0" ] ; then
+    if [ $wxdisksize -lt "$wxdiskMBneeded" ] ; then
+      echo "ERROR: Not enough room for /wxdisk RAID partition on $1"
+      read n
+      exit 1
+    fi
+  fi
+  echo "WxDisk RAID partition on $1 is $wxdisksize Mb"
+}
+
+###############################################################################
+# Use info from existingDisk to guide layout of partitions on newDisk
+#
+# Usage:   cribPartitionLayoutFrom existingDisk newDisk
+# Example: cribPartitionLayoutFrom $DRIVE0      $DRIVE1
+#
+function cribPartitionLayoutFrom()  {
+  local CSRfudgeRootSize=0
+  local CSRfudgeXtendedSize=0
+  local CSRfudgeRAIDsize=0
+
+  parted --script $1 print                   # For informational purposes only.
+  writeMBR $2  # Clears partition info from MBR (extended/logical might remain)
+
+  parted --script $2 mkpart primary ext3                      \
+    0                                                         \
+    $[  `partitionStartMBfor $1 1` + `partitionMBfor $1 1`  ] \
+  &&                                                          \
+  parted --script $2 mkpart primary ext3                      \
+    $[  `partitionStartMBfor $2 1` + `partitionMBfor $2 1`  ] \
+    $[ (`partitionStartMBfor $1 2` + `partitionMBfor $1 2`)   \
+                                   + $CSRfudgeRootSize      ] \
+  &&                                                          \
+  parted --script $2 mkpart primary linux-swap                \
+    $[  `partitionStartMBfor $2 2` + `partitionMBfor $2 2`  ] \
+    $[  `partitionStartMBfor $1 3` + `partitionMBfor $1 3`  ] \
+  &&                                                          \
+  parted --script $2 mkpart extended                          \
+    $[  `partitionStartMBfor $2 3` + `partitionMBfor $2 3`  ] \
+    $[ (`partitionStartMBfor $1 4` + `partitionMBfor $1 4`)   \
+                                   + $CSRfudgeXtendedSize   ] \
+  &&                                                          \
+  parted --script $2 mkpart logical ext3                      \
+    $[  `partitionStartMBfor $2 4` +                    1   ] \
+    $[ (`partitionStartMBfor $1 5` + `partitionMBfor $1 5`)   \
+                                   + $CSRfudgeRAIDsize      ]
+
+  parted --script $2 print                   # For informational purposes only.
+}
+
+###############################################################################
+# ASSUME: DRIVE0 has already been determined.
+#
+function createRAIDprimaryDegraded()  {
+  mdadm --stop $MD0dev
+
+  echo "Creating $MD0dev as a 'degraded' RAID1..."
+  mdadm --stop $MD0dev
+  if ! mdadm --create --level=1 --assume-clean --force --run --raid-devices=2 $MD0dev /dev/sda5 missing
+  then
+    echo "ERROR: Could not create RAID device. Reboot and try again"
+    read n
+    exit 1
+  fi
+
+  return 0
+}
+
+###############################################################################
+# ASSUME: DRIVE0 has already been determined.
+#
+function createRAIDnormal()  {
+  mdadm --stop $MD0dev
+
+  echo "Creating $MD0dev as a RAID1..."
+  mdadm --stop $MD0dev
+  if ! mdadm --create --level=1 --assume-clean --force --run --raid-devices=2 $MD0dev /dev/sda5 /dev/sdb5
+  then
+    echo "ERROR: Could not create RAID device. Reboot and try again"
+    read n
+    exit 1
+  fi
+
+  return 0
+}
+
+###############################################################################
+# ASSUME: DRIVE0 has already been determined.
+#
+function startRAIDnormal()  {
+  mdadm --stop $MD0dev
+
+  if ! mdadm --assemble --run --force $MD0dev /dev/sda5 /dev/sdb5 ; then
+    echo "ERROR: Could not start RAID device for /wxdisk ($MD0dev)"
+    return 1
+  fi
+}
+
+###############################################################################
+# ASSUME: DRIVE0 has already been determined.
+#
+function startRAIDprimaryAddVirginSecondary()  {
+  mdadm --stop                   $MD0dev                # Might not be running.
+
+  mdadm --zero-superblock --force                  /dev/sdb5 # Ensure virginity
+
+  mdadm --assemble --run --force $MD0dev /dev/sda5    # Ensure Primary is king.
+
+  mdadm --add                    $MD0dev           /dev/sdb5   # Re-add 2ndary.
+
+  cat /proc/mdstat
+  if fgrep -qi recov /proc/mdstat ; then
+    echo RAID re-sync underway. "(resync will restart when system rebooted...)"
+  fi
+
+  return 0
+}
+
+###############################################################################
+# ASSUME: DRIVE0 has already been determined.
+#
+function startRAIDsecondaryAddVirginPrimary()  {
+  mdadm --stop                   $MD0dev                # Might not be running.
+
+  mdadm --zero-superblock --force                  /dev/sda5 # Ensure virginity
+
+  mdadm --assemble --run --force $MD0dev /dev/sdb5  # Ensure secondary is king.
+
+  mdadm --add                    $MD0dev           /dev/sda5  # Re-add Primary.
+
+  cat /proc/mdstat
+  if fgrep -qi recov /proc/mdstat ; then
+    echo RAID re-sync underway. "(resync will restart when system rebooted...)"
+  fi
+
+  return 0
+}
+
+###############################################################################
+# Update the updateRAIDconfigFiles script in the /root directory
+# of the specified drive.
+#
+# NEEDS WORK - this is pretty much lifted verbatim from rebuild-all.sh
+#
+function update_updateRAIDconfigFiles()  {
+  mkdir -p                    /var/host-root
+  mount -t ext3 $1            /var/host-root
+  sed -e '/^JUST_DO_IT=yes/d' < /root/autoinstall/updateRAIDconfigFiles \
+                            > /var/host-root/root/updateRAIDconfigFiles
+  chmod 755                   /var/host-root/root/updateRAIDconfigFiles
+  pushd /var/host-root/root ; ln -s updateRAIDconfigFiles devlabelConversion ; popd
+  umount                      /var/host-root
+}
+
+###############################################################################
+# Execute the specified command chroot'd to ROOT0dir with BOOT0/MD0 mounted
+# appropriately
+# Example:
+#   chrootROOT0 /usr/src/installNVIDIA               \
+#       /usr/src/NVIDIA-Linux-x86-165.33.08-pkg1.run \
+#       2.4.21-52.ELsmp.4GbUserVM                    \
+#       2.4.21-52.ELsmp
+#
+function chrootROOT0()  {
+
+  cd /
+  umount $ARCHIVEdev > /dev/null 2>&1
+  umount $MD0dev     > /dev/null 2>&1
+  umount $BOOT0dev   > /dev/null 2>&1
+  umount $ROOT0dev   > /dev/null 2>&1
+  umount $BOOT1dev   > /dev/null 2>&1
+  umount $ROOT1dev   > /dev/null 2>&1
+
+  AmountROOT0 && NmountBOOT0 && NmountMD0onROOT0 || return 1
+
+  cd $ROOT0dir
+  hostRelativeMTAB0 > etc/mtab
+  mount -t proc proc proc
+
+  chroot . $@
+
+  umount proc
+  cat /dev/null > etc/mtab
+  chmod 644       etc/mtab
+
+  cd /
+  umount $MD0dev   > /dev/null 2>&1
+  umount $BOOT0dev > /dev/null 2>&1
+  umount $ROOT0dev > /dev/null 2>&1
+}
+
+###############################################################################
+# Execute the specified command chroot'd to ROOT1dir with BOOT1/MD0 mounted
+# appropriately
+# Example:
+#   chrootROOT1 /usr/src/installNVIDIA               \
+#       /usr/src/NVIDIA-Linux-x86-165.33.08-pkg1.run \
+#       2.4.21-52.ELsmp.4GbUserVM                    \
+#       2.4.21-52.ELsmp
+#
+function chrootROOT1()  {
+
+  cd /
+  umount $ARCHIVEdev > /dev/null 2>&1
+  umount $MD0dev     > /dev/null 2>&1
+  umount $BOOT0dev   > /dev/null 2>&1
+  umount $ROOT0dev   > /dev/null 2>&1
+  umount $BOOT1dev   > /dev/null 2>&1
+  umount $ROOT1dev   > /dev/null 2>&1
+
+  AmountROOT1 && NmountBOOT1 && NmountMD0onROOT1 || return 1
+
+  cd $ROOT1dir
+  hostRelativeMTAB1 > etc/mtab
+  mount -t proc proc proc
+
+  chroot . $@
+
+  umount proc
+  cat /dev/null > etc/mtab
+  chmod 644       etc/mtab
+
+  cd /
+  umount $MD0dev   > /dev/null 2>&1
+  umount $BOOT1dev > /dev/null 2>&1
+  umount $ROOT1dev > /dev/null 2>&1
+}
+
+###############################################################################
+# We sometimes have HW issues with various combinations of NVIDIA
+# adapters and NVIDIA drivers, so we deal with them here.
+#
+# In some cases, whichever NVIDIA driver we're currently
+# installing as the default driver in the base systemImage
+# cannot cope with various older adapters, so we're obliged to
+# install a different (usually older) driver which, in turn,
+# requires that we be chroot'd onto the "native" filesystem of
+# the machine after most other installation is complete so that
+# the NVIDIA installer can operate in familiar surroundings...
+#
+# ASSUME:
+# If an NVIDIA graphics adapter is present we will be able to isolate
+# a (single!) line from the output of lspci by looking for the
+# Class/Vendor IDs (0300/10de) and obtain a line laid out thus:
+#
+#     05:00.0 Class 0300: 10de:00fe (rev a1)
+#
+# ...from which we can then extract the PCI Product ID portion,
+# which we use to make our downgrade decision.
+#
+# Product IDs of adapters (some of which will probably never be found
+# in WSI machines) currently requiring downgrade:
+#
+#   00cd: NV41    Quadro  FX  3450/4000 SDI
+#   00ce: NV41GL  Quadro  FX  1400
+#   00f8: NV45GL  Quadro  FX  3400/4400
+#   00fe: NV38GL  Quadro  FX  1300
+#   0258: NV25GL  Quadro4      900 XGL
+#   0259: NV25GL  Quadro4      750 XGL
+#   025b: NV25GL  Quadro4      700 XGL
+#   0288: NV28GL  Quadro4      980 XGL
+#   028c: NV28GLM Quadro4    Go700
+#   031c: -       Quadro  FX Go700
+#   032a: NV34GL  Quadro  NVS  280 PCI
+#   033f: NV35GL  Quadro  FX   700
+#   061a: G92     Quadro  FX  3700
+#
+function HWspecificNVIDIAhax0()  {
+  local pciLine
+  local pciProduct
+
+  if ! pciLine="$(lspci -n | grep -E "^.*[[:space:]]+0300:[[:space:]]+10de:" )"
+  then
+    pciLine='(No NVIDIA adapters found. ??)'
+  fi
+
+  pciProduct="$(echo $pciLine | fmt -1 | fgrep -i 10de | tr ':' ' ' | awk '{print $2}')"
+
+  case "${pciProduct}" in
+  00ce|00fe|0258|0259|025b|0288|028c|031c|032a|033f)
+#   cp /root/autoinstall/installNVIDIA.sh /usr/src/installNVIDIA.sh $ROOT0dir/usr/src
+    echo "Installing NVIDIA-Linux-x86-1.0-9631"
+    chrootROOT0 /usr/src/installNVIDIA.sh /usr/src/NVIDIA-Linux-x86-1.0-9631-pkg1.run $(chrootROOT0 ls /lib/modules)
+    ;;
+  061a|00cd|00f8)
+    echo "Installing NVIDIA-Linux-x86-169.12-pkg1.run"
+    chrootROOT0 /usr/src/installNVIDIA.sh /usr/src/NVIDIA-Linux-x86-169.12-pkg1.run   $(chrootROOT0 ls /lib/modules)
+    ;;
+  *)
+    echo No NVIDIA driver modifications necessary for "${pciLine}"
+    ;;
+  esac
+}
+
+###############################################################################
+# We sometimes have HW issues with various combinations of NVIDIA
+# adapters and NVIDIA drivers, so we deal with them here.
+#
+# In this case, the NVIDIA-Linux-x86-165.33.08-pkg1.run script
+# currently (as of 20071220) installs a version of the NVIDIA driver
+# that can't deal with various older adapters, so we execute the older
+# NVIDIA-Linux-x86-1.0-9631-pkg1.run while chroot'd onto the "native"
+# filesystem of the machine after most other installation is complete...
+#
+function HWspecificNVIDIAhax1()  {
+  local pciLine
+  local pciProduct
+
+  if ! pciLine="$(lspci -n | grep -E "^.*[[:space:]]+0300:[[:space:]]+10de:" )"
+  then
+    pciLine='(No NVIDIA adapters found. ??)'
+  fi
+
+  pciProduct="$(echo $pciLine | fmt -1 | fgrep -i 10de | tr ':' ' ' | awk '{print $2}')"
+
+  case "${pciProduct}" in
+  00ce|00f8|00fe|0258|0259|025b|0288|028c|031c|032a|033f)
+    echo "Installing NVIDIA-Linux-x86-1.0-9631"
+    chrootROOT1 /usr/src/installNVIDIA.sh /usr/src/NVIDIA-Linux-x86-1.0-9631-pkg1.run $(chrootROOT1 ls /lib/modules)
+    ;;
+  061a|00cd|00f8)
+    echo "Installing NVIDIA-Linux-x86-169.12-pkg1.run"
+    chrootROOT1 /usr/src/installNVIDIA.sh /usr/src/NVIDIA-Linux-x86-169.12-pkg1.run   $(chrootROOT1 ls /lib/modules)
+    ;;
+  *)
+    echo No NVIDIA driver modifications necessary for "${pciLine}"
+    ;;
+  esac
+}
+

@@ -1,0 +1,38 @@
+#!/bin/bash
+
+cat <<EOF
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+   <meta name="GENERATOR" content="Mozilla/4.72 [en] (X11; U; Linux 2.2.14localsmp i686) [Netscape]">
+   <title>Various installers</title>
+</head>
+<body bgcolor="#A5A5A5">
+
+<center>
+<h1>`basename $PWD`</h1>
+
+<br>
+
+EOF
+    echo '    <P> <a href="..">#### ParentDir</a>'
+ls -A | while read f
+do
+    if [ -d "${f}"/. ]
+    then
+        echo '    <P> <a href="'"${f}"'">'#### "${f}"'</a>'
+    else
+        echo '    <P> <a href="'"${f}"'">'"${f}"'</a>'
+    fi
+done
+
+cat <<EOF
+</center>
+
+</body>
+
+</html>
+
+EOF
+

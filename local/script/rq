@@ -1,0 +1,7 @@
+if ! [ $# -ge 1 ] ; then
+	p='>'
+else
+	p="$1"
+fi
+
+sed -e 's/^/'"${p}"/

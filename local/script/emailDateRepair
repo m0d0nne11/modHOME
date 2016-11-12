@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# NOTE: The -r option to sed apparently interferes with back-reference processing (?)
+#
+# CurrentStyle: Mon, 02 Mar 2009 17:03:57 EST
+#
+# OldStyle:  14 Jun 1996 01:58:21 GMT
+#
+# Date: 1996/05/18
+# Date: 1997/10/18
+# Date: 14 Jun 1996 01:58:21 GMT
+# Date: 22 Jun 1996 05:16:52 -0400
+# Date: 25 Jun 1996 07:15:34 -0400
+# Date:  4 Aug 1996 01:39:08 GMT
+#
+# EXAMPLE - Date: 21 Dec 89 11:30:08 GMT
+# \1:date \2:month \3:year \4:time
+
+# date '+%a, %d %b %Y %T %Z' --date="14 Jun 1996 01:58:21 GMT"
+
+sed -r -e '/^Date:[[:space:]]*[[:digit:]]*[[:space:]]*[Jj][Aa][Nn]|[Ff][Ee][Bb]|[Mm][Aa][Rr]|[Aa][Pp][Rr]|[Mm][Aa][Yy]|[Jj][Uu][Nn]|[Jj][Uu][Ll]|[Aa][Uu][Gg]|[Ss][Ee][Pp]|[Oo][Cc][Tt]|[Nn][Oo][Vv]|[Dd][Ee][Cc][[:space:]]*[[:digit:]]*[[:space:]]*[[:digit:]:]*/{
+h
+s/^/X-original-/
+p
+g
+s/^Date:[[:space:]]*([[:digit:]]*)[[:space:]]*([Jj][Aa][Nn]|[Ff][Ee][Bb]|[Mm][Aa][Rr]|[Aa][Pp][Rr]|[Mm][Aa][Yy]|[Jj][Uu][Nn]|[Jj][Uu][Ll]|[Aa][Uu][Gg]|[Ss][Ee][Pp]|[Oo][Cc][Tt]|[Nn][Oo][Vv]|[Dd][Ee][Cc])[[:space:]]*([[:digit:]]*)[[:space:]]*([[:digit:]:]*)/Date: HooHa weekday=X date=\1 month=\2 year=\3 time=\4/
+}'
+

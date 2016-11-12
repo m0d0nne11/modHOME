@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Store notes in files whose names are of the form:
+#
+#    yyyymmddhhmms.md5xmd5xmd5xmd5xmd5xmd5xmd5xmd5x
+#
+# Accomplished by capturing the note contents in a file
+# with a simple header and a contrived name and then employing
+# tdsMD5retag to come up with the "real" name.
+#
+
+#test -n "$MIKE_DEBUG" && set -xv
+
+# Force glob patterns that match nothing to expand to
+# empty strings rather than their literal selves.
+#
+shopt -s nullglob 
+
+######################################################################
+#
+function fail()  {
+	echo FAIL: "$@"
+	exit 1
+}
+
+######################################################################
+#
+    NOTE_BANNER="########NOTE########"
+NOTE_REPOSITORY=~/.NoteDir/
+
+cd $NOTE_REPOSITORY                   || fail cd $NOTE_REPOSITORY
+
+while : ; do
+    timeStamp=`timeDateString` || fail timeDateString
+    if [ -z "$(echo "${timeStamp}"*)" ] ; then
+        break   # OK - no existing file has this timeDateString value.
+    fi
+    sleep 2
+done
+
+noteFile="${timeStamp}".00000000000000000000000000000000
+
+[ -z "${NOTE_TAG}" ] && NOTE_TAG=`hostname`
+
+echo "${NOTE_BANNER}" $timeStamp "${NOTE_TAG}"                      > $noteFile
+
+# Lose trailing whitespace, force single-spaced, lose last-line if empty.
+#
+#sed -r -e 's/[[:space:]]+$//g' | cat -s | sed -e '${ /^$/d }' >> $noteFile MIT/LL version of sed unhappy about -r and insists on the semicolon
+sed     -e 's/[[:space:]]+$//g' | cat -s | sed -e '${ /^$/d ; }' >> $noteFile
+
+# echo $noteFile | tdsMD5retag
+tdsMD5retag $noteFile

@@ -1,0 +1,26 @@
+timeStamp=`date '+%Y%m%d%H%M%S'`
+TARCHIVE=/tmp/NvidiaSnapshot.$timeStamp.tgz
+cd /
+tar cvzf $TARCHIVE                                                    \
+    lib/modules/2.4.21-47.EL-wsi22u-smp*/kernel/drivers/video/nvidia* \
+    lib/modules/2.4.21-47.EL-wsi22u-smp*/modules*                     \
+    usr/bin/nvidia*                                                   \
+    usr/include/GL/glext.h                                            \
+    usr/include/GL/gl.h                                               \
+    usr/include/GL/glxext.h                                           \
+    usr/include/GL/glx.h                                              \
+    usr/lib/libGLcore.so*                                             \
+    usr/lib/libGL.la                                                  \
+    usr/lib/libGL.so.1.0*                                             \
+    usr/share/applications/nvidia-settings.desktop                    \
+    usr/X11R6/lib/libXvMCNVIDIA*                                      \
+    usr/X11R6/lib/modules/drivers/nvidia*                             \
+    usr/X11R6/lib/modules/extensions/libglx.so.1.0*                   \
+    var/lib/nvidia                                                    \
+
+echo "########" Snapshot saved in $TARCHIVE
+
+
+#    usr/share/doc/NVIDIA_GLX-1.0                                     \
+#    usr/share/man/man1/nvidia*                                       \
+#

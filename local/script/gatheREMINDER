@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Gather +inbox REMINDER msgs to the end of the list...
+
+folder -push +inbox
+
+ timeStamp=$$`tds`
+   tempDir=gather$timeStamp
+origFolder=`folder -fast`
+
+    mkdir ~/.mail/$tempDir                       \
+ && pushd ~/.mail/$tempDir                       \
+ && refile       +$tempDir `pick -from reminder` \
+ && folder -push +$tempDir                       \
+ && refile +$origFolder *                        \
+ && popd                                         \
+ && folder -pop                                  \
+ && rm -f ~/.mail/$tempDir/,* ~/.mail/$tempDir/.mh_sequences ~/.mail/$tempDir/.xmhcache \
+ && rmdir ~/.mail/$tempDir                       \
+
+folder -pop
+

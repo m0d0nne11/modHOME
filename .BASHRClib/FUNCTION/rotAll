@@ -1,0 +1,11 @@
+function rotALL ()  {
+    jnk="$*"
+echo RZQ is "${jnk}"
+    x=26
+    while [ $x -gt 0 ]
+    do
+        echo "${jnk}"
+        jnk="$(echo "${jnk}" | rot1)"
+        let x--
+    done
+}

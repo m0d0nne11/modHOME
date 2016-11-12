@@ -1,0 +1,3 @@
+#alias svi='sudo    vi' # Do not inherit environment
+ alias svi='sudo -E vi' # Do     inherit environment
+

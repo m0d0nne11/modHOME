@@ -1,0 +1,79 @@
+#!/bin/csh -f
+#
+# Build a list of files which is the inclusive-OR of all the files we can
+# find in this sandbox including all the backing trees we can find in via
+# the "link" entries.  All generated filenames are relative to the "src"
+# directory in a "normal" sandbox hierarchy.
+#
+
+onintr cleanUp
+
+set here=`basename $cwd`
+if ( $here != "src" ) then
+    echo "This only works in the src directory of your sandbox"
+    exit 1
+endif
+
+set startDir=$cwd
+
+set testFile=testFile$$
+touch $testFile  || \
+    ( echo "########## Can't write file $testFile" ; \
+    set resultFile=sbFileList )
+rm -f $testFile
+
+set tempFile=/tmp/tempFile$$
+if ( "_$argv" == "_" ) then
+    set resultFile=sbFileList
+else
+    set resultFile=$argv
+endif
+
+#
+# Preserve an existing sbFileList-file if found in the current directory.
+#
+
+if ( -f sbFileList ) then
+    set count=0
+    set save="sbFileList0"
+    while ( -f $save )
+        @ count ++
+        set save="sbFileList"$count
+    end
+    echo "Preserving existing sbFileList file as $save..."
+    mv sbFileList $save || exit 1
+endif
+
+while ( 1 )
+    echo    "####### Collecting files in $cwd"
+    echo -n "####### " ; pwd
+    find . -type f -print >>$tempFile
+    if ( ! -d ../link/src ) then
+        break
+    endif
+    cd ../link/src
+end
+
+#cd $startDir
+#cd $OBJECTDIR
+#echo    "####### Collecting files in $cwd"
+#find $cwd -type f -print >>$tempFile
+#cd $EXPORTBASE
+#echo    "####### Collecting files in $cwd"
+#find $cwd -type f -print >>$tempFile
+
+#
+# Now sort the sbFileList file, placing results into the final sbFileList
+#
+cd $startDir
+sort -u <$tempFile >$resultFile
+
+echo "###### Result in $resultFile"
+
+#
+# One way or another, we're done.
+#
+cleanUp:
+rm -f          \
+    $tempFile   \
+

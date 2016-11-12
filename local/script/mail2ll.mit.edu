@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ $# -ne 1 ] ; then
+	echo argCOunt
+	exit 1
+fi
+
+tempFile=/tmp/mail2ll.mit.edu$$.$timeStamp
+
+cat > "${tempFile}"
+
+sed -e 1d < "${tempFile}" | mail -c michael.odonnell@ll.mit.edu -s "$(head -1 < ${tempFile})" $1"@ll.mit.edu"
+
+rm -f "${tempFile}"

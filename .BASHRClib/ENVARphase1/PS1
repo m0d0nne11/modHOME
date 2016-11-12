@@ -1,0 +1,16 @@
+#export PS1='######## \h:\w \!---> '
+
+ if [ "$UID" = "0" ] ; then
+   id="ROOT"
+ else
+   id=$(whoami)
+ fi
+
+ if [ -n "${PS1_EXTRA}" ] ; then
+   export PS1='### '"${PS1_EXTRA}"-$id' ### \h:\w \!---> '
+ else
+   export PS1='### '$id' ### \h:\w \!---> '
+ fi
+
+ unset id
+

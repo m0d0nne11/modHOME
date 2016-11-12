@@ -1,0 +1,13 @@
+#!/bin/bash
+
+NOTE_REPOSITORY=~/.NoteDir/
+    NOTE_BANNER="########NOTE########"
+
+ function NotesFunc()  {
+	(cd $NOTE_REPOSITORY && find . -type f | sort | while read f ; do cat "${f}" ; done ) | sed -e 's/^/  /' -e '/^  *'"${NOTE_BANNER}"' [12]/s/  *//' -e 's/[[:space:]]*$//g' ;
+}
+
+# This alternative form uses process substitution but xargs is unhappy if the pipeline is closed before cat is finished:
+#function NotesFunc()  { sed -e 's/^/  /' -e 's/^  *########NOTE######## /########NOTE######## /' -e 's/[[:space:]]*$//g' <( cd ~/.NoteDir && find . -type f -name "[12]*" | sort | xargs -l20 cat ); }
+
+NotesFunc

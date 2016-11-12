@@ -1,0 +1,65 @@
+#
+# Capture info about any node in a filesystem hierarchy by
+# creating a shadow hierarchy wherein the corresponding node
+# is always a directory with one file in it whose name reflects
+# the type of the "real" node and whose contents describe it.
+#
+# 20110921 Pathnames containing whitespace not handled well.
+#
+function docNode()  {
+    local docRoot info node
+
+
+    if [ -z "$DOCROOT" ] ; then
+        docRoot=~/DOC
+        echo "DOCROOT envar not set - using $docRoot"
+    else
+        docRoot=$DOCROOT
+    fi
+
+    # Now that we know where the shadow hierarchy is supposed to
+    # be, if we were invoked without parameters we just mention
+    # all the (position-independent) docNodes we can see...
+    #
+    if [ $# -eq 0 ] ; then
+        echo "#### Known doc nodes:"
+        find $docRoot -type f -name "infoForNodeType.*" \
+         | sed -e 's;^'$docRoot';;' -e 's;/infoForNodeType\..*$;;'
+        return 0
+    fi
+
+    # Trim leading/trailing whitespace from specified name
+    # and then convert to absolute if relative.
+    #
+    node=$(echo "$1" | sed -e 's;^[[:space:]][[:space:]]*;;' -e 's;[[:space:]][[:space:]]*$;;')
+    if ! echo "$node" | grep '^/' ; then
+        echo Specified relative node $node converted to $PWD/$node
+        node=$PWD/$node
+    fi
+
+    # We currently don't capture info about files that don't exist...
+    #
+    if ! [ -e "$node" ] ; then
+        echo Specified node nonexistent: "$node" '?'
+        return 1
+    fi
+
+    # What about symlinks, device nodes, pipes, etc?
+    #
+    if [ -d "$node" ] ; then
+        info=infoForNodeType.dir
+    elif [ -f "$node" ] ; then
+        info=infoForNodeType.file
+    fi
+
+    shadow=$(echo $docRoot"$node" | tr -s /)
+    if ! [ -e "${shadow}" ] ; then
+        mkdir -p "${shadow}"
+    fi
+    if ! [ -d "${shadow}" ] ; then
+        echo ERROR: $node exists in shadow hierarchy but is not a directory'?'
+        return 1
+    fi
+    vi "${shadow}"/"${info}"
+}
+

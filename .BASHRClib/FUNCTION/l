@@ -1,0 +1,6 @@
+function l()  {
+#	ls -ACF --color=no $@ # XXX_MIKE MacOSX doesn't like double-dash args
+#	ls -ACF            $@
+	ls -ACF           "$@"
+}
+

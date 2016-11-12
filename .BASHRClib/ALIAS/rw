@@ -1,0 +1,2 @@
+ alias rw='chmod ugo+rw'
+

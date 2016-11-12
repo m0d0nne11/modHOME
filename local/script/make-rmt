@@ -1,0 +1,103 @@
+#!/bin/sh
+#
+# Our (old) pmake uses
+#	MAKERMTHOSTS MAKERMTBASE MAKERMTUSER MAKERMTPROG MAKERMTENV
+# And sets up this for each invocation
+#	AUTHCOVER_HOST
+#	(AUTHCOVER_{TESTDIR,USER} are MAKERMT{BASE,USER})
+# and calls us with these args:
+#	-t1 2 exec <cwd> <filename of env>
+# when it wants shell meta chars expanded, it appends this to the above:
+#	sh -ec
+#
+# If AUTHCOVER_TESTDIR is NULL, it is assumed that all pathnames are global
+# and the remote side cd's to the cwd of this process.
+# O/W, for each build, the remote side will cd to
+#	$AUTHCOVER_TESTDIR/<cwd arg>
+#
+# I.e., if your objects are in AFS (AND in an obj.<user> volume), use:
+#	setenv MAKERMTBASE ""
+# If your objects are on a local disk on machine <foo>, you end up using
+# this after you workon:
+#	setenv MAEKRMTBASE /net/`hostname`/`sbinfo object_base`
+#
+# Alternately, this script understands MAKERMTPREFIX, which is more useful,
+# since it isn't build/sandbox specific:
+#	setenv MAEKRMTBASE /net/`hostname`
+#
+
+env=$5 rel=$4
+shift 5
+
+case $1$2$# in
+sh-ec3)		shift 2; eval file=\${$###"* "};;
+sh-c3)		shift 2; eval file=\${$###"* "};;
+*)		eval file=\${$#};;
+esac
+
+echo $@
+
+case $@ in
+if\ *)
+	eval $@
+	exit $?;;
+true|false|cat\ *|echo\ *|mv\ *|rm\ *|cp\ *|makepath\ *|mkdir\ *|sed\ *|m4\ *)
+	eval exec $@;;
+esac
+
+from=`hostname`
+case $MAKERMTPREFIX in
+'')	case $AUTHCOVER_TESTDIR in
+	'')	wd=`pwd` afs=true;;
+	*)	wd=$AUTHCOVER_TESTDIR/$rel;;
+	esac;;
+*)	wd=$MAKERMTPREFIX/`pwd`
+esac
+
+(
+	echo _src=\"$AUTHCOVER_USER@$from/$$\" _wd=$wd
+	cat <<- 'EOF'
+		echo @@@ on `hostname`/$$ 1>&2
+		( umask 0 ; touch /tmp/remotebuildlog >/dev/null 2>/dev/null) &
+		cd $_wd
+		cat > /tmp/makeenv.$$ << "..EOF"
+	EOF
+	sed -e  's/^\([^=]*\)=\(.*\)$/\1='\''\2'\''; export \1/' $env
+	cat <<- 'EOF'
+		..EOF
+		. /tmp/makeenv.$$
+		rm /tmp/makeenv.$$
+	EOF
+	echo set \'"$@"\'
+	cat <<- 'EOF'
+		echo "$_src start $$ `date` in $_wd $@" >> /tmp/remotebuildlog
+		eval "$@" 2>&1
+		echo EXITSTAT=$?
+		echo "$_src end   $$ `date`" >> /tmp/remotebuildlog
+	EOF
+	#echo "$@" '2>&1'
+) | (
+	echo @@@ from $from/$$ to $AUTHCOVER_HOST $AUTHCOVER_USER of $file
+	rsh $AUTHCOVER_HOST -l $AUTHCOVER_USER /bin/nice -4 sh -e >/tmp/makermt.$$ 2>&1
+)
+ret=`tail -1 /tmp/makermt.$$`
+case $ret in
+EXITSTAT=*)
+	eval $ret
+	sed '$d' /tmp/makermt.$$
+	;;
+*)
+	EXITSTAT=1
+	cat /tmp/makermt.$$
+	;;
+esac
+rm /tmp/makermt.$$
+
+# suck object into local AFS cache for faster linking
+${afs-false} && case $file in
+*.o)	if [ -f $file ]; then
+		cat $file > /dev/null &
+	fi;;
+esac
+
+exit $EXITSTAT

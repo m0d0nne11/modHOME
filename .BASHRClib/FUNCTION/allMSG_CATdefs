@@ -1,0 +1,5 @@
+function allMSG_CATdefs()  {
+	gl MSG_CAT | sed -e 's/[=()",:; 	]/\
+/g' < MSG_CAT | sed -e '/^$/d' | fgrep MSG_CAT | sort -u
+}
+

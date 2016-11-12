@@ -1,0 +1,7 @@
+# Try to sort stanzas (or paragraphs) that are separated
+# by blank lines as if they are long sentences.
+#
+sed -r -e 's/[[:space:]]+$//' -e '/^[^$]/s/$/ RZQ/' | fmt -2500 | sort | uniq \
+| sed -e 's/ RZQ /\
+/g' -e 's/ RZQ$/\
+/'

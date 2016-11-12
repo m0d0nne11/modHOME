@@ -1,0 +1,7 @@
+#
+# Convert C++ // comment to C /* */ comment
+
+exec sed -e '/\/\// {
+s/\/\//\/*/
+s/$/ *\//
+}'

@@ -1,0 +1,587 @@
+#!/bin/bash
+
+# lpr -o landscape -o sides=two-sided-long-edge -o cpi=$(lprCPIforWidth $(wc -c))
+
+# To maintain the following list of functions, position (in vi) the cursor on
+# the first line in the list and then execute one of the following verbatim:
+#
+# !}grep -e '^function ' % | awk '{ print $2 }' | sort -bfd | sed -e 's/^/\# /'
+# !}grep -e '^function ' % | awk '{ print $2 }' |             sed -e 's/^/\# /'
+# FUNCTIONS:
+
+myName=$0
+
+###############################################################################
+# Utter the (optional) explanation into the log and then die...
+#   
+function FAIL()  {
+    local msg=""
+    if [ $# -lt 1 -o -z "$*" ] ; then
+        msg="(unspecified)"
+    else
+        msg="$@"
+    fi
+
+    echo FAIL: "${msg}"
+
+    exit 1
+}       
+            
+
+
+# lpr -o landscape -o sides=two-sided-long-edge -o cpi=29
+# 0        1         2         3         4         5         6         7         8         9         10        11        12        13        14        15        16        17        18        19        20        21        22        23        24        25        26        27        28        29
+# 123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+
+declare -a db=("")
+
+# Layout of records: lineWidth CPI
+db=(
+     "10  1"
+     "21  2"
+     "32  3"
+     "42  4"
+     "53  5"
+     "64  6"
+     "74  7"
+     "85  8"
+     "96  9"
+    "106 10"
+    "117 11"
+    "128 12"
+    "138 13"
+    "149 14"
+    "160 15"
+    "170 16"
+    "181 17"
+    "192 18"
+    "202 19"
+    "213 20"
+    "224 21"
+    "234 22"
+    "245 23"
+    "256 24"
+    "266 25"
+    "277 26"
+    "288 27"
+    "298 28"
+    "306 29"
+)
+
+###############################################################################
+# return first db record with specified key $2 = specified value $1
+function dbRecordForKey()  {
+    local index
+    local record
+    if [ $# -ne 2 ]
+    then
+        FAIL "Internal error in $FUNCNAME() - need fieldIndex and key"
+    fi
+
+    index=0
+    while [ $index -lt ${#db[*]} ]          # Until indexLimit reached...
+    do
+        record=( ${db[$index]} )       # Index the database for a record.
+        case "$1" in
+        1|2|3)
+            if [ ${record[$[$1 - 1]]} = $2 ]        # Index record for a field.
+            then
+#               echo "$record"
+                echo ${db[$index]}
+                return 0                         # First hit terminates search.
+            fi
+            ;;
+        *)
+            FAIL "$FUNCNAME() - bogus key value specified"
+            ;;
+        esac
+
+        let index++
+    done
+    return 1
+}
+
+###############################################################################
+# return first db record with specified key $2 >= specified value $1
+function dbRecordGEkey()  {
+    local index
+    local record
+    if [ $# -ne 2 ]
+    then
+        FAIL "Internal error in $FUNCNAME() - need fieldIndex and key"
+    fi
+
+    index=0
+    while [ $index -lt ${#db[*]} ]          # Until indexLimit reached...
+    do
+        record=( ${db[$index]} )       # Index the database for a record.
+        case "$1" in
+        1|2|3)
+            if [ ${record[$[$1 - 1]]} -ge $2 ]        # Index record for a field.
+            then
+#               echo "$record"
+                echo ${db[$index]}
+                return 0                         # First hit terminates search.
+            fi
+            ;;
+        *)
+            FAIL "$FUNCNAME() - bogus key value specified"
+            ;;
+        esac
+
+        let index++
+    done
+    return 1
+}
+
+
+ # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# Commence execution...
+ # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
+if [ $# -ne 1 ]
+then
+    FAIL lineWidth not specified
+    exit 1
+fi
+
+x=$(dbRecordGEkey  1 $1)
+read width cpi < <(echo $x)
+
+echo $cpi
+
+exit
+
+###############################################################################
+function recordForBasicPkgName()  {
+    if [ $# -ne 1 ]
+    then
+        failed "Internal error in $FUNCNAME() - must specify basicPkgName"
+    fi
+
+    dbRecordForKey 1 $1                               # Field 1 is basicPkgName
+}
+
+###############################################################################
+function recordForElaboratedPkgName()  {
+    if [ $# -ne 1 ]
+    then
+        failed "Internal error in $FUNCNAME() - must specify elaboratedPkgName"
+    fi
+
+    dbRecordForKey 2 $1                          # Field 2 is elaboratedPkgName
+}
+
+###############################################################################
+function recordForRPMfileName()  {
+    if [ $# -ne 1 ]
+    then
+        failed "Internal error in $FUNCNAME() - must specify RPMfileName"
+    fi
+
+    dbRecordForKey 3 $1                                # Field 3 is RPMfileName
+}
+
+###############################################################################
+function dbCountOfField()  {
+    local instances
+    local index
+    local record
+
+    if [ $# -ne 2 ]
+    then
+        failed "Internal error in $FUNCNAME() - need fieldIndex and key"
+    fi
+
+    index=0
+    instances=0
+    while [ $index -lt ${#db[*]} ]
+    do
+        record=( ${db[$index]} )       # Index the database for a record.
+        case "$1" in
+        1|2|3)
+            if [ ${record[$[$1 - 1]]} = $2 ]        # Index record for a field.
+            then
+                let instances++
+            fi
+            ;;
+        *)
+            failed "BOGUS key value specified"
+            ;;
+        esac
+
+        let index++
+    done
+
+    echo $instances
+    return 0
+}
+
+###############################################################################
+function dbCountOfBasicPkgName()  {
+    dbCountOfField 1 $1                               # Field 1 is basicPkgName
+}
+
+###############################################################################
+function dbCountOfElaboratedPkgName()  {
+    dbCountOfField 2 $1                          # Field 2 is elaboratedPkgName
+}
+
+###############################################################################
+function dbCountOfRPMfileName()  {
+    dbCountOfField 3 $1                                # Field 3 is RPMfileName
+}
+
+###############################################################################
+function allBasicPkgNames()  {
+    local triple
+    local index
+    index=0
+    while [ $index -lt ${#db[*]} ]
+    do
+        triple=( ${db[$index]} )
+        echo ${triple[0]}
+        let index++
+    done
+}
+
+###############################################################################
+function allElaboratedPkgNames()  {
+    local triple
+    local index
+    index=0
+    while [ $index -lt ${#db[*]} ]
+    do
+        triple=( ${db[$index]} )
+        echo ${triple[1]}
+        let index++
+    done
+}
+
+###############################################################################
+function allRPMfileNames()  {
+    local triple
+    local index
+    index=0
+    while [ $index -lt ${#db[*]} ]
+    do
+        triple=( ${db[$index]} )
+        echo ${triple[2]}
+        let index++
+    done
+}
+
+###############################################################################
+function allDataBaseEntries()  {
+    local triple
+    local index
+    index=0
+    while [ $index -lt ${#db[*]} ]
+    do
+        echo ${db[$index]}
+        let index++
+    done
+}
+
+###############################################################################
+function addDBentry()  {
+    if [ $# -ne 3 ]
+    then
+        failed "Internal error - $FUNCNAME() needs basicPkgName elaboratedPkgName RPMfileName "
+    fi
+
+    db[${#db[*]}]="$1 $2 $3"
+}
+
+###############################################################################
+function addDBentryUnique()  {
+    local count
+
+    if [ $# -ne 3 ]
+    then
+        echo "Internal error - $FUNCNAME() needs basicPkgName elaboratedPkgName RPMfileName "
+        exit 1
+    fi
+
+    count=$(dbCountOfBasicPkgName $1)
+    if [ $count -ne 0 ]
+    then
+        echo "MULTIPLE($[$count+1]) instances of basicPkgName $1 in DB"      1>&2
+#       return 1
+    fi
+
+    count=$(dbCountOfElaboratedPkgName $2)
+    if [ $count -ne 0 ]
+    then
+        echo "MULTIPLE($[$count+1]) instances of elaboratedPkgName $2 in DB" 1>&2
+#       return 1
+    fi
+
+    count=$(dbCountOfRPMfileName $3)
+    if [ $count -ne 0 ]
+    then
+        echo "MULTIPLE($[$count+1]) instances of RPMfileName $3 in DB"       1>&2
+#       return 1
+    fi
+
+    addDBentry "$1" "$2" "$3"
+}
+
+###############################################################################
+function gatherRPMinfoRootedAt()  {
+    local basicPkgName
+    local elaboratedPkgName
+    local RPMfileName
+
+    if [ $# -ne 1 ]
+    then
+        echo "Internal error in $FUNCNAME() - need startingDirectory"
+        exit 1
+    fi
+
+    cd $1 || failed "Can't cd $1"
+    for RPMfileName in $(find . -type f -name '*.rpm' | sed -e s/..// )
+    do
+             basicPkgName="$(rpm -q --queryformat '%{NAME}'                                         -p $RPMfileName 2>/dev/null)"
+        elaboratedPkgName="$(rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}-%{SERIAL}-%{ARCH}' -p $RPMfileName 2>/dev/null)"
+        addDBentryUnique $basicPkgName $elaboratedPkgName $RPMfileName
+
+        if [ -n "$showDots" ]                                      # Debugging.
+        then
+            echo -n .
+        fi
+        if [ -n "$announcePkgs" ]                                  # Debugging.
+        then
+            echo $basicPkgName
+        fi
+    done
+}
+
+###############################################################################
+# True execution actually begins here...
+#
+
+startingDirs=""
+dumpDataBase=""
+announcePkgs=""
+    showDots=""
+
+currentOptArg=""
+while :
+do
+    getopts "d:b3a." currentOptArg
+
+    case "$currentOptArg" in
+    '?')                                                # End of supplied args.
+        break
+        ;;
+    b)                                                       # debugging output
+        set -x
+        ;;
+    '.')                                                # Show progress dots...
+        showDots="setFromCommandLine"
+        ;;
+    3)                                                       # Show all triples
+        dumpDataBase="setFromCommandLine"
+        ;;
+    a)                     # Announce simple package names as they're processed
+        announcePkgs="setFromCommandLine"
+        ;;
+    d)
+        startingDirs="$startingDirs $OPTARG"
+        ;;
+    *)
+        failed "Unexpected commandline parameter: $currentOptArg"
+        ;;
+    esac
+done
+
+if [ -z "$startingDirs" ]
+then
+    failed No startingDirs specified
+fi
+
+for dir in $startingDirs
+do
+    gatherRPMinfoRootedAt $dir
+done
+
+if [ -n "$dumpDataBase" ]
+then
+    echo "###################### allDataBaseEntries #####################################"
+    allDataBaseEntries
+    echo "###############################################################################"
+fi
+
+for elaboratedPkgName in $(rpm -q -a --queryformat '%{NAME}-%{VERSION}-%{RELEASE}-%{SERIAL}-%{ARCH} ' 2>/dev/null)
+do
+    if [ -n "$announcePkgs" ]
+    then
+        echo -n "$elaboratedPkgName     "
+    fi
+
+    triple=( $(tripleForElaboratedPkgName $elaboratedPkgName) )
+    if [ $? -eq 0 ]                      # Found elaboratedPkgName in question?
+    then
+        echo ${triple[2]}                   # utter corresponding RPM filename.
+    else
+        echo "Couldn't find RPM file for package $elaboratedPkgName" 1>&2
+    fi
+done
+
+exit 0
+
+############## SCRIPT ./nightmoves
+cat <<EOF
+043816729  L
+067294381  H
+16729438   L
+18349276   H
+27618349   L
+29438167   H
+34927618   L
+38167294   H
+43816729   L
+49276183   H
+5043816729 L
+5067294381 H
+61834927   L
+67294381   H
+72943816   L
+76183492   H
+81672943   L
+83492761   H
+92761834   L
+94381672   H
+EOF
+
+############## SCRIPT ./x10-reset
+#!/bin/bash
+#!/usr/bin/bash
+
+#
+# Script to allow remote-reset of systems via X10-connected
+# relays and power modules.
+#
+
+myName=$0
+
+###############################################################################
+# This db is the sole source for all info in this script.
+# No more uncoordinated usage of multiple, stale databases -
+# just this ONE single stale database.  Progress!
+#
+# If you modify the database, please maintain tabular,
+# alphabetized layout for readability's sake...
+#
+# Records represent {hostname,x10houseCode,x10unitCode}
+#
+
+db=( \
+	"[A1]		A	1"	\
+	"[A2]		A	2"	\
+	"[A3]		A	3"	\
+	"[A4]		A	4"	\
+	"lab21		A	5"	\
+	"[A6]		A	6"	\
+	"[A7]		A	7"	\
+	"[A8]		A	8"	\
+	"[A9]		A	9"	\
+	"[A10]		A	10"	\
+	"[A11]		A	11"	\
+	"[A12]		A	12"	\
+	"[A13]		A	13"	\
+	"[A14]		A	14"	\
+	"[A15]		A	15"	\
+	"testing	A	16"	\
+    )
+
+###############################################################################
+function dbRecordForKey()  {
+    if [ $# -ne 2 ]
+    then
+        echo "Internal error - dbRecordForKey() needs key and value"
+        exit 1
+    fi
+
+    indexLimit=${#db[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${db[$index]} )       # Index the database for a triple.
+        case "$1" in
+        1|2|3)
+           if [ ${triple[$[$1 - 1]]} == $2 ]        # Index triple for a field.
+           then
+               echo ${db[$index]}
+               return 0
+           fi;;
+        *)
+            echo "BOGUS key value specified in dbRecordForKey()"
+            exit 1;;
+        esac
+
+        index=$[$index + 1]
+    done
+    return 1
+}
+
+###############################################################################
+function allHouseCodes()  {
+    indexLimit=${#db[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${db[$index]} )
+        echo ${triple[1]}
+        index=$[$index + 1]
+    done
+}
+
+###############################################################################
+function allUnitCodes()  {
+    indexLimit=${#db[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${db[$index]} )
+        echo ${triple[2]}
+        index=$[$index + 1]
+    done
+}
+
+###############################################################################
+function allDataBaseEntries()  {
+    indexLimit=${#db[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        echo ${db[$index]}
+        index=$[$index + 1]
+    done
+}
+
+###############################################################################
+# True execution actually begins here...
+#
+
+if [ $# -eq 1 ]                                       # Number of args correct?
+then
+    triple=( $(dbRecordForHostname $1) )   # Fetch desired triple from db.
+    if [ $? -eq 0 ]                                   # Found specified system?
+    then
+        echo     ${triple[*]}                         # Announce what we found.
+        target=${triple[1]}${triple[2]}
+        heyu turn $target on
+        heyu turn $target on
+        heyu turn $target off
+        heyu turn $target off
+        exit 0
+    else
+        usage "Couldn't find system '$1'"
+    fi
+else
+    usage "exactly one systemName must be specified"
+fi
+

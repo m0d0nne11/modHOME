@@ -1,0 +1,178 @@
+#!/bin/bash
+#
+# Copyright 2009 WSI Corp.
+#
+# It's sometimes necessary for processes (like SSH sessions or
+# cron-launched scripts) that aren't associated with a given local X
+# display to become clients of the local X server in order that warnings
+# and such can be displayed.  This script makes it possible to obtain
+# current values for some environment variables (such as XAUTHORITY and
+# DISPLAY) that ase necessary to authenticate to and connect with the
+# local X server.  Assuming that a given non-root user owns the current
+# X session, this script only works for that user or for root.
+#
+
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/bin/X11:/usr/sbin:/bin:/sbin:/etc:.
+
+myName=$0
+argv="$@"
+
+test -n "$MIKE_DEBUG" && set -xv
+
+###############################################################################
+#
+function FAIL()  {
+cat <<EOF
+$FUNCNAME: $@
+usage:  $myName [-a] [-d]
+        -a Show the name of an X authority file
+        -d Show an X DISPLAY value
+        -h Show this Help text
+EXAMPLE:
+    To pop an xclock window on the local display:
+        export XAUTHORITY=\`$myName -a\`
+        export    DISPLAY=\`$myName -d\`
+        xclock
+EOF
+
+    exit 1
+}
+
+###############################################################################
+# Depending on whether we're running RHEL3 or CentOS5 we try to find and report
+# the PID of a process that's currently authorized to use the local X display.
+# If LOCALX_PROGNAME is defined in the environment we use that as the name of
+# the program to take our target PID from, else we choose based on whether we
+# are running CentOS or RHEL3 (currently same one for both)
+#
+function XcapablePID()  {
+    if [ -z "$LOCALX_PROGNAME" ] ; then         # No override from environment?
+        if fgrep -qi centos /etc/redhat-release ; then
+            LOCALX_PROGNAME=icewm-session
+        else
+            LOCALX_PROGNAME=icewm-session            # Not CentOS? assume RHEL3
+        fi
+    fi
+    pgrep -x "$LOCALX_PROGNAME"                 # Returns failure if not found.
+}
+
+###############################################################################
+#
+function basenameForProc()  {
+        local pid=$1
+        local cmd
+        local rest
+        if read cmd rest < <(xargs -0 -l1 < /proc/$pid/cmdline 2>/dev/null) ; then
+                if ! echo "$cmd" | grep -e '^-' ; then
+                        basename $cmd
+                        return 0
+                fi
+        fi
+        return 1
+}
+
+###############################################################################
+# Utter the name of a file we can use to authenticate to the local X server.
+#
+# FirstChoice: the current value of the XAUTHORITY variable as extracted
+# from the environment of some likely candidate process.
+#
+# Fallback1: ~wxws/.Xauthority
+#
+# Fallback2: Whatever file is mentioned on the X server command line.
+#
+function localXAUTHORITY()  {
+    local x
+    local targetPID
+
+    if targetPID=`XcapablePID` ; then
+        if x=$(fgrep -e 'XAUTHORITY=' <(xargs -0 -l1 < /proc/$targetPID/environ \
+                                        | while read f ; do echo $f ; done))
+        then
+            ( eval $x ; echo "$XAUTHORITY")
+            return 0
+        fi
+    fi
+
+    if [ -r  ~wxws/.Xauthority ] ; then
+        echo ~wxws/.Xauthority
+        return 0
+    fi
+
+    for x in $(ps -eaflwlw | fgrep X | fgrep auth | sed -e 's/^.*-auth  *//' -e 's/ .*$//')
+    do
+        if [ -r  "${x}" ] ; then
+            echo "${x}"
+            return 0
+        fi
+    done
+
+    if sudo -H -u wxws xauth extract - $HOSTNAME:0 | /usr/X11R6/bin/xauth merge -
+    then
+        echo ~wxws/.Xauthority
+        return 0
+    fi
+
+    echo UsableXAUTHORITYfileNotFound
+    return 1
+
+
+}
+
+###############################################################################
+# Utter the current value of the DISPLAY variable as extracted from the
+# environment of some likely candidate.
+#
+function localDISPLAY()  {
+    local x
+    local targetPID
+
+    if targetPID=`XcapablePID` ; then
+        if x=$(fgrep -e 'DISPLAY=' <(xargs -0 -l1 < /proc/$targetPID/environ \
+                                        | while read f ; do echo $f ; done))
+        then
+            ( eval $x ; echo "$DISPLAY")
+            return 0
+        fi
+    fi
+
+    echo ":0"
+    return 0
+
+    echo UsableDISPLAYnotFound
+    return 1
+}
+
+###############################################################################
+# Functions defined; commence actual execution...
+#
+
+currentOptArg=""
+while :
+do
+    getopts "ad" currentOptArg
+
+    case "$currentOptArg" in
+    '?')                                                # End of supplied args.
+        break
+        ;;
+    a)
+        localXAUTHORITY
+        exit
+        ;;
+    d)
+        localDISPLAY
+        exit
+        ;;
+    h)
+        FAIL "help..."
+        exit 0
+        ;;
+    *)
+        FAIL "Unexpected commandline parameter: $currentOptArg"
+        ;;
+    esac
+done
+
+FAIL                                        # ASSUME: problem if we got here...
+

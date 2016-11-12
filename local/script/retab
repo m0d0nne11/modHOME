@@ -1,0 +1,14 @@
+#!perl
+
+# Usage: retab [-<tabwidth>] [files]
+
+$sw = 8;
+$sw = $1, shift if $ARGV[0] =~ /^-(\d+)/;
+
+while (<>) {
+        s#^(\t+)#' ' x (length($1) * 8)#e;
+        s#^( *)#' ' x (length($1) * $sw / 8)#e;
+        s#^(( {8})*)#"\t" x (length($1) / 8)#e;
+        print;
+}
+

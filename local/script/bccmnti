@@ -1,0 +1,15 @@
+if [ "$#" -ge 1 ]
+then
+    indent=$[$1 * 4]
+else
+    indent=4
+fi
+
+spaceString=""
+while [ "$indent" -gt 0 ]
+do
+    spaceString=$spaceString" "
+    indent=$[$indent - 1]
+done
+
+bccmnt | rq "$spaceString"

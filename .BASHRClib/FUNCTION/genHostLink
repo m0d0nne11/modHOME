@@ -1,0 +1,5 @@
+function genHostLink
+{
+    ( cd /usr/hosts ; sudo ln -s ../bin/rsh "$@" )
+}
+

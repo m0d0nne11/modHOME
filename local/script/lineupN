@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ $# -ne 1 ] ; then
+        echo USAGE: $0 level
+        exit 1
+fi
+
+# Recursively undo PQZFQZ substitutions left-to-right...
+#
+function unPqZfQz()  {
+        local n
+        if [ $# -ne 1 ] ; then
+                echo USAGE: $0 level
+                return 1
+        fi
+        n=$1
+        if [ $n -gt 1 ] ; then
+                let n--
+                sed -e 's/PQZFQZ/ /' | unPqZfQz $n
+        fi
+        sed -e 's/PQZFQZ/ /'
+}
+
+sed -E -e 's/[[:space:]]+/PQZFQZ/g' | unPqZfQz $1 | lineup | sed -e 's/PQZFQZ/ /g'
+

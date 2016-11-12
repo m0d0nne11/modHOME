@@ -1,0 +1,37 @@
+# previously named tdsMath
+
+myName=$0
+
+function fail()  {
+	echo $myName FAILED: $@ >/dev/stderr
+	return 1
+}
+
+
+function tdsFields()  {
+	local Z
+	local token
+	local extra
+
+	Z=$1
+
+	read token extra
+
+	if ! echo $token | grep -qE -e '^[[:digit:]]{14}' ; then
+		echo Y$Z=error M$Z=error D$Z=error H$Z=error T$Z=error S$Z=error
+		return 1
+	fi
+
+	echo "$token" | sed -e 's/^\([[:digit:]]\{4\}\)\([[:digit:]]\{2\}\)\([[:digit:]]\{2\}\)\([[:digit:]]\{2\}\)\([[:digit:]]\{2\}\)\([[:digit:]]\{2\}\).*$/Y'$Z'=\1 M'$Z'=\2 D'$Z'=\3 H'$Z'=\4 T'$Z'=\5 S'$Z'=\6/'
+}
+
+x=0
+result=0
+while read rzq ; do
+	if ! echo $rzq | tdsFields $x ; then
+		result=1
+	fi
+	let x++
+done
+
+exit $result

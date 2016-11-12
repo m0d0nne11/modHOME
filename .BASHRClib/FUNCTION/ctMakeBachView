@@ -1,0 +1,17 @@
+function ctMakeBachView
+{
+    if [ -z "$@" ]
+    then
+        echo usage:
+        echo "	ctMakeBachView viewName"
+        return 1
+    fi
+
+    ct mkview -tag "$@"                                    \
+              -ncaexported                               \
+              -host     bach                             \
+              -gpath /n/bach/private1/viewStorage/"$@".vws \
+              -hpath        /private1/viewStorage/"$@".vws \
+                     /n/bach/private1/viewStorage/"$@".vws
+}
+

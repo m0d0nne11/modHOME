@@ -1,0 +1,18 @@
+ timeStamp=`date '+%Y%m%d%H%M%S'`
+  tempFile=tempFile$timeStamp
+
+ cat /dev/null >$tempFile
+
+ for f in ,*
+ do
+     echo "" >> $tempFile
+     cat $f          >> $tempFile
+     echo "" >> $tempFile
+     rm $f
+ done
+
+ folder -push +deleted
+ inc +deleted -file     $tempFile
+ folder -pop
+ rm                     $tempFile
+

@@ -1,0 +1,39 @@
+#!/bin/bash
+
+
+###############################################################################
+# Rewrite the absolute pathnames in the specified file such that pathanmes
+# of the form /mnt/MD0/a/b/c and /mnt/WXDISK0/a/b/c become /wxdisk/a/b/c
+#
+function rewriteInventorPathnamesIn()  {
+    local ifile="${1}"
+
+    local tempFile=`mktemp /tmp/RIP.XXXXXXXX`
+
+    sed -r -e \
+     '\;^[[:space:]]*(filename|texture_file|myFilename)[[:space:]]+"/mnt/(MD0|WXDISK);s;/mnt/(MD0|WXDISK)/;/wxdisk/;' \
+                    < "${ifile}" > $tempFile
+#   diff -U5 "${ifile}" $tempFile
+    cat   $tempFile > "${ifile}"
+    rm -f $tempFile
+}
+
+
+while read f
+do
+    # Don't bother with any that appear not to be Inventor
+    # files or which don't contain the paths of interest...
+    #
+    if file -b "${f}" | fgrep -qi inventor
+    then
+        if grep -q -E -e '/mnt/(MD0|WXDISK0)/' "${f}"
+        then
+            echo "REWRITE ${f}"
+            rewriteInventorPathnamesIn "${f}"
+        else
+            echo " -SKIP- ${f}"
+        fi
+    else
+        echo " -SKIP- ${f}"
+    fi
+done

@@ -1,0 +1,31 @@
+
+###############################################################################
+function usage()  {
+    echo "Failed:" $@
+#   rm -f $tmp # Don't toss our file!
+    exit 1
+}
+
+###############################################################################
+
+     tmp=`mktemp /tmp/tagMD5.XXXXXXXX` || usage mktemp /tmp/tagMD5.XXXXXXXX
+startDir=$PWD
+
+while read f
+do
+    cd $startDir
+    dir="`dirname $f`"
+    cd $dir                           ||        usage "can't CD to dirname($f)"
+
+    base="`basename $f`"
+    test -f "${base}"                 ||        usage "no basename($f) in $dir"
+    md5="`md5sum ${base} | word1`"
+    if [ -f $md5 ]
+    then
+        echo "already have file $md5 in $dir - ignoring ${base}"
+        continue
+    fi
+    mv "${base}" $tmp                 || usage "Couldn't mv $base $tmp in $dir"
+    mv $tmp $md5                      ||  usage "Couldn't mv $tmp $md5 in $dir"
+done
+

@@ -1,0 +1,4 @@
+echo ".ifndef $@"
+cat
+echo ".else #.ifndef $@" | rjshc
+echo ".endif #.else .ifndef $@" | rjshc

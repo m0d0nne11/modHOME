@@ -1,0 +1,5 @@
+for site in $@
+do
+    ssh world.std.com 'retrieve $site'
+    echo "######### NOTIFIED $site"
+done

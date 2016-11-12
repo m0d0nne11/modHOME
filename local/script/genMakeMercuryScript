@@ -1,0 +1,59 @@
+#!/usr/bin/bash
+#!/u/bin/bash
+#!/opt/local/bin/bash
+#!/n/viewserver/home/merlin/home2/bin/sun4/sos4/bash
+
+# Intended to be fed the output of a "make mercury" run in /vobs/mcos
+# with the '-p' option active.  That output will be crunched into a
+# script that should execute more quickly than the "make mercury" by
+# itself because a certain amount of duplication is eliminated, as well
+# as some reduction in the number of subordinate processes spawned.
+
+tempFile=/tmp/tempFile$$
+
+   grep -v -e '	'			\
+	-e '\\'				\
+	-e '^#'				\
+ | sed	-e 's/^/ /'			\
+	-e 's/;/\
+ /g'					\
+ | sed	-e 's/[	 ][	 ]*/ /g'	\
+	-e 's/[	 ][	 ]*$//g'	\
+ | sort -fd				\
+ | uniq				>$tempFile
+
+cat <<EOF
+#!/usr/bin/bash
+#!/u/bin/bash
+#!/opt/local/bin/bash
+#!/n/viewserver/home/merlin/home2/bin/sun4/sos4/bash
+
+EOF
+
+echo "xargs -l5 rm -f <<EOF"
+grep '^ rm -f ' $tempFile | sed 's/ rm -f / /'
+echo "EOF"
+echo ""
+
+echo "xargs -l5 mkdir -p <<EOF"
+grep '^ mkdir -p ' $tempFile | sed 's/ mkdir -p / /'
+echo "EOF"
+echo ""
+
+echo 'cat <<EOF | while read src dst; do if [ ! "$src" -o ! "$dst" ]; then break; else cp $src $dst ; fi; done'
+grep '^ cp ' $tempFile | sed 's/ cp / /'
+echo "EOF"
+echo ""
+
+echo 'cat <<EOF | while read src dst; do if [ ! "$src" -o ! "$dst" ]; then break; else ln -s $src $dst ; fi; done'
+grep '^ ln -s ' $tempFile | sed 's/ ln -s / /'
+echo "EOF"
+echo ""
+
+echo "xargs -l5 chmod -f +x <<EOF"
+grep '^ chmod -f +x ' $tempFile | sed 's/ chmod -f +x / /' | grep -v -e '\.h$' -e '\.desc$'
+echo "EOF"
+echo ""
+
+rm -f $tempFile
+

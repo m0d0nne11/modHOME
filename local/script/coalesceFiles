@@ -1,0 +1,22 @@
+#!/bin/bash
+tokens=`echo $@`
+first=`echo  $tokens | fmt -1 | head -1`
+tokens=`echo $tokens | fmt -1 | sed 1d`
+if [ -z "$first" ]
+then
+	echo Cannot determine first item
+	exit 1
+fi
+
+if [ -z "$tokens" ]
+then
+	echo Cannot determine any items but one
+	exit 1
+fi
+
+for f in $tokens
+do
+	echo Coalesce $first $f
+	banner next >>$first && cat $f >>$first && rm $f
+done
+

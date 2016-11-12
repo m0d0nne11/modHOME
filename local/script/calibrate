@@ -1,0 +1,65 @@
+#
+# A system-speed-dependent delay function
+#
+
+echo "############" INCOMPLETE - $0 $@
+exit 1
+
+timeStamp=`date '+%Y%m%d%H%M%S'`
+ tempFile=/tmp/tempFile$timeStamp$$
+
+
+function countDownFrom() {
+    timeLeft=$@
+    while [ $timeLeft -gt 0 ]
+    do
+        timeLeft=$[$timeLeft - 1]
+    done
+}
+
+function sayAfterDelay()  {
+    countDownFrom $1
+    echo -ne "$2"
+}
+
+function countUntilSig14() {
+    count=0
+    trap 'echo $count >$tempFile ; break ' 14
+    while :
+    do
+        count=$[$count + 1]
+    done
+}
+
+function rangeFor10seconds()  {
+    >$tempFile
+    countUntilSig14 &
+    sleep 10
+    kill -14 $!
+    wait
+    cat $tempFile
+}
+
+
+echo tempFile $tempFile
+echo Starting rangeFor10seconds
+
+rangeFor10seconds
+
+exit 0
+
+count=$1
+
+read stop  junk </proc/uptime
+read start junk </proc/uptime
+
+countDownFrom $count
+
+read stop  junk </proc/uptime
+
+echo start is $start
+echo stop  is $stop
+
+echo "( $stop - $start ) / $count" | math
+
+

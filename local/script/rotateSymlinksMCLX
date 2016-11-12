@@ -1,0 +1,32 @@
+#
+# Given a subdirectory named by the user on the command
+# line and given an "active" TFTP boot-kernel symlink named
+# "active" and one or more other (idle) such symlinks with
+# names of the form "20011228010242" in that directory,
+# this script will take the one that's currently active
+# and rename it such that its name is of the idle form.
+# Then the idle link that sorts lexicographically first
+# will be established as the new active link.
+#
+# Since the numeric portion of each name is derived
+# from the current date and time (and "active" always
+# sorts last in such a list) the effect is that we
+# rotate through the links.
+#
+
+
+function fail()  {
+    echo $@
+    exit 1
+}
+
+client=$1
+test -z "$client" && fail "Must mention client directory"
+test -d $client   || fail "$client isn't a directory"
+cd $client        || fail "Can't cd to client directory $client"
+test -h active    || fail "No active symlink in client directory $client"
+sleep 2
+mv active `tds`
+mv `ls | head -1` active
+ls -laF
+

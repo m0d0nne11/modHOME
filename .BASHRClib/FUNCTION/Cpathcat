@@ -1,0 +1,9 @@
+# Given input lines assumed to be laid out
+# as <MD5> <basename> <dirname> (a la certain
+# ContenTable files I create) we just utter the
+# reassembled dirname/filename path.
+
+function Cpathcat() {
+    awk '{ printf( "%s/%s\n", $3, $2 ); }'
+}
+

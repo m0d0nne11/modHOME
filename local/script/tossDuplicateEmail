@@ -1,0 +1,18 @@
+export max=$@
+echo "################" ENTER $PWD MAX=$max
+last=1
+current=2
+
+while [ $last -lt $max ]
+do
+	if diff -b $last $current >/dev/null 2>&1
+	then
+		echo Tossing $PWD/$last
+		rm $last
+	fi
+
+	last=$[ $last + 1 ]
+	current=$[ $last + 1 ]
+done
+echo "################" LEAVE $PWD MAX=$max
+

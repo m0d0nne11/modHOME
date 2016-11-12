@@ -1,0 +1,15 @@
+
+function genContenTable()  {
+	local t;
+
+	if ! [ -d ContenTable.STORAGE/. ] ; then
+		mkdir ContenTable.STORAGE ;
+	fi ;
+
+	t=ContenTable.STORAGE/ContenTable.$(hostname).$(ymd) ;
+
+	find . \! -type d -print | sed -e s/..// >$t &
+	ln -sf $t ContenTable ;
+	ll ContenTable ;
+}
+

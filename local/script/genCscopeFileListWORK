@@ -1,0 +1,114 @@
+
+####
+# The timeStamp is handy for generating any
+# unique-per-script-invocation temp files and such...
+#
+timeStamp=`date '+%Y%m%d%H%M%S'`
+  md5List=md5List$timeStamp
+ tempFile=tempFile$timeStamp
+parentDir=`dirname $PWD`
+
+
+####
+# Preserve existing instances of cscope.files, if any...
+#
+if [ -f cscope.files ]
+then
+    mv                   cscope.files              cscope.files$timeStamp
+    echo "####" Existing cscope.files preserved as cscope.files$timeStamp
+fi
+
+find . -type f -name "*\.[chsS]" | grep -v \
+	-e '\.a$'                    \
+	-e /acorn/                   \
+	-e akefile                   \
+	-e /alpha/                   \
+	-e appletalk                 \
+	-e /arm/                     \
+	-e '\.asc$'                  \
+	-e /asm-alpha                \
+	-e /asm-arm                  \
+	-e /asm-m68k/                \
+	-e /asm-mips                 \
+	-e /asm-ppc                  \
+	-e /asm-s390                 \
+	-e /asm-sh                   \
+	-e /asm-sparc                \
+	-e '\.awk$'                  \
+	-e '/boot/bbootsect$'        \
+	-e '/boot/bsetup$'           \
+	-e /boot/compressed/bvmlinux \
+	-e '/boot/tools/build$'      \
+	-e 'BUGS-parport'            \
+	-e bzImage                   \
+	-e '[Cc]hange[Ll]og'         \
+	-e CHANGES                   \
+	-e '/.config$'               \
+	-e '/.config.old$'           \
+	-e conmakehash               \
+	-e '/ContenTable'            \
+	-e COPYING                   \
+	-e copyright                 \
+	-e '/CREDITS$'               \
+	-e cscope.file               \
+	-e '\.data$'                 \
+	-e '/defconfig$'             \
+	-e '\.depend$'               \
+	-e /Documentation/           \
+	-e '\.flags$'                \
+	-e 'genCscope'               \
+	-e 'gen-devlist$'            \
+	-e '\.gz$'                   \
+	-e hanges                    \
+	-e '/.hdepend$'              \
+	-e /hp/                      \
+	-e INSTALL                   \
+	-e /INTRO                    \
+	-e LICENSE                   \
+	-e /m68k/                    \
+	-e /macintosh                \
+	-e MAINTAIN                  \
+	-e makeLog                   \
+	-e '\.map$'                  \
+	-e MARKER                    \
+	-e /mips/                    \
+	-e /mips64/                  \
+	-e 'MODULES$'                \
+	-e /nls/                     \
+	-e '/notes'                  \
+	-e '\.o$'                    \
+	-e '\.o\.flags$'             \
+	-e 'onfig\.in$'              \
+	-e /paride/                  \
+	-e '/pci\.ids$'              \
+	-e '\.pl$'                   \
+	-e /ppc/                     \
+	-e /qnx4/                    \
+	-e README                    \
+	-e '\.reg$'                  \
+	-e '\.regions$'              \
+	-e RELEASE                   \
+	-e REPORT                    \
+	-e '/Rules.make$'            \
+	-e /s390/                    \
+	-e /sbus/                    \
+	-e '\.scr$'                  \
+	-e /scripts/                 \
+	-e '\.sed$'                  \
+	-e '\.seq$'                  \
+	-e /sgi/                     \
+	-e '\.sh$'                   \
+	-e /sh/                      \
+	-e /sound/                   \
+	-e /sparc/                   \
+	-e /sparc64/                 \
+	-e '/specs'                  \
+	-e '\.stamp$'                \
+	-e '\.start$'                \
+	-e '/System.map$'            \
+	-e TODO                      \
+	-e '\.txt$'                  \
+	-e '\.uni$'                  \
+	-e '/.version$'              \
+	-e '/vmlinux$' | sort | sed -e 's;^\./;;' >cscope.files
+

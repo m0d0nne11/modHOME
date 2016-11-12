@@ -1,0 +1,30 @@
+
+declare -a argv=("")
+argv[0]=$0
+argc=1
+
+function backslashedQuotes()  {
+	echo "$@" | sed -e 's/"/\\"/g'
+}
+
+while [ $# -gt 0 ]
+do
+	argv[$argc]="`backslashedQuotes "$1"`"
+	let argc++
+	shift
+done
+
+function allMyArgs()  {
+	x=1
+	while [ $x -lt $argc ]
+	do
+		echo '"'${argv[$x]}'"'
+		let x++
+	done
+}
+
+# You can now invoke other progs with your own
+# command line with each arg string quoted.
+# In this example we just use ls...
+
+eval ls -l `allMyArgs`

@@ -1,0 +1,56 @@
+#!/bin/sh
+#
+
+G='NF == 3 { user[$2] += $1 ; sys[$3] += $1}
+END {
+	for (s in sys) {
+		printf "%5d %s\n", sys[s], s
+	}
+	printf "\n"
+	for (u in user) {
+		printf "%5d %s\n", user[u], u
+	}
+}'
+POST='gawk "$G"'
+
+op=sum
+
+for a
+do
+	case $a in
+	-rm)	op=rm POST='cat -u';;
+	-ls)	op=ls POST='cat -u';;
+	-start)	op=start POST='cat -u';;
+	*)	break 2;;
+	esac
+	shift
+done
+
+(
+c=0
+for m in ${@-`hostname`}
+do
+	echo $m 1>&2
+	case $op in
+	start)	rsh $m -n sed -n -e \''1s/ in .*//p'\' -e 2q \
+			/tmp/remotebuildlog
+		;;
+	ls)	rsh $m -n ls -l /tmp/remotebuildlog
+		;;
+	rm)	rsh $m -n sudo rm -f /tmp/remotebuildlog
+		;;
+	sum)	rsh $m sh -e <<- 'EOF'
+			< /tmp/remotebuildlog gawk 'BEGIN {FS=" |/[0-9]"}
+				$3 == "start" { print $1, "'`hostname`'" }' |
+			sort | uniq -c 
+			EOF
+		;;
+	esac &
+
+	c=`expr $c + 1`
+	case $c in
+	10)     sleep 1; c=0;;
+	esac
+done
+wait
+) | eval $POST

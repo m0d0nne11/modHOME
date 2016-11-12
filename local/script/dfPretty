@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Crunch the output of df such that each entry is all
+# on one line while preserving columnar layout.
+#
+
+df $@ | sed -e '/^[^[:blank:]]/s/^/\
+/' -e 's/Mounted on/mountedOn\
+/' -e 's/^[[:blank:]]*//' | fmt -2400 | column -t | sed -e 's/  \([^ ]\)/ \1/g'
+
+# df $@ | sed -e '/^ /s/$/\
+# /' -e '/^[^ ]/s/^/\
+# /' -e '1s/Mounted on/MountedOn/' | paraCrunch | fmt -1000 | sed -e '/^$/d' | lineup

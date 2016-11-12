@@ -1,0 +1,44 @@
+# This shell script employs AWK to read through a text file, treating
+# the Nth whitespace-separated token (as recognized by AWK) in each
+# line as an element of the corresponding Nth tabular column. That
+# is, the Nth elements of all lines are regarded as being members of
+# the Nth column of the input.
+#
+# After capturing stdin in a temp file, we note the widest token in
+# each column, using that information to generate an AWK format string
+# suitable for use during a second pass, in which we actually emit (as
+# stdout) the text from that same temp file, tabularized.
+#
+# This version of this script is my first attempt at it - improvements
+# are undoubtedly possible...
+#
+# Michael O'Donnell 19980312
+# 20140416 - for approx the same result:
+#            column -t | sed -e 's/\([^ ]\)  /\1 /g'
+#
+# HACK: supplying ANY args on the command line is regarded as a
+#       request that the format string itself be displayed before
+#       the results, in a form suitable for use inside VI.
+#
+
+   timeStamp=`date '+%Y%m%d%H%M%S'`
+    tempFile=/tmp/$$tempFile$timeStamp
+formatString=/tmp/$$format$timeStamp
+
+cat > $tempFile
+
+awk ' BEGIN { fieldMax = 0; } ; { if( NF > fieldMax ) { fieldMax = NF; } for( i = 1; i <= NF; ++i ) { width = length( $i ); if( width > widest[ i ] ) { widest[ i ] = width; } } } ; END { if( fieldMax > 0 ) { printf( "{ printf( \"%%-%ds", widest[ 1 ] ); if( fieldMax > 1 ) { for( i = 2; i <= fieldMax; ++i ) { printf( " %%-%ds", widest[ i ] ); } } printf( "\\n\"" ); for( i = 1; i <= fieldMax; ++i ) { printf( ", $%d", i ); } printf( " ); }\n" ); } } ' <$tempFile >$formatString
+
+#
+# Presence of args means Please Show Format String,
+# so generate a complete awk commandline from it...
+#
+if ! [ -z "$1" ]
+then
+    sed -e 's/%/\\%/g' -e "s/^/awk '/" -e "s/$/ '/" <$formatString
+fi
+
+awk -f $formatString <$tempFile | sed -e 's/[[:space:]][[:space:]]*$//'
+
+rm   -f $formatString  $tempFile
+

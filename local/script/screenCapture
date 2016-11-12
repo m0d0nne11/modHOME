@@ -1,0 +1,45 @@
+#!/bin/sh
+# Michael O'Donnell linuxexchange20110907
+# In general, the name of a file is an arbitrary string
+# of characters.  The notion of an "extension" is just a
+# convention - tacking a .com or .exe or .jpg or even .kittycat
+# onto a filename does nothing to the contents of that file.
+# If a file was created as (say) a PNG graphics file (and then,
+# as is customary, stored with a name that ends in .png) you
+# can't magically convert the contents of that file to the
+# JPEG format by tacking .jpg onto the end of its filename -
+# the actual contents of the file have to be converted.
+# Once converted, we'd presumably store that new file with
+# a name that indicates its new format but, again, that's just
+# convention.
+#
+# This is a shell script that will use some low-level tools
+# available on most Linux distributions:
+#  - We first compute a known-unique temp file in the /tmp
+#    directory, then...
+#  - we announce our intention to sleep 5 seconds
+#    before proceeding so that the user has a chance to
+#    reposition/uncover/deiconify windows, then we invoke...
+#  - xwd (the X Window Dumper) which captures the window you
+#    click on (or the root window if invoked with -root)
+#    and spews it to stdout in xwd-format, which we then
+#    convert with...
+#  - xwdtopnm (the xwd-format to PNM converter), which converts
+#    its stdin and writes the resultant PNM bits to it stdout,
+#    which we then feed to...
+#  - pnmtojpeg (the PNM to JPEG converter) after arranging for
+#    it to write its output to the temp file, which we announce.
+
+function FAILED()  {
+        echo FAILED: $@
+        rm -f "$tempFile"
+        exit 1
+}
+
+tempFile=`mktemp /tmp/screenCapture.XXXXXXXX.jpg` || \
+                 FAILED mktemp /tmp/screenCapture.XXXXXXXX.jpg
+echo "$0: sleeping 5 seconds before capture..." ; sleep 5
+xwd $@ | xwdtopnm | pnmtojpeg        >"$tempFile" || \
+                 FAILED "xwd $@ | xwdtopnm | pnmtojpeg >$tempFile"
+echo "$0: result is $tempFile"
+exit

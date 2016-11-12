@@ -1,0 +1,2 @@
+function vimPreserve() { ( cd ~ && tar cvzf VimFilesB4mod$(tds).tgz .exrc .vim .vimrc ) ; }
+

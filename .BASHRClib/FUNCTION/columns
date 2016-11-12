@@ -1,0 +1,6 @@
+function columns
+{
+    stty   columns "$@"
+    export COLUMNS="$@"
+}
+

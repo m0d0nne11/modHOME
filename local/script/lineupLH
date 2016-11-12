@@ -1,0 +1,17 @@
+
+#sed -e 's/:/: /' -e 's/[	 ][	 ]*$//' -e 's/[	 ][	 ]*/ /g' -e 's/ /RZQ/g' -e 's/:/ /' | lineup | sed -e 's/ /:/' -e 's/RZQ/ /g'
+
+# NOTE: EQS="equals sign"
+# Isolate first instance of an EQS in every line, squeeze all whitespace,
+# join first EQS to its neighbors, hide all spaces, separate EQS from LHS
+# and RHS, do the lineup of those 3 components, unhide the hidden spaces.
+
+sed -r	-e 's/=/ = /' 				\
+	-e 's/[[:space:]]+/ /g'			\
+	-e 's/[[:space:]]+$//g'			\
+	-e 's/ = /=RZQ1/'			\
+	-e 's/ /RZQ2/g' 			\
+	-e 's/=RZQ1/ = /' | lineup | sed 	\
+	-e 's/RZQ2/ /g'
+
+

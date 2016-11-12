@@ -1,0 +1,4 @@
+#!/bin/bash
+# I previously used my "detab" program but why reinvent that wheel...?
+#
+exec expand "$@"

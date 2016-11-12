@@ -1,0 +1,2 @@
+echo "#else /* $1 */" | rjc
+cat

@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+# Scan through all partitions looking for those that seem to
+# contain filesystems from Windows machines, either VFAT or
+# NTFS, and utter the command lines necessary to mount and
+# unmount each.  We also create the corresponding directories
+# under /mnt.  Note that since support for writing to NTFS
+# filesystems is poor we mount those read-only...
+#
+
+( cd /dev
+  for dev in sd?[1-9]
+  do
+      file -s $dev 2>/dev/null
+  done
+) | fgrep -v -e 'No such ' | while read l
+do
+    dev=`echo "$l" | sed -e 's/:.*$//'`
+    if echo "$l" | fgrep -qi ntfs
+    then
+        echo FOUND "$l"
+        mkdir -p /mnt/$dev
+        echo mount -oro -t ntfs /dev/$dev /mnt/$dev
+        echo umount                       /mnt/$dev
+        echo
+
+    elif echo "$l" | fgrep -qi fat
+    then
+        echo FOUND "$l"
+        mkdir -p /mnt/$dev
+        echo mount      -t vfat /dev/$dev /mnt/$dev
+        echo umount                       /mnt/$dev
+        echo
+    fi
+done

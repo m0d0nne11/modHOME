@@ -1,0 +1,35 @@
+#ps -j -a -x -Oc >/tmp/psNow
+#set -x
+
+cd /tmp || exit 1
+
+function snapshot()  {
+    ps -eaf >/tmp/psNow
+    cat /dev/null > rzqNow
+    cat /tmp/psNow | while read zUID zPID zPPID zC zSTIME zTTY zTIME zCMD
+    do
+        echo "$zUID $zPID $zTTY $zCMD" >> rzqNow
+    done
+    sort -bfn --key=1 < rzqNow | fgrep -v -e 'ps -eaf' > psNow
+    rm rzqNow
+}
+
+function logRoll()  {
+    mv  psNow  psLast
+}
+
+function compare()  {
+    diff psLast psNow
+}
+
+snapshot
+
+while :
+do
+    logRoll
+    snapshot
+    compare
+    echo "########################################################"
+    sleep $1
+done
+

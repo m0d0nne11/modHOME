@@ -1,0 +1,354 @@
+#! /bin/sh
+# @(#)format	9.3 MASSCOMP (LOCAL) 5/10/90
+# ex: se ts=5 :
+if [ $debug ]; then
+	# setting -x causes output to go into $err, triggering calls to geterror()
+	# this needs to be fixed
+	echo format: WARNING: setting debug true causes fatal error in geterror
+	set -x
+fi
+PATH="/bin:/usr/bin:/usr/local:/usr/lib/format/bin"; export PATH
+pid=$$; export pid
+BIN=/usr/lib/format/bin
+TMPDIR=/usr/lib/format/tmp
+LOGDIR=/usr/lib/format/logfiles
+tmp1=${TMPDIR}/fxxx1.$pid
+tmp2=${TMPDIR}/fxxx2.$pid
+logfile=${LOGDIR}/$LOGNAME.$pid
+keywordfile=${TMPDIR}/fkywdf.$pid
+err=${TMPDIR}/ferrxxx.$pid
+inx=${TMPDIR}/inx$pid
+toc=${TMPDIR}/\[tg\]\[HFET\].\*$pid
+# Following line to be deleted as soon as cT refs are removed from macros
+# cT=${TMPDIR}/cT.$$
+# Following files used in macros. Reference here is solely so that we
+# can delete the file with "trap" in case the format job is aborted
+gptr=${TMPDIR}/gptr$pid
+figsz=${TMPDIR}/Pf.size.$pid
+
+roff="troff"; ditdev="-Timp"; options="-rf1 -r#$$ -rt1"
+sed="|sed -f /usr/lib/format/macros/sed.t"
+cat="cat"; macros="/usr/lib/tmac/tmac.S"
+
+# nullify some macros we don't want to find in our environment from
+# extraneous sources
+dbg=
+eqn=
+pic=
+files=
+index=
+noscan=
+tbl=
+throwaway=
+tocsrc=
+toconly=
+globaltoconly=
+yadc=
+
+trap "rm -f $tmp1 $tmp2 $err $inx $toc $gptr $keywordfile $figsz; trap '' 0; exit" 0 1 2 3 15
+
+echo "######################################################" > $logfile
+date >> $logfile
+chmod +w $logfile
+pwd >> $logfile
+echo "Command line: $0 $@" >> $logfile
+echo "######################################################" >> $logfile
+
+#########################################################################
+# error handler
+#########################################################################
+geterror() {
+if [ -s "$err" ]; then
+	if [ "$1" = "fatal" ]; then
+		echo "format: fatal error:" 1>&2
+	fi
+	cat $err | tee -a $logfile 1>&2
+	rm -f $err
+	[ "$1" = "fatal" ] && exit
+fi
+}
+
+#########################################################################
+# Read arguments.  This procedure gets executed immediately after its
+# definition, and again after the pre-scanning of the input if
+# "FormatArgs" have been defined.  Thus, FormatArgs take precedence over
+# command-line arguments.  The only way to override this precedence is
+# to use the -n (noscan) command-line argument.  Then the user must
+# explicitly specify yadc, tbl, eqn, and so on, as necessary.
+#########################################################################
+readargs() {
+	while [ "$#" != "0" ]; do
+	   case $1 in
+		-m*)	macsuffix=`expr "$1" : "..\(.*\)"`
+			[ "$macsuffix" ] && macros="/usr/lib/tmac/tmac.$macsuffix"
+			sed="";;
+		-dps*|-ps|-qms2b)
+			ditdev="-Tdps"
+			picopts="-T720"
+			eqnopts="-Taps -r720 -m3";;
+		-psc*|-tps|-qms1|-qms2a)
+			ditdev="-Tpsc"
+			picopts="-T576"
+			eqnopts="-Taps -r576 -m2";;
+		-ips*)
+			ditdev="-Tips"
+			picopts="-T576"
+			eqnopts="-Taps -r720 -m3";;
+		-imp*|-i300|-s3|-imagen|-i2308)
+			ditdev="-Timp"
+			picopts="-T300"
+			eqnopts="-r300 -m6";;
+		-i5320*)
+			echo "$0: $1 not a valid printer name" | tee -a $logfile 1>&2
+			exit;;
+		-t)	roff="nroff -e"
+			post="| ul -i";;
+		-l|-lpr)
+			roff="nroff -e"; options="$options -u5"
+			post="| col -bx | ul -t pnec";;
+	      -p) if [ "$#" -ge "2" ]; then
+				shift
+		 		options="$options -rP$1"
+		  	else	echo "\'-p\' flag requires separate width argument" |
+				tee -a $logfile 1>&2
+				exit
+		  	fi;;
+ 		-w)	if [ "$#" -ge "2" ]; then
+				shift
+		 		options="$options -rW$1"
+		  	else	echo "\'-w\' flag requires separate width argument" |
+				tee -a $logfile 1>&2
+				exit
+			fi;;
+# use of troff register t:
+#	t=0	no toc
+#	t>0	toc
+#	t=2	toc source file requested from command line
+#	t=3	globaltoconly but not toc source file requested from command line
+#	t=4	globaltoconly and toc source file requested from command line
+#	t=5	set only in mktoc, to prevent troff from removing g[HFET]* file
+		-notoc)
+			# number register t used by mS macros
+			options="$options -rt0";;
+		-tocsrc)
+			tocsrc=true
+			# number register t used by mS macros
+			[ "$globaltoconly" ] && options="$options -rt4"
+			[ ! "$globaltoconly" ] && options="$options -rt2";;
+		-toconly)
+			toconly=true
+			throwaway="> /dev/null";;
+		-globaltoconly)
+			toconly=true; globaltoconly=true
+			[ "$tocsrc" ] && options="$options -rt4"
+			[ ! "$tocsrc" ] && options="$options -rt3"
+			throwaway="> /dev/null";;
+		-index)
+			# number register x used by mS macros. If x != 1, index
+			# macros are undefined
+			index=true; options="$options -rx1";;
+		-indexonly)
+			index=true; options="$options -rx1"
+			throwaway="> /dev/null";;
+		-pic)
+			pic="| pic";;
+		-eqn)
+			eqn="| eqn";;
+		-tbl)
+			tbl="| tbl";;
+		-y)	yadc="yadc -mS";;
+		-yopt)
+			shift; yadcopts="$yadcopts $1";;
+		-n)	noscan=true;;
+		-nosed)
+			sed="";;
+		-debug)
+			dbg=true;;
+		-dbg)
+			options="$options -rd1"
+			# leave most temp files in place; for debugging
+			trap "rm -f $tmp1 $tmp2; trap '' 0; exit" 0 1 2 3 15;;
+		-*)	options="$options $1";;
+		 *)	if [ -f $1 ]; then
+				files="$files $1"
+			else echo "format: $1: cannot open" | tee -a $logfile 1>&2
+				exit
+			fi;;
+	   esac
+	   shift
+	done
+}
+readargs $@
+
+if [ ! "$files" -a -t 0 ]; then
+	echo "format: no files specified" | tee -a $logfile 1>&2
+	exit
+fi
+
+[ ! -t 0 ] && stdin=true
+
+# If we are doing debugging only...
+[ "$dbg" ] && eval "cat $files | $BIN/ckroff > /dev/null; exit"
+
+###########################################################################
+# Do pre-scanning if user does not prevent it
+###########################################################################
+rm -f $keywordfile
+if [ ! "$noscan" ]; then
+	awk '
+	NR == 1 && $0 ~ /^x T / {
+		printf ("ditoutfile=true\n") >> "'"$keywordfile"'"
+	}
+	$1 ~ /^\.PS/	{ pic = 1 }
+	$1 ~ /^\.EQ/	{ eqn = 1 }
+	$1 ~ /^\.TS/	{ tbl = 1 }
+	$0 ~ /.*\\#/	{ yadc = 1 }
+	$1 ~ /^\.\\"\.ditroff_MC/ {
+		ditroff_MC="true"
+	}
+	$1 ~ /^\.\\"\.AllFiles:/ {
+		if (AFflag == 0) {
+			for (i=2; i <= NF; ++i) {
+				AllFiles=AllFiles $i " "
+			}
+			AFflag = 1
+		}
+	}
+	$1 ~ /^\.\\"\.CurrentFile:/ {
+		CurrentFiles=CurrentFiles $2 " "
+		print (".ds cF " $2)
+	}
+	$1 ~ /^\.\\"\.FormatArgs:/ {
+		if (FAflag == 0) {
+			for (i=2; i <= NF; ++i) {
+				FormatArgs=FormatArgs $i " "
+			}
+			FAflag = 1
+		}
+	}
+
+	{print}
+	
+	END	{
+		if (pic == 1) 
+			printf ("pic=\"| pic\"; export pic\n") >> "'"$keywordfile"'"
+		if (eqn == 1) 
+			printf ("eqn=\"| eqn\"; export eqn\n") >> "'"$keywordfile"'"
+		if (tbl == 1)
+			printf ("tbl=\"| tbl\"; export tbl\n") >> "'"$keywordfile"'"
+		if (yadc == 1) {
+			printf ("yadc=\"yadc -mS\"; export yadc\n") >> "'"$keywordfile"'"
+		}
+		if ( ditroff_MC )
+			printf ("ditroff_MC=true\n") >> "'"$keywordfile"'"
+		if ( AllFiles )
+			printf ("AllFiles=\"%s\"; export AllFiles\n", AllFiles) >> "'"$keywordfile"'"
+		if ( CurrentFiles )
+			printf ("CurrentFiles=\"%s\"; export CurrentFiles\n", CurrentFiles) >> "'"$keywordfile"'"
+		if ( FormatArgs )
+			printf ("FormatArgs=\"%s\"; export FormatArgs\n", FormatArgs) >> "'"$keywordfile"'"
+	}
+	' $files > $tmp1 2>> $logfile
+
+	#############################################################
+	# Read the keyword file. Re-process any new format arguments
+	[ -r "$keywordfile" ] && . $keywordfile
+	if [ "$ditoutfile" = "true" ]; then
+		echo "WARNING:  You appear to be formatting a troff output file!" 1>&2
+	fi
+	if [ "$FormatArgs" ]; then
+		set -- $FormatArgs
+		readargs $@
+	fi
+fi
+
+######################################################################
+# If we are following the ditroff_MC convention and have yadc symbols,
+# we must run all files composing the document through yadc, and then
+# extract just the files the user is actually formatting.
+######################################################################
+if [ "$ditroff_MC" -a "$yadc" ]; then
+	scr="sed -n "
+	# Following tortured loop creates a sed script to extract just
+	# the desired files from the concatenation of all files in the
+	# document
+	iterate="$files"
+	# [ "$stdin" ] && iterate="$CurrentFiles"
+	[ "$CurrentFiles" ] && iterate="$CurrentFiles"
+	for i in $iterate; do
+		if [ $debug ]; then set -x; fi
+		# Might be simpler to do following with cat and 'here document'
+		scr=''"$scr"' -e '"'"'/^\.\\"\.CurrentFile:[ 	][ 	]*'"$i"'[ 	]*$/,/^\.\\"\.EndOfFile/p'"'"''
+	done
+
+	eval cat $AllFiles | $yadc $yadcopts > $tmp2 2>> $err
+
+	if [ $? != 0 ]; then
+		echo "format: fatal error:" 1>&2
+		cat $err | tee -a $logfile 1>&2
+		exit
+	fi
+	if [ -s "$err" ]; then
+		cat $err | tee -a $logfile 1>&2
+		rm -f $err
+	fi
+
+	rm -f $tmp1
+	yadc=""
+	yadcopts=""
+
+	eval $scr $tmp2 > $tmp1 2>> $err
+	geterror fatal
+	rm -f $tmp2
+fi
+
+if [ ! "$noscan" ]; then
+	files="$tmp1"
+fi
+
+########################################################################
+# Option checking
+########################################################################
+
+# The order of these commands is important
+[ "$pic" ] && pic="$pic $picopts"
+[ "$eqn" ] && eqn="$eqn $eqnopts"
+[ "$roff" = "nroff -e" -a "$eqn" ] && eqn="| neqn"
+[ "$roff" = "nroff -e" ] && tblopts="-TX" && ditdev=""
+[ "$roff" = "nroff -e" ] && pic=
+[ "$tbl" ] && tbl="$tbl $tblopts"
+[ "$yadc" ] && cat="$yadc $yadcopts"
+
+########################################################################
+# Format the stuff
+########################################################################
+if [ "$noexec" = "true" ]; then
+	echo "noexec:  $cat $files $sed $pic $tbl $eqn | $roff $ditdev $options $macros - $post $throwaway" | tee -a $logfile 1>&2
+	exit
+fi
+
+# Pass variables along to mktoc and index
+export sed roff ditdev options macros post err logfile toconly
+
+# Following line to be deleted as soon as cT refs are removed from macros
+# touch $cT
+
+(eval "$cat $files $sed $pic $tbl $eqn | $roff $ditdev $options $macros - $post $throwaway") 2>> $err
+geterror
+
+########################################################################
+# Now make the index
+########################################################################
+
+if [ "$index" = "true" ]; then
+	(eval "cat $inx | /usr/lib/format/bin/index |
+		tee inx.src.$$ $sed |
+		$roff $ditdev $options $macros - $post") > index.out 2>> $err
+	geterror
+fi
+
+########################################################################
+# Clean out log and temp files
+########################################################################
+
+find $LOGDIR $TMPDIR -ctime +5 -exec rm -f {} \;

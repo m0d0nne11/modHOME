@@ -1,0 +1,59 @@
+#!/bin/csh -f
+#
+# Build a list of files which is the inclusive-OR of all the files
+# in all the trees associated with this sandbox, including all
+# files in all backing trees.  All generated filenames are
+# relative to the "src" directory in a "normal" sandbox hierarchy.
+#
+
+onintr cleanUp
+
+set allDirs=/tmp/allDirs$$
+
+set here=`basename $cwd`
+if ( $here != "src" ) then
+    echo "This only works in the src directory of your sandbox"
+    exit 1
+endif
+
+set startDir=$cwd
+
+#
+# Preserve an existing sbDirList-file if found in the current directory.
+#
+if ( -f sbDirList ) then
+    set count=0
+    set save="sbDirList0"
+    while ( -f $save )
+        @ count ++
+        set save="sbDirList"$count
+    end
+    echo "Preserving existing sbDirList file as $save..."
+    mv sbDirList $save || exit 1
+endif
+
+while ( 1 )
+    echo    "####### Collecting files in $cwd"
+    echo -n "####### " ; pwd
+    find . -type d $argv -print >>$allDirs
+    if ( ! -d ../link/src ) then
+        break
+    endif
+    cd ../link/src
+end
+
+#
+# Now sort the sbDirList file, placing results into the final sbDirList
+#
+cd $startDir
+sort -u <$allDirs >sbDirList
+
+echo "###### Result in sbDirList"
+
+#
+# One way or another, we're done.
+#
+cleanUp:
+rm -f          \
+    $allDirs    \
+

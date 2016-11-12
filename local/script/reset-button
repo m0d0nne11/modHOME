@@ -1,0 +1,56 @@
+#!/bin/sh
+# \
+exec wish -f $0 ${@+"$@"}
+
+#
+# $Id: reset-button,v 1.1 1994/10/27 16:40:10 loverso Exp loverso $
+#
+
+set mule /afs/ri/project/norma-nd/farm/bin/mule		;# path to mule
+
+lappend auto_path /afs/ri/user/loverso/local/lib/tcl	;# for tlog
+
+set host [lindex $argv 0]
+if {$host == ""} {
+	puts stderr "Usage: reset-button <host>"
+	exit 1
+}
+
+pack [frame .top] -fill x
+button .top.resetButton -text "$host OFFthenON" \
+	-command [list ButtonHold .top.resetButton do-reset $host]
+pack .top.resetButton -side left
+
+frame .log
+
+proc ButtonHold {w args} {
+	$w config -state disabled
+	update idletasks
+	set ret [catch {uplevel $args}]
+	update				;# flush addition user button presses
+	$w config -state normal
+	return $ret
+}
+
+proc do-reset {host} {
+	global mule
+
+	pack .log
+	tlog-create .log 0 0 1
+	update
+	tlog-add .log Resetting $host at [exec date]...
+
+	if [catch {
+		set f [open "|$mule -f -reset $host" r]
+		while {[gets $f line] != -1} {
+			tlog-add .log $line
+			update
+		}
+		close $f
+	} err] {
+		tlog-add .log Error: $err
+	} else {
+		after 2000 {tlog-destroy .log}
+	}
+}
+

@@ -1,0 +1,6 @@
+
+function allOpenFiles()  {
+	sudo ls -laF /proc/[0-9]*/fd | fgrep -e '->' | sed -e 's/^.*->//' | sort -fd | uniq
+}
+
+

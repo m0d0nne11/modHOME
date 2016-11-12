@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function gzMail2func()
+{
+    if [ $# -ne 3 ]                                   # Number of args correct?
+    then #               0          1          2          3
+        echo "usage: $FUNCNAME emailAddr{s} fromAddr fileNameTag <stdin"
+        return 1
+    fi
+    tempFile=/tmp/gzMailTemp$$`tds`
+    fileName=$3.`tds`.gz
+    echo "To: $1"                  >$tempFile
+    echo "From: $2"               >>$tempFile
+    echo "Subject: $3"            >>$tempFile
+    echo ""                       >>$tempFile
+    gzip | uuencode $fileName     >>$tempFile
+   /usr/lib/mh/post -watch -verbose $tempFile
+    rm                              $tempFile
+}
+
+gzMail2func $@

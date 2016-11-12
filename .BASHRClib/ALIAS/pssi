@@ -1,0 +1,2 @@
+ alias pssi='pss +inbox ; rm ~/.mail/inbox/.[mx]*'
+

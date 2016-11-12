@@ -1,0 +1,14 @@
+if hostname | fgrep -q -e e521 ; then
+    holdFile=/tmp/holdFile$$
+    echo ""            >$holdFile && \
+    echo Date: $(emailDate)   >>$holdFile && \
+    echo "Subject: $@"        >>$holdFile && \
+    echo From: --REMINDER--   >>$holdFile && \
+    echo ""           >>$holdFile && \
+    inc -nosilent -file         $holdFile && \
+    rm                          $holdFile
+else
+    echo "####### $0 not on e521..."
+    exit 1
+fi
+

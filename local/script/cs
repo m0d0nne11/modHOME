@@ -1,0 +1,1 @@
+cscope -dU -l -L -1 $@ | sed -e 's/ /RZQ1/' -e 's/ /RZQ1/' -e 's/ /RZQ1/' -e's/ /RZQ2/g' -e 's/RZQ1/ /g' | lineup | sed -e 's/RZQ2/ /g'

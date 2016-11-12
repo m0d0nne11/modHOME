@@ -1,0 +1,95 @@
+# I had a live system with a basic systemImage loaded on it
+# and I needed to pull all the RapidBuild packages onboard,
+# but I didn't have a RapidBuild server reachable on my
+# subnet and I didn't want to have to lug the box over
+# to someplace where I could connect.  Solution: use
+# SSH to tunnel Rsync traffic through a system that *can*
+# reach a RapidBuild server.  You first need to setup a
+# tunnel from the live system through the reachable system
+# to the RapidBuild server:
+#
+#   ssh -L 873:10.81.80.220:873 root@appimagesvr
+#
+# ...which, in this example, tunnels through a reachable
+# machine in the QA lab to the RapidBuild server isolated
+# on their subnet.
+#
+# After that, the attached script did the rest; it's really
+# just some scaffolding around this rsync command:
+#
+# rsync -avrW --progress --ignore-errors --stats \
+#      --include "*/"                            \
+#      --include "*/release/*"                   \
+#      --include "*/release/*/*"                 \
+#      --exclude "*"                             \
+#        rsync://localhost/rapidbuild/           \
+#       /wxdisk/install
+#
+# I don't actually think this trick will be used all
+# that often but it's nice to know it can be done...
+#
+#   --M
+
+ ##############################################################
+
+echo "NOTICE: The equivalent of this must already be in effect:"
+echo "             ssh -L 873:10.81.80.220:873 root@appimagesvr"
+
+syncRapidBuildLIVE()
+{
+  if rsync -aqW rsync://localhost/rapidbuild/syncing.lock > /dev/null 2>&1 ; then
+    echo
+    echo -e "###############################################################"
+    echo -e "  Rapidinstall server is being updated.. CANNOT RETRIEVE FILES."
+    echo -e "  INSTALL FAILED."
+    return 1
+  fi
+
+  echo
+  echo -e "\n  Copying files from the install server...\n"
+
+  if rsync -avrW --progress --ignore-errors --stats \
+	--include "*/" \
+	--include "*/release/*" \
+	--include "*/release/*/*" \
+	--exclude "*" \
+	rsync://localhost/rapidbuild/ /wxdisk/install
+  then
+    find /wxdisk/install/ -depth -type d -empty -exec rmdir {} \;
+  else
+    echo
+    echo -e "###############################################################"
+    echo "NETWORK INSTALL *FAILED*"
+    echo "Can't communicate with install server."
+    echo
+    return 1
+  fi
+
+  # Preinstall some slow packages...
+  sleep 3
+  echo "  installing DigitalMedia points data. ( ~15 minutes )"
+  rpm -Uvh /wxdisk/install/DigitalMedia/release/DigitalMedia-Pnts_1.0-General-*.rpm
+  sleep 3
+
+# echo "  installing DigitalMedia earth data.  ( ~15 minutes )"
+# rpm -Uvh /wxdisk/install/MapMaker/release/MapMaker-earth*.rpm
+# sleep 3
+  echo "  installing MapMaker srcmat data.     ( ~10 minutes )"
+  rpm -Uvh /wxdisk/install/MapMaker/release/MapMaker-srcmat*.rpm
+  sleep 3
+# echo "  installing MapMaker tiles1k.         ( ~10 minutes )"
+# rpm -Uvh /wxdisk/install/MapMaker/release/MapMaker-tiles_1k*.rpm
+# sleep 3
+# echo "  installing MapMaker tiles500m        ( ~10 minutes )"
+# rpm -Uvh /wxdisk/install/MapMaker/release/MapMaker-tiles_500m*.rpm
+# sleep 3
+
+  rpm -Uvh /wxdisk/install/MISC/release/rapidinstall-*.rpm
+
+  echo -e "###############################################################"
+  echo "Network install complete."
+  echo
+}
+
+syncRapidBuildLIVE
+

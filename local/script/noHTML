@@ -1,0 +1,25 @@
+cat <<EOF
+Subject: No overly complex email encodings, please
+To:
+--------
+
+
+Howdy,
+
+Please allow me to beg you to please, PLEASE not transmit
+your email messages using anything other than plain old ASCII
+text, OK?  Please do NOT use any of the pointlessly tricky
+formats like HTML, RichText, TNEF, quoted-printable, etc, etc.
+Remember, even if you happen to use something like a WWW
+browser to read your email that doesn't mean that everybody
+else does.  Plain old ASCII text is the only thing that's
+guaranteed to be readable by all email softwares.  Thanks...
+
+
+Regards,
+ ---------------------------------
+ Michael O'Donnell    
+ ---------------------------------
+
+EOF
+

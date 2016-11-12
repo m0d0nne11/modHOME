@@ -1,0 +1,7 @@
+#!/bin/csh -f
+set holdFile=/tmp/holdFile$$
+echo ""          >$holdFile && \
+cat                     >>$holdFile && \
+echo ""         >>$holdFile && \
+inc -nosilent -file $holdFile && \
+rm $holdFile

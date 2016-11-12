@@ -1,0 +1,5 @@
+function tdsTimestampFor()  {
+    ls -d --full-time --time-style='+%Y%m%d%H%M%S' "$@" | awk '{ print $6 }';
+}
+
+tdsTimestampFor "$@"

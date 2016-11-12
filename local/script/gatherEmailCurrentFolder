@@ -1,0 +1,19 @@
+#!/bin/bash
+#
+# Gather msgs in the current MH folder with the
+# specified Subject: to the end of the list...
+
+ timeStamp=$$`tds`
+   tempDir=gather$timeStamp
+origFolder=`folder -fast`
+
+    mkdir ~/.mail/$tempDir                   \
+ && pushd ~/.mail/$tempDir                   \
+ && refile       +$tempDir `pick -sub "$@" ` \
+ && folder -push +$tempDir                   \
+ && refile +$origFolder *                    \
+ && popd                                     \
+ && folder -pop                              \
+ && rm -f ~/.mail/$tempDir/,* ~/.mail/$tempDir/.mh_sequences ~/.mail/$tempDir/.xmhcache \
+ && rmdir ~/.mail/$tempDir
+

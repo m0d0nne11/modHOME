@@ -1,0 +1,163 @@
+
+allow_null_glob_expansion=setInScriptFile
+set +f
+
+function usage()  {
+    echo usage: $0 configFile1 configFile2
+    exit 1
+}
+
+####
+# The timeStamp is handy for generating any
+# unique-per-script-invocation temp files and such...
+#
+timeStamp=`date '+%Y%m%d%H%M%S'`
+  md5List=md5List$timeStamp
+  tempDir=/tmp/tempDir$timeStamp
+ tempFile=$tempDir/tempFile$timeStamp
+     dir1=$tempDir/dir1
+     dir2=$tempDir/dir2
+
+if [ ! $# -eq 2 ]
+then
+    echo must mention two config files
+    usage
+fi
+
+if [ ! -f $1 ]
+then
+    echo $1 not a file
+    usage
+fi
+
+if [ ! -f $2 ]
+then
+    echo $2 not a file
+    usage
+fi
+
+mkdir -p $dir1/COMMON/DISABLED $dir1/UNIQUE/DISABLED \
+         $dir1/COMMON/ENABLED  $dir1/UNIQUE/ENABLED  \
+         $dir2/COMMON/DISABLED $dir2/UNIQUE/DISABLED \
+         $dir2/COMMON/ENABLED  $dir2/UNIQUE/ENABLED
+
+fgrep CONFIG $1 | while read rawLine
+do
+    echo "$rawLine" | grep -e '^[	 ]*#' >/dev/null
+    enabled=$?
+    if [ $enabled -eq 0 ]
+    then                                                             # Disabled
+        line=`echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' `
+    else                                                              # Enabled
+        line=`echo "$rawLine" | sed -e 's/^[	 ]*//' `
+    fi
+    token=`echo $line  | sed -e 's/[	 =].*$//' `
+
+    if [ $enabled -eq 0 ]
+    then                                                             # Disabled
+#echo "######## DISABLED1 <$token> <$rawLine>"
+        echo "$rawLine" >$dir1/COMMON/DISABLED/$token
+    else                                                              # Enabled
+#echo "######## ENABLED1 <$token> <$rawLine>"
+        echo "$rawLine" >$dir1/COMMON/ENABLED/$token
+    fi
+done
+
+
+
+
+
+fgrep CONFIG $2 | while read rawLine
+do
+    echo "$rawLine" | grep -e '^[	 ]*#' >/dev/null
+    enabled=$?
+    if [ $enabled -eq 0 ]
+    then                                                             # Disabled
+        line=`echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' `
+    else                                                              # Enabled
+        line=`echo "$rawLine" | sed -e 's/^[	 ]*//' `
+    fi
+    token=`echo $line  | sed -e 's/[	 =].*$//' `
+
+    if [ $enabled -eq 0 ]
+    then                                                             # Disabled
+#echo "######## DISABLED2 <$token> <$rawLine>"
+        if [ -f $dir1/COMMON/DISABLED/$token -o -f $dir1/COMMON/ENABLED/$token ]
+        then
+            echo "$rawLine" >$dir2/COMMON/DISABLED/$token
+        else
+            echo "$rawLine" >$dir2/UNIQUE/DISABLED/$token
+        fi
+    else                                                              # Enabled
+#echo "######## ENABLED2 <$token> <$rawLine>"
+        if [ -f $dir1/COMMON/DISABLED/$token -o -f $dir1/COMMON/ENABLED/$token ]
+        then
+            echo "$rawLine" >$dir2/COMMON/ENABLED/$token
+        else
+            echo "$rawLine" >$dir2/UNIQUE/ENABLED/$token
+        fi
+    fi
+done
+
+cd $dir1/COMMON/ENABLED
+for token in `find . -type f`
+do
+    if [ ! -f $dir2/COMMON/DISABLED/$token -a ! -f $dir2/COMMON/ENABLED/$token ]
+    then
+        mv $token $dir1/UNIQUE/ENABLED
+    fi
+done
+
+cd $dir1/COMMON/DISABLED
+for token in `find . -type f`
+do
+    if [ ! -f $dir2/COMMON/DISABLED/$token -a ! -f $dir2/COMMON/ENABLED/$token ]
+    then
+        mv $token $dir1/UNIQUE/DISABLED
+    fi
+done
+
+echo "############# Disabled options unique to $1"
+cd $dir1/UNIQUE/DISABLED/
+for f in `find . -type f -print`
+do
+    cat $f
+done
+
+echo "############# Disabled options unique to $2"
+cd $dir2/UNIQUE/DISABLED/
+for f in `find . -type f -print`
+do
+    cat $f
+done
+
+echo "############# Enabled options unique to $1"
+cd $dir1/UNIQUE/ENABLED/
+for f in `find . -type f -print`
+do
+    cat $f
+done
+
+echo "############# Enabled options unique to $2"
+cd $dir2/UNIQUE/ENABLED/
+for f in `find . -type f -print`
+do
+    cat $f
+done
+
+
+echo "############# Common options, enabled but different..."
+cd $dir1/COMMON/ENABLED
+for token in `find . -type f -print`
+do
+    if ! diff -q $dir1/COMMON/ENABLED/$token $dir2/COMMON/ENABLED/$token >>$tempFile
+    then
+        echo "############ begin ############" $1 $token $2
+        diff $dir1/COMMON/ENABLED/$token $dir2/COMMON/ENABLED/$token
+        echo "############  end  ############" $1 $token $2
+    fi
+rm $token $dir2/COMMON/ENABLED/$token
+done
+
+ rm -rf $tempDir
+

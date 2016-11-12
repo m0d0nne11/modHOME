@@ -1,0 +1,9 @@
+function jdl
+{
+    echo "##############################" $jnk/"$@" versus "$@"
+    diff -b --recursive -U10    $jnk/"$@" "$@"
+#   diff -b --recursive         $jnk/"$@" "$@"
+#   diff -b --recursive --brief $jnk/"$@" "$@"
+    echo "#####################" That was $jnk/"$@" versus "$@"
+}
+

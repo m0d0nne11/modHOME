@@ -1,0 +1,19 @@
+#set -x -v
+tempFile=/tmp/tempFileCraig`tds`.$$
+craigslistSearch "$1" > $tempFile
+
+head -2 $tempFile
+while read entireLine
+do
+#   echo LINE is "${entireLine}"
+    url="$(echo "${entireLine}" | extractURLs | sed -e 's/^ *//g')"
+#   echo URL is "${url}"
+    if ! wget -O - "${url}" 2>&1 | fgrep -iq -e 'nothing found'
+    then
+#       echo HIT
+        echo "${entireLine}"
+    fi
+done < <( fgrep -i http $tempFile )
+tail -1 $tempFile
+
+rm $tempFile

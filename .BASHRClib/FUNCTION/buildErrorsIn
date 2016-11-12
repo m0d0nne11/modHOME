@@ -1,0 +1,5 @@
+function buildErrorsIn
+{
+    fgrep -i -e '**' -e warning -e error -e gmake "$@" | grep -v -e "ANSI.*long.*long" -e /tcl/ -e 'Compiling .* for ' -e 'Creating link to ' -e 'from .*error.*\.c:' -e 'unix_user.c:110' -e 'both set; only debugging' -e 'ANSI.*length modifier'
+}
+

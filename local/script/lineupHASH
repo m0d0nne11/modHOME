@@ -1,0 +1,6 @@
+# Do a lineup of the contents of hash-commented lines,
+# forcing the hashes over to the left column and keeping
+# everything else over by at least one space
+
+rq ' ' | eat | sed -e 's/^ #/#/' -e 's/^ /@/' | lineup | sed -e 's/^@/ /'
+

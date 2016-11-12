@@ -1,0 +1,5 @@
+function word()  {
+#gunzip < $WORDLIST | egrep $*
+ cat      $WORDLIST | egrep $*
+}
+

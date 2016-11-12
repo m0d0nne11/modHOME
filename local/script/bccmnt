@@ -1,0 +1,3 @@
+echo "/*"
+detab | awk '{ printf( " * %s\n", $0 ); }'
+echo " */"

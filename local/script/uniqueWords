@@ -1,0 +1,2 @@
+eat | tr ' ' '
+' | sort -u

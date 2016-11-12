@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+# Intended for use in vi where a series of 'mv' commands
+# is generated and then executed from within the editor
+# after suitable modifications.
+#
+
+while read f ; do echo "mv '${f}' '${f}'" ; done

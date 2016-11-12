@@ -1,0 +1,52 @@
+
+function OLDzapKnownHostLine()  {
+	if [ $# -lt 1 ]
+	then
+		echo Need line number
+		return 1
+	fi
+	tempFile=$(mktemp /tmp/SSHknownHosts.XXXXXX)
+	sed -e "$1d"  < ~/.ssh/known_hosts >$tempFile
+	cat $tempFile > ~/.ssh/known_hosts
+	rm $tempFile
+	return 0
+}
+
+###############################################################################
+# Given a line number (and an optional userID) delete the specified
+# line from the .ssh/known_hosts file relative to the current user's
+# home directory (or the homeDir of the optional userID, if specified)
+#
+function zapKnownHostLine()  {
+    local homeDir
+    local tempFile1
+    local tempFile2
+
+    if [ $# -lt 1 ] ; then
+        echo usage: $FUNCNAME 'lineNumber [userID]'
+        echo $FUNCNAME will operate by default on $homeDir/.ssh/known_hosts
+        return 1
+    fi
+
+    if [ $# -gt 1 ] ; then
+        homeDir=$(eval "echo ~$2")
+    else
+        if [ "$(whoami)" = "root" ] ; then
+            homeDir=$(eval "echo ~root")              # Special case for rootMOD
+        else
+            homeDir=~
+        fi
+    fi
+
+    tempFile1=$(mktemp /tmp/zapKnownHostLineTEMP.XXXXXXXXXX) || return 1
+    tempFile2=$(mktemp /tmp/zapKnownHostLineTEMP.XXXXXXXXXX) || return 1
+    echo $FUNCNAME deleting line $1 from $homeDir/.ssh/known_hosts
+    echo "(temp files: $tempFile1 $tempFile2)"
+    cat            $homeDir/.ssh/known_hosts > $tempFile1   || return 1
+    sed -e "$1d"  > $tempFile2               < $tempFile1   || return 1
+    diff $tempFile1 $tempFile2
+    cat             $tempFile2 > $homeDir/.ssh/known_hosts  || return 1
+    rm   $tempFile1 $tempFile2
+    return 0
+}
+

@@ -1,0 +1,9 @@
+function mzap
+{
+    sho | fgrep -i subject
+    echo "#### PREPARING TO ZAP $(mhpath cur) "
+    echo "#### (^C to abort)"
+    read
+    rm $(mhpath cur)
+}
+

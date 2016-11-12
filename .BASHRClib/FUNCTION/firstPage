@@ -1,0 +1,4 @@
+function firstPage()  {
+	head -"$[$[$[$[$LINES * 100] / 100] * 95] / 100]"
+}
+

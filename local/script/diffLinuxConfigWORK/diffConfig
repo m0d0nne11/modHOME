@@ -1,0 +1,195 @@
+
+function usage()  {
+    echo usage: $0 configFile1 configFile2
+    exit 1
+}
+
+####
+# These seem not to work as I expected...
+#
+allow_null_glob_expansion=setInScriptFile
+set +f
+
+####
+# The timeStamp is handy for generating any
+# unique-per-script-invocation temp files and such...
+#
+timeStamp=`date '+%Y%m%d%H%M%S'`
+  md5List=md5List$timeStamp
+  tempDir=/tmp/tempDir$timeStamp
+ tempFile=$tempDir/tempFile$timeStamp
+     dir1=$tempDir/dir1
+     dir2=$tempDir/dir2
+
+
+if [ ! $# -eq 2 ]
+then
+    echo must mention two config files
+    usage
+fi
+
+if [ ! -f $1 ]
+then
+    echo $1 not a file
+    usage
+fi
+
+if [ ! -f $2 ]
+then
+    echo $2 not a file
+    usage
+fi
+
+fgrep CONFIG $1 | while read rawLine
+do
+    echo "$rawLine" | grep -e '^[	 ]*#' >/dev/null
+    enabled=$?
+    if [ $enabled -eq 0 ]
+    then                                                             # Disabled
+        line=`echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' `
+    else                                                              # Enabled
+        line=`echo "$rawLine" | sed -e 's/^[	 ]*//' `
+    fi
+    token=`echo $line  | sed -e 's/[	 =].*$//' `
+
+    mkdir -p $dir1/$token
+    if [ $enabled -eq 0 ]
+    then                                                             # Disabled
+#echo "######## DISABLED1 <$token> <$rawLine>"
+        echo "$rawLine" >$dir1/$token/DISABLED
+    else                                                              # Enabled
+#echo "######## ENABLED1 <$token> <$rawLine>"
+        echo "$rawLine" >$dir1/$token/ENABLED
+    fi
+done
+
+
+
+fgrep CONFIG $2 | while read rawLine
+do
+    echo "$rawLine" | grep -e '^[	 ]*#' >/dev/null
+    enabled=$?
+    if [ $enabled -eq 0 ]
+    then                                                             # Disabled
+        line=`echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' `
+    else                                                              # Enabled
+        line=`echo "$rawLine" | sed -e 's/^[	 ]*//' `
+    fi
+    token=`echo $line  | sed -e 's/[	 =].*$//' `
+
+    mkdir -p $dir2/$token
+    if [ $enabled -eq 0 ]
+    then                                                             # Disabled
+#echo "#### DISABLED2 <$token> <$rawLine>"
+        echo "$rawLine" >$dir2/$token/DISABLED
+    else                                                              # Enabled
+#echo "#### ENABLED2 <$token> <$rawLine>"
+        echo "$rawLine" >$dir2/$token/ENABLED
+    fi
+done
+
+cd $dir1
+for token in *
+do
+    if [ -f $token/ENABLED ]
+    then
+        if [ -f $token/DISABLED ]
+        then
+            echo "####" $token is both DISABLED and ENABLED - trimming...
+            rm $token/DISABLED
+        fi
+    fi
+done
+
+
+cd $dir2
+for token in *
+do
+    if [ -f $token/ENABLED ]
+    then
+        if [ -f $token/DISABLED ]
+        then
+            echo "####" $token is both DISABLED and ENABLED - trimming...
+            rm $token/DISABLED
+        fi
+    fi
+done
+
+cd $dir1
+for token in *
+do
+    if [ -f $token/DISABLED  -a -f $dir2/$token/DISABLED ]
+    then
+        echo $token >>$tempDir/commonDISABLED
+        rm $token/DISABLED $dir2/$token/DISABLED
+        rmdir       $token
+        rmdir $dir2/$token
+    fi
+
+    if [ -f $token/ENABLED  -a -f $dir2/$token/ENABLED ]
+    then
+        if diff -qb $token/ENABLED $dir2/$token/ENABLED >/dev/null
+        then
+            cat $token/ENABLED >>$tempDir/commonENABLED
+            rm $token/ENABLED $dir2/$token/ENABLED
+            rmdir       $token
+            rmdir $dir2/$token
+        fi
+    fi
+done
+
+
+cd $dir1
+for token in *
+do
+    if [ -f $token/DISABLED ]
+    then
+        echo  $token >>$tempDir/uniqueDISABLED1
+        rm    $token/DISABLED 
+        rmdir $token
+    fi
+
+    if [ -f $token/ENABLED ]
+    then
+        cat   $token/ENABLED >>$tempDir/uniqueENABLED1
+        rm    $token/ENABLED 
+        rmdir $token
+    fi
+
+done
+
+
+cd $dir2
+for token in *
+do
+    if [ -f $token/DISABLED ]
+    then
+        echo  $token >>$tempDir/uniqueDISABLED2
+        rm    $token/DISABLED 
+        rmdir $token
+    fi
+
+    if [ -f $token/ENABLED ]
+    then
+        cat   $token/ENABLED >>$tempDir/uniqueENABLED2
+        rm    $token/ENABLED 
+        rmdir $token
+    fi
+
+done
+
+
+echo "####" Common DISABLED options:
+cat  $tempDir/commonDISABLED
+
+echo "####" Common ENABLED options:
+cat  $tempDir/commonENABLED
+
+echo "####" Enabled options unique to $1:
+cat  $tempDir/uniqueENABLED1
+
+echo "####" Enabled options unique to $2:
+cat  $tempDir/uniqueENABLED2
+
+#rm -rf $tempDir $tempFile
+

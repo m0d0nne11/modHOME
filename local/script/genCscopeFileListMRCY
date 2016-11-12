@@ -1,0 +1,502 @@
+#
+# This script expects to be invoked in the root of a Mercury
+# MC/OS source tree.  This would typically be /vobs/mcos with
+# a given ClearCase view selected, but it should also work if
+# you're one of those who copy the contents of a given view out
+# onto your local disk somewhere.  Further, if $MC_BUILD_OUTPUT
+# is defined in your environment, this script will also look in
+# that subtree for files of interest.
+#
+# This script generates a file-list named cscope.files which is
+# what Cscope expects to use while building its database.  That
+# file-list can also be fed to glimpseindex and [ce]tags to good
+# effect.  This script was created when it became apparent that
+# simply saying something like:
+#
+#    find . -type f -name '*.[ch]'
+#
+# yielded a file-list with many redundant entries and which caused
+# the corresponding cscope/[ce]tags databases to be gigantic.  The
+# existence of this script should not be seen as implying that the
+# author has any penetrating insight into the alleged organization
+# of our build environment; it's more the case that every time I've
+# seen a file in my file-list that I don't like I've just added
+# another RE herein to make it go away...
+#
+# Approximate reduction in cscope database size: 80Mb -> 8Mb
+#
+# NOTES:
+# - This is definitely a work-in-progress; suggestions for
+#   improvement are welcome.  This was developed primarily
+#   in a view of SAT_MRG vintage; YMMV with others.
+#
+# - It unfortunately appears to be normal for this script to
+#   spew warnings about stale symlinks in our build environment
+#   which no longer point anywhere useful...
+#
+# - Probably needs modification such that we gather the
+#   .[chs] files from the {cpu,pf,port}/host/* directories.
+#       (now mostly implemented)
+#
+# - For you minimalists out there:  it should be mentioned that
+#   jgillono has a similar script which accomplishes approximately
+#   the same thing as this one while being smaller and probably
+#   faster; this one discards duplicate files, is somewhat more
+#   configurable and handles files from $MC_BUILD_OUTPUT.
+#
+# - For 4.x please consider this note from mrz:
+#
+# >Date: Fri, 02 Oct 1998 13:27:18 -0400
+# >From: Michael Zucca <mrz@mc.com>
+# >Subject: cscope script under 4.x
+# >
+# >I've run your script under 4.x and it seems to work fine.
+# >However, you need to use the following CSCOPE_PACKAGE_LIST
+# >
+# >cpu exec ics obj mc_utils os os_specs pf port stdc mercury
+# >
+# >This assumes you've already done a build and make mercury.
+#
+# mod   980605
+# mod 19990615 <<--  Now Y2K compliant!
+
+####
+# The timeStamp is handy for generating any
+# unique-per-script-invocation temp files and such...
+#
+timeStamp=`date '+%Y%m%d%H%M%S'`
+  md5List=md5List$timeStamp
+ tempFile=tempFile$timeStamp
+parentDir=`dirname $PWD`
+
+cat /dev/null >$tempFile
+
+
+####
+# Make sure we have an md5sum executable...
+#
+md5sumPath=`type md5sum | tail -1`
+
+if [ -z "$md5sumPath" ]
+then
+    echo "#### Required executable (md5sum) not in PATH."
+    # bach:/opt/local/bin/md5sum was usable as of 981109
+    exit 1
+fi
+
+
+####
+# Preserve existing instances of cscope.files, if any...
+#
+if [ -f cscope.files ]
+then
+    mv                   cscope.files              cscope.files$timeStamp
+    echo "####" Existing cscope.files preserved as cscope.files$timeStamp
+fi
+
+
+####
+# On many of our Sun boxes only the /usr/xpg4/bin
+# version of grep understands the -e switch
+#
+if [ -x /usr/xpg4/bin/grep ]
+then
+    GREP=/usr/xpg4/bin/grep
+else
+    GREP=grep          # We'll just have to hope this grep does what we need...
+fi
+
+
+####
+# Use mod's whitespace-collapser if we can...
+#
+if [ -x ~mod/local/bin/eat ]
+then
+    COLLAPSE_WHITESPACE=~mod/local/bin/eat
+else
+    COLLAPSE_WHITESPACE="sed -e 's/[	 ][	 ]*/ /g' "
+fi
+
+
+####
+# We can initialize the PACKAGE_LIST from a number of different
+# sources which are considered in precedence order:
+#
+#  - An environment variable named CSCOPE_PACKAGE_LIST
+#  - A file named  CSCOPE_PACKAGE_LIST in the current             directory
+#  - A file named .CSCOPE_PACKAGE_LIST in the current user's home directory
+#  - The DEFAULT_PACKAGE_LIST variable defined below
+#
+# Note that overrides defined from the contents of a file can
+# have lines in them which are "commented out" (excluded in
+# their entirety) if a '#' appears at ANY POINT in that line...
+#
+#DEFAULT_PACKAGE_LIST="cpu dbg ebi ebi_specs exec obj \
+#                      ics mc_utils os os_specs pf tatl tatl_leaf \
+#                      port stdc stdc_leaf " #drivers driver_bin"
+#
+ DEFAULT_PACKAGE_LIST="	cpu       dbg    driver_bin drivers   ebi	\
+			ebi_specs exec   flash      hw_specs  ic_specs	\
+			ics       kdsmc  mc_utils   obj       os	\
+			os_specs  pf     port       stdc      stdc_leaf"
+#			dmc       prommc tatl       tatl_leaf new_tests
+
+
+
+if [ -z "$CSCOPE_PACKAGE_LIST" ]
+then
+    if [ -f CSCOPE_PACKAGE_LIST ]
+    then
+        echo "PACKAGE_LIST taken from file CSCOPE_PACKAGE_LIST"
+        PACKAGE_LIST=`fgrep -v "#" CSCOPE_PACKAGE_LIST`
+    else
+        if [ -f ~/.CSCOPE_PACKAGE_LIST ]
+        then
+            echo "PACKAGE_LIST taken from file ~/.CSCOPE_PACKAGE_LIST"
+            PACKAGE_LIST=`fgrep -v "#" ~/.CSCOPE_PACKAGE_LIST`
+        else
+            echo "Using DEFAULT_PACKAGE_LIST"
+            PACKAGE_LIST="$DEFAULT_PACKAGE_LIST"
+        fi
+    fi
+else
+    echo "PACKAGE_LIST taken from env \$CSCOPE_PACKAGE_LIST"
+    PACKAGE_LIST="$CSCOPE_PACKAGE_LIST"
+fi
+
+
+####
+# Describe what we settled on...
+#
+echo "#### PACKAGES..."
+echo $PACKAGE_LIST
+
+if [ $MC_BUILD_OUTPUT ]
+then
+    echo "####" \$MC_BUILD_OUTPUT defined in environment:
+    echo $MC_BUILD_OUTPUT
+else
+    echo "####" \$MC_BUILD_OUTPUT is UNDEFINED in environment...
+    if [ -e out ]
+    then
+        echo "####" ...will try $PWD/out
+        MC_BUILD_OUTPUT=$PWD/out
+    fi
+fi
+
+
+####
+# We first generate a file which is a list of all leaf-node
+# directories of possible interest in the various Packages.
+# We say -follow to prevent our search from ending prematurely
+# as it encounters directories that are actually symLinks...
+#
+# Examples of candidate starting points:
+#
+# ad21000 ada adm_work binutils bison build c cpu cpu_specs
+# cr dbg diag dmc dpk driver_bin drivers ebi ebi_specs eng_mgt
+# esp exec flexlm gcc gdb gdbmc gmake gnu gnu_flex gnu_libstdc
+# hoo hoo2 hoo3 hoo5 hoo7 hw_specs ic_specs ics kdsmc lang links
+# madd matlab mc_utils mcos mcos2 mcos3 msp msptools native_tools
+# new_tests obj old_msptest os os_specs peakware peg perennial
+# pf plumhall port rel_os_specs rel_port rel_stdc releng rtests
+# sal sqa ssg stage staging stars stdc stdc.old stdc_leaf sv
+# svmc sysadmin target_headers target_headers_2 target_headers_3
+# target_headers_4 target_headers_5 target_libs target_scripts
+# target_scripts.old target_tools tcl test texinfo tools utils
+#
+# Start gathering directories of interest...
+#
+for package in $PACKAGE_LIST $MC_BUILD_OUTPUT
+do
+    for dir in $PWD $parentDir $parentDir/mcos2 $parentDir/mcos3
+    do
+        if [ -e $dir/$package ]
+        then
+            package=$dir/$package
+            break
+        fi
+    done
+
+    echo -n "####" finding directories in $package...
+    find $package -follow -type d \
+       \( -name src -o -name include -o -name generated \) -print >>$tempFile
+    echo DONE
+done
+
+
+####
+# Now consider additional specific directories (and only directories -
+# no symLinks) from within the cpu/ and pf/ Packages...
+#
+# THIS PART NEEDS WORK # XXX
+#
+#for dir in cpu/host/adi21060/adi21060  \
+#           cpu/host/adi21060/adi21k_le \
+#           cpu/host/i860/i860          \
+#           cpu/host/lib/adi21060       \
+#           cpu/host/lib/adi21k_le      \
+#           cpu/host/lib/i860           \
+#           cpu/host/lib/ix86           \
+#           cpu/host/lib/ix86_db        \
+#           cpu/host/lib/mc68020        \
+#           cpu/host/lib/mips           \
+#           cpu/host/lib/ppc            \
+#           cpu/host/lib/ppc_elf        \
+#           cpu/host/lib/sparc          \
+#           cpu/host/lib/sparc_elf      \
+#           cpu/host/ppc/ppc            \
+#           pf/host/ce860/i860          \
+#           pf/host/lib/adi21060        \
+#           pf/host/lib/adi21k_le       \
+#           pf/host/lib/i860            \
+#           pf/host/lib/ppc             \
+#           pf/host/ppc/ppc             \
+#           pf/host/race_860/i860       \
+#           pf/host/sharc/adi21060      \
+#           pf/host/sharc/adi21k_le     \
+#           pf/host/vmbs_860/i860
+#do
+#    if [ -e $dir ]
+#    then
+#        dir=$PWD/$dir
+#    else
+#        if [ -e $parentDir/$dir ]
+#        then
+#            dir=$parentDir/$dir
+#        fi
+#    fi
+#
+#    if [ -e $dir ]
+#    then
+#        echo -n "####" finding directories in $dir...
+#        find $dir -follow -type d -print >>$tempFile
+#    else
+#        echo "####" Ignoring $dir
+#    fi
+#done
+
+
+####
+# Before we start gathering files we toss a few directories...
+#
+$GREP -v -e '/curses/'         \
+         -e '/imports/'        \
+         -e '/mercury/'        \
+         -e '\.old'            \
+         -e '/target_headers/' \
+         -e '/example'         \
+         -e '/target_tools/'   \
+         -e '\.tmpl$'          < $tempFile >cscope.files
+
+mv cscope.files $tempFile
+
+
+####
+# Gather files...
+#
+for dir in `cat $tempFile`
+do
+    if [ -L $dir ]
+    then
+        echo "####" SKIPPING $dir "(symLink)"
+    else
+        if [ -d $dir ]
+        then
+            echo -n "####" finding files in $dir...
+            find $dir -type f -print >>cscope.files
+
+            ####
+            # We reluctantly conclude that certain rules files
+            # with names like [Mm]akefil*, and which live in
+            # otherwise uninteresting directories, should be
+            # considered for our list, so we feel around for
+            # them while we're in the neighborhood...
+            #
+            # XXX This is broken since *akefil* can
+            #     evaluate to more than one file, or to NULL
+            #
+            if [ -e $dir/../*akefil* ]
+            then
+                pushd $dir/.. >/dev/null
+                for f in *akefil*
+                do
+                    if fgrep -s '#define' $f
+                    then
+                        echo $PWD/$f >>cscope.files
+                    fi
+                done
+                popd >/dev/null
+            fi
+            echo DONE
+        else
+            echo "####" Script ERROR - $dir NOT directory
+            exit 1
+        fi
+    fi
+done
+
+
+oldLineCount=`wc -l cscope.files`
+
+#cp                           cscope.files          cscope.filesRAW_DEBUG$timeStamp
+#echo "###DEBUG - raw copy of cscope.files saved as cscope.filesRAW_DEBUG$timeStamp"
+
+
+####
+# Now toss files with names we don't want...
+#
+$GREP -v -e '[0-9]$'                \
+         -e '860'                   \
+         -e '\.ann$'                \
+         -e '\.[ao]$'               \
+         -e '\.aps$'                \
+         -e 'ar_names$'             \
+         -e '\.bat$'                \
+         -e '/c80/'                 \
+         -e 'cfg$'                  \
+         -e '\.clw*'                \
+         -e '\.contrib*'            \
+         -e '\.cpp_inc$'            \
+         -e '\.dep*'                \
+         -e 'desc$'                 \
+         -e '\.dsp*'                \
+         -e '\.dsw*'                \
+         -e '\.duplicate$'          \
+         -e 'enerated/headers\.mk$' \
+         -e 'src/exampl'            \
+         -e 'EXPORTS$'              \
+         -e '\.gperf$'              \
+         -e 'ibrary$'               \
+         -e 'INCLUDES$'             \
+         -e '\.ico$'                \
+         -e '\.ini$'                \
+         -e 'ISSUES$'               \
+         -e '\.java*'               \
+         -e '\.keep*'               \
+         -e '-k\.s$'                \
+         -e '\.lib$'                \
+         -e '\.mak*'                \
+         -e '\.mcl$'                \
+         -e '\.mdp$'                \
+         -e '\.ncb$'                \
+         -e 'Notes$'                \
+         -e '\.opt*'                \
+         -e '\.pch$'                \
+         -e '\.pdb$'                \
+         -e '/\.pkg_facilities\.h$' \
+         -e '\.facilities\.mk$'     \
+         -e '\.plg*'                \
+         -e '/psosx/'               \
+         -e 'rb/src/rb_test.c$'     \
+         -e '\.rc*'                 \
+         -e 'README$'               \
+         -e '\.tmpl$'               \
+         -e '\.txt$'                \
+         -e '\.vep$'    < cscope.files | sort -u >$tempFile
+
+
+#        -e 'akefile$'              \
+#        -e '\.mk$'                 \
+#        -e '\.c_[chs]$'            \
+#
+
+mv $tempFile cscope.files
+
+
+####
+# Force inclusion of specific files that live off the beaten path...
+#
+for f in $PWD/os/scripts/host_api.c
+do
+    echo $f >>cscope.files
+done
+
+
+#cp                           cscope.files          cscope.filesSED_DEBUG$timeStamp
+#echo "###DEBUG - raw copy of cscope.files saved as cscope.filesSED_DEBUG$timeStamp"
+
+
+####
+# Use md5 to compute a signature value for each file; we
+# then look for duplicates in a sorted list of those
+# signatures.  Since each signature can be relied upon to be
+# unique for each unique file, duplicate signatures indicate
+# duplicate files which may be removed from our list.
+#
+echo "#### Begin DUPLICATE-ELIMINATION -"
+echo "#### Calculating md5 tag for each file..."
+xargs -l10 md5sum <cscope.files | sort >$md5List
+
+
+####
+# From the $md5List, clip out a list of md5 tags which are
+# associated with duplicate files, one tag per group of
+# two-or-more duplicate files... (Using cscope.files as
+# a temporary file here)
+#
+$COLLAPSE_WHITESPACE <$md5List | cut -f 1 -d ' ' | uniq -d >cscope.files
+
+
+####
+# Move filenames mentioning the $MC_BUILD_OUTPUT area to the end of
+# $md5List on the assumption that this will select the "mother" file in
+# preference to generated files when choosing from a set of duplicates.
+#
+if [ ! -z "$MC_BUILD_OUTPUT" ]
+then
+    echo "####" Arranging prejudice against duplicates from MC_BUILD_OUTPUT...
+    fgrep -v $MC_BUILD_OUTPUT $md5List  >rzqTemp$$
+    fgrep    $MC_BUILD_OUTPUT $md5List >>rzqTemp$$
+    mv              rzqTemp$$ $md5List
+fi
+
+
+echo "####" Selecting one representative from each set of duplicates...
+cat cscope.files | while read id
+do
+    echo "####" Selecting first entry from these duplicates:
+    fgrep $id $md5List
+    fgrep $id $md5List | head -1 >>$tempFile
+done
+
+
+####
+# Since $md5List is really just cscope.files with an md5 tag on
+# each line we now delete from $md5List ALL lines having a tag
+# that corresponds to a duplicated file.  We then add our list
+# of representatives back in and sort the whole mess, overwriting
+# cscope.files with the no-duplicates version...
+#
+echo "####" Discarding names of ALL duplicate files...
+fgrep -f cscope.files -v <$md5List >>$tempFile
+
+echo "####" Allowing representatives back into the list...
+$COLLAPSE_WHITESPACE < $tempFile | cut -f 2 -d ' ' | sort >cscope.files
+
+
+####
+# With the (probably vain) hope that we can influence
+# cscope and friends to select the "mother" files in
+# preference to files from the MC_BUILD_OUTPUT area,
+# we once again sweep them to the end of the list...
+#
+if [ ! -z "$MC_BUILD_OUTPUT" ]
+then
+    echo "####" Moving MC_BUILD_OUTPUT files to end of list...
+    fgrep -v $MC_BUILD_OUTPUT cscope.files  >$tempFile
+    fgrep    $MC_BUILD_OUTPUT cscope.files >>$tempFile
+    mv       $tempFile        cscope.files
+fi
+
+
+echo "####" Done...
+ls -l cscope.files
+
+newLineCount=`wc -l cscope.files`
+echo "####" oldLineCount=$oldLineCount newLineCount=$newLineCount
+
+rm -f $tempFile $md5List
+
+exit 0
+

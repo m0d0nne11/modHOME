@@ -1,0 +1,11 @@
+function diffPairs
+{
+    while read old new
+    do
+        echo "#######################################################################"
+        echo BEGIN $old versus $new
+        sdiff -w160 $old $new
+        echo END $old versus $new
+    done
+}
+

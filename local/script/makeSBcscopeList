@@ -1,0 +1,36 @@
+#!/bin/csh -f
+#
+#
+#
+
+set here=`basename $cwd`
+if ( $here != "src" ) then
+    echo "This only works in the src directory of your sandbox"
+    exit 1
+endif
+
+if ( ! -f sbFileList ) then
+    echo "Can't find sbFileList - try makeSBfileList"
+    exit 1
+endif
+
+#
+# Preserve any existing cscope.files-file if found in the current directory.
+#
+if ( -f cscope.files ) then
+    set count=0
+    set save="cscope.files0"
+    while ( -f $save )
+        @ count ++
+        set save="cscope.files"$count
+    end
+    echo "Preserving existing cscope.files file as $save..."
+    mv cscope.files $save || exit 1
+endif
+
+grep '\.h$' sbFileList | findSBfile | sed -e 's/\/\.\//\//'  >cscope.files
+grep '\.c$' sbFileList | findSBfile | sed -e 's/\/\.\//\//' >>cscope.files
+
+echo "###### Result in cscope.files"
+
+exit 0

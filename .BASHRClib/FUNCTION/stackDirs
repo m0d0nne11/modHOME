@@ -1,0 +1,31 @@
+function stackDirs()  {
+    local f
+    local dirs
+    local list
+
+    list=$1
+    if [ -z "$list" ]
+    then
+        echo "No dirStack file specified"
+        return 1
+    fi
+    if [ -s $list ]
+    then
+        pd $PWD >/dev/null                   # Ensure current list isn't empty.
+        dirs=$(builtin dirs)                             # Capture current list.
+        pd $PWD >/dev/null                  # Add a temporary place to stand...
+        for f in $dirs                       # Lose each entry in current list.
+        do
+            popd >/dev/null
+        done
+        for f in $(sed -e '/^#/d' < $list)                           # New list.
+        do
+            eval "f=$(echo $f)"                            # Expands ~ and such.
+            pd $f >/dev/null
+        done
+        drot >/dev/null  # Swing temporary starting point back around to front.
+        popd >/dev/null                                       # ...and lose it.
+        dirs
+    fi
+}
+

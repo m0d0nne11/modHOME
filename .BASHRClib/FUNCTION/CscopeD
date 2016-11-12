@@ -1,0 +1,4 @@
+function CscopeD()  {
+	cscope -u "$@"
+}
+

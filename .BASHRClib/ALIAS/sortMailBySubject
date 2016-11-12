@@ -1,0 +1,2 @@
+ alias sortMailBySubject='sortm -textfield subject -nolimit -verbose'
+

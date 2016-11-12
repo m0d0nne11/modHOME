@@ -1,0 +1,13 @@
+function ogrep
+{
+    while read obj
+    do
+        hit=0
+        nm $obj | grep "$@" && hit=1
+        if [ $hit -ne 0 ]
+        then
+            echo "#############" DONE $obj
+        fi
+    done
+}
+

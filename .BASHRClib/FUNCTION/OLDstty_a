@@ -1,0 +1,11 @@
+function OLDstty_a
+{
+    tempFile=/tmp/gzMailTemp$$$(tds)
+    fileName=$1$(tds).gz
+    stty -a <"$@" | fmt -2000 | sed -e 's/;/;\
+/g' >$tempFile
+    fgrep -v parenb $tempFile
+    fgrep    parenb $tempFile | fmt -1 | sed -e 's/^ -/-/'
+    rm                              $tempFile
+}
+

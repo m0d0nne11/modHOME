@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# Gather +inbox msgs with the specified Subject: to
+# the end of the list...
+
+folder -push +inbox
+gatherEmailCurrentFolder "$@"
+folder -pop
+

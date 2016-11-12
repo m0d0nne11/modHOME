@@ -1,0 +1,16 @@
+#!/bin/csh -f
+
+set psFile=/tmp/catps$$
+
+onintr cleanUp
+
+cat >$psFile
+ghostview -forceorientation -landscape -magstep 2 $psFile
+
+#
+# One way or another, we're done.
+#
+cleanUp:
+rm -f          \
+    $psFile
+

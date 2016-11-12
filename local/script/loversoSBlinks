@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# In sb/loverso/ad2/b7:
+#	O -> ../../O/ad2/b7
+#	export -> O/export
+#	link -> /afs/ri/project/kernel/build/ad2b7
+#	obj -> O/obj
+#	rc_files
+#	src
+#	tools
+#
+# In sb/obj/loverso/ad2/b7:
+#	S -> ../../S/ad2/b7
+#	export
+#	link -> S/link
+#	obj
+#	rc_files -> S/rc_files
+#	src -> S/src
+#	tools -> S/tools
+#
+# Assumes these symlinks:
+# sb/loverso/O -> ../obj/loverso
+# sb/obj/loverso/S -> ../../loverso
+
+if [ ${WORKON-0} = 0 ]
+then
+	# not really true, but it assures us that everything is correct
+	echo "Must be in a workon"
+	exit 1
+fi
+
+SB=`sbinfo sandbox_base`
+
+if [ ! -d $SB ]
+then
+	echo "Can't find sandbox base, $SB"
+	exit 1
+fi
+
+cd $SB
+sb=`basename $SB`
+
+rmdir export/at386 export obj/at386 obj || exit
+
+mkdir ../../O/ad2/$sb
+ln -s ../../O/ad2/$sb O
+ln -s O/obj O/export .
+
+cd O
+
+ln -s ../../S/ad2/$sb S
+ln -s S/link S/rc_files S/src S/tools .
+mkdir -p export/at386 obj/at386
+
+exit 0

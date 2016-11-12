@@ -1,0 +1,2 @@
+ alias ttysave='export ttyState=$(stty -g)'
+

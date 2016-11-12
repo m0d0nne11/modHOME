@@ -1,0 +1,20 @@
+function ctXdiffPred
+{
+    ct ls -l "$@" | while read versionLIT checkedoutLIT fromLIT version RuleLIT
+    do
+        if [ "$versionLIT" != "version"   -o  "$fromLIT" != "from" ]
+        then
+            echo "Unexpected layout of ct ls -l output"
+            break
+        fi
+        result=$(echo "$checkedoutLIT" | fgrep -i checked )
+        if [ -z $result ]
+        then
+            echo "$@ not CHECKEDOUT ?"
+            break
+        fi
+        echo xcleardiff -b "$@"@@$version $@
+             xcleardiff -b "$@"@@$version $@
+    done
+}
+

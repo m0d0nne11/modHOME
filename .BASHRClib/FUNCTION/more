@@ -1,0 +1,4 @@
+function more()  {
+	less -X "$@"
+}
+

@@ -1,0 +1,7 @@
+if [ ! -f /tmp/hourlyLoggingActive ]
+then
+    hourly on
+fi
+
+echo "####################" `timeDateString` >>~/modHOME/.hlog
+cat                                          >>~/modHOME/.hlog

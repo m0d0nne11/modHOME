@@ -1,0 +1,7 @@
+function rows
+{
+    stty   rows $*
+    export ROWS=$*
+    export LINES=$*
+}
+

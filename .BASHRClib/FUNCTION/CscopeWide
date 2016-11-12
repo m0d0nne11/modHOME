@@ -1,0 +1,4 @@
+function CscopeWide()  {
+	Cscope -p 5 "$@"
+}
+

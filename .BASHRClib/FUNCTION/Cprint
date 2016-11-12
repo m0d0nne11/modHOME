@@ -1,0 +1,5 @@
+function Cprint
+{
+    mp -l -o "$@" | print
+}
+

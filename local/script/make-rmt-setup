@@ -1,0 +1,83 @@
+#!/bin/sh
+
+#
+# Normally, execute John's stuff directly.  Otherwise,
+# fall back to the stuff below.
+#
+
+~loverso/local/bin/make-rmt-setup
+
+# PATH=$PATH:/afs/ri/user/loverso/local/bin
+# 
+# # Build machine hosts
+# build=`randomize sheilds rhodes soling allegro build1 libra1`
+# 
+# # Unused workstations
+# unused=`randomize doctor enchilada wayback lance`
+# # bflo  (sometimes runs OS/2??)
+# 
+# # Under used workstations
+# underused=`randomize it gamma ferris`
+# 
+# # workstations in offices
+# office=`randomize '
+# 	cassis scorpio tesla leppard griffin camaro hobie giotto
+# 	firebird genesis mannex ziti wasabi ouch rebootme
+# 	meenie pugsley toody sirius ibupuma
+# 	york brunel ghoti condor quadrivium
+# '`
+# 
+# hostname=`hostname`
+# makehosts=`echo $build $unused $underused | sed -e "s/ *$hostname */ /"`
+# 
+# cat 1>&2 << EOF
+# hosts:
+# $makehosts
+# 
+# Use "klog-all -f hosts..." to get tokens
+# Use "tokens-all hosts..." to check tokens
+# 
+# EOF
+# 
+# case $SHELL in
+# *csh)	cat << EOF
+# set makehosts=($makehosts)
+# 
+# setenv MAKERMTHOSTS \`echo \$makehosts | tr ' ' :\`
+# setenv MAKERMTPROG ~loverso/local/bin/make-rmt
+# setenv MAKERMTUSER \$USER
+# setenv MAKERMTBASE ""
+# 
+# # If your objects are in AFS, do nothing more.
+# # If your objects are on your local disk, uncomment this
+# #setenv MAKERMTPREFIX /net/$hostname
+# EOF
+# 	;;
+# *)	cat << EOF
+# makehosts="$makehosts"
+# 
+# MAKERMTHOSTS=\`echo \$makehosts | tr ' ' :\`
+# MAKERMTPROG=/afs/ri/user/loverso/local/bin/make-rmt
+# MAKERMTUSER=\$USER
+# MAKERMTBASE=""
+# export MAKERMTHOSTS MAKERMTPROG MAKERMTUSER MAKERMTBASE
+# 
+# # If your objects are in AFS, do nothing more.
+# # If your objects are on your local disk, uncomment this
+# #MAKERMTPREFIX=/net/$hostname; export MAKERMTPREFIX
+# EOF
+# 	;;
+# esac
+# 
+# cat << EOF
+# 
+# echo "Use these options to build/make:		-j7 -L2"
+# echo "Be sure your ~/.rhosts has this line in it:	$hostname"
+# 
+# # You only need to do this once, but it will let you know that all the
+# # hosts are up.
+# echo ""
+# echo "^C if you've already klog'd today"
+# echo "^C if you've already klog'd today"
+# klog-all -f \$makehosts
+# EOF

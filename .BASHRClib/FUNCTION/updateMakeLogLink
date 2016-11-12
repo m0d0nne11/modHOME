@@ -1,0 +1,72 @@
+# A bash function.
+# We store the output of our builds in log files ("make"
+# logs) whose names are the YYYMMDDHHMMS encoding of the
+# time the build was started.  We maintain a symlink called
+# "makeLog" that we wish to keep pointed at the most recent
+# log that has been (is being) created.  Those log files
+# are actually kept in the subdirectory ./makeLogSTORAGE.
+#
+# This script makes sure that all the pieces exist (creating
+# them when necessary) and then ensures that the makeLog
+# symlink points at the most recent log.
+#
+function updateMakeLogLink
+{
+    timeStamp=$(tds)
+
+    # Do we have a directory?
+    if [ -d makeLogSTORAGE ] ; then
+        echo "####" Have makeLogSTORAGE/
+        mostRecentLog=$(cd makeLogSTORAGE ; ls 20* | tail -1)
+
+        if [ -z "$mostRecentLog" ] ; then
+            echo "####" Creating lone entry makeLogSTORAGE/$timeStamp
+            touch makeLogSTORAGE/$timeStamp
+            mostRecentLog=$timeStamp
+        fi
+        echo "####" mostRecentLog is $mostRecentLog
+    else
+        echo "####" Creating directory+entry makeLogSTORAGE/$timeStamp
+        mkdir makeLogSTORAGE
+        touch makeLogSTORAGE/$timeStamp
+        mostRecentLog=$timeStamp
+    fi
+
+    # Now we have the directory.  Is makeLog a file or a link...
+    if [ -L makeLog ] ; then
+        ls -lF makeLog
+        echo "####" Tossing old makeLog link...
+        rm -f makeLog
+    else
+        if [ -f makeLog ] ; then
+            ls -lF makeLog
+            mostRecentLog=$(cd makeLogSTORAGE ; ls 20* | tail -1)
+            echo "####" Existing makeLog is a real file...
+            echo "####" mostRecentLog is $mostRecentLog
+            if [ -z "$mostRecentLog" ] ; then
+                mv makeLog makeLogSTORAGE/$timeStamp
+                mostRecentLog=$timeStamp
+                echo "####" Nothing else in makeLogSTORAGE, so existing
+                echo "####" makeLog file becomes $mostRecentLog
+            else
+                echo "####" ...and also have $mostRecentLog - so arbitrarily
+                echo "####" moving makeLog to makeLogSTORAGE/$timeStamp
+                mv makeLog makeLogSTORAGE/$timeStamp
+                mostRecentLog=makeLogSTORAGE/$timeStamp
+            fi
+        else
+            if [ -e makeLog ] ; then
+                ls -lF makeLog
+                echo "####" makeLog not FILE or LINK...
+                return
+            else
+                echo "####" No makeLog file...
+            fi
+        fi
+    fi
+
+    # Create the new link...
+    echo ln -s makeLogSTORAGE/$mostRecentLog makeLog
+    ln      -s makeLogSTORAGE/$mostRecentLog makeLog
+}
+

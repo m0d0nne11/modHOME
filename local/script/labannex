@@ -1,0 +1,328 @@
+#!/bin/bash
+#!/usr/bin/bash
+#!/u/bin/bash
+#!/opt/local/bin/bash
+#!/n/viewserver/home/merlin/home2/bin/sun4/sos4/bash
+#!/bin/sh
+
+#
+# labannex - connect to lab systems connected via their console
+#            ports to various Annex serial-port concentrators.
+#
+
+myName=$0
+
+
+###############################################################################
+# A database of systemName/annexName/portNumber triples
+#
+# This dataBase is the sole source for all info in this script.
+# No more uncoordinated usage of multiple, stale databases -
+# just this ONE single stale database.  Progress!
+#
+# If you modify the database, please maintain tabular,
+# alphabetized layout for readability's sake...
+#
+
+
+dataBase=( \
+	"167Esystems   conannex     5009"	\
+	"ae-2700-4     labannex8    5007"	\
+	"ae-2700-5     labannex10   5002"	\
+	"allegro       labannex9    5001"	\
+	"asw-tools     labannex16   5007"	\
+	"avocet        labannex13   5016"	\
+	"bach          labannex14   5014"	\
+	"barnie        labannex17   5016"	\
+	"beaker        labannex14   5012"	\
+	"bermuda       labannex11   5001"	\
+	"blizzard      conannex     5060"	\
+	"blue          labannex12   5004"	\
+	"bogon         labannex11   5009"	\
+	"bugs          labannex16   5002"	\
+	"burlington    labannex12   5010"	\
+	"calvin        labannex12   5014"	\
+	"capella       conannex     5027"	\
+	"caramel       labannex5    5001"	\
+	"cedar1        labannex4    5002"	\
+	"cedar2        labannex4    5003"	\
+	"cedar3        misannex     5032"	\
+	"cedar4        misannex     5009"	\
+	"cedar5        conannex     5003"	\
+	"cedar6        misannex     5040"	\
+	"cedar7        console      5050"	\
+	"cedar8        labannex4    5007"	\
+	"coco          labannex2    5003"	\
+	"cpg1          conannex     5048"	\
+	"crow          labannex14   5010"	\
+	"delrina       labannex14   5015"	\
+	"deneb         labannex6    5007"	\
+	"dilbert       labannex8    5004"	\
+	"dogwood       labannex12   5002"	\
+	"donald        labannex12   5008"	\
+	"eagle         labannex11   5016"	\
+	"elmo          labannex18   5007"	\
+	"elrond        labannex14   5013"	\
+	"explorer      labannex12   5016"	\
+	"fever         labannex12   5007"	\
+	"fig           labannex9    5002"	\
+	"foiliage      labannex16   5006"	\
+	"fotty         labannex7    5002"	\
+	"fox           labannex16   5003"	\
+	"fred          labannex17   5015"	\
+	"garfield      labannex2    5004"	\
+	"ginger        labannex17   5002"	\
+	"grape         labannex7    5001"	\
+	"hal           conannex     5007"	\
+	"hawaii        labannex12   5006"	\
+	"honda         labannex11   5014"	\
+	"hoot          conannex     5013"	\
+	"huckle        labannex14   5011"	\
+	"hudson        labannex13   5005"	\
+	"idli          labannex14   5003"	\
+	"ine           conannex     5021"	\
+	"integrity     labannex12   5001"	\
+	"ipg4          labannex7    5004"	\
+	"jade          labannex2    5001"	\
+	"jaws          conannex     5055"	\
+	"jellyfish     labannex11   5007"	\
+	"jete          labannex17   5009"	\
+	"jordan        labannex12   5013"	\
+	"kalu          labannex12   5011"	\
+	"kangaroo      labannex4    5005"	\
+	"katrus        labannex5    5008"	\
+	"killer        labannex15   5002"	\
+	"klink1        labannex16   5004"	\
+	"klink_x10     labannex16   5005"	\
+	"kong          labannex18   5001"	\
+	"lab1          labannex18   5002"	\
+	"liberator     labannex11   5005"	\
+	"lotus         labannex19   5007"	\
+	"luminous      labannex11   5010"	\
+	"maltese       labannex5    5005"	\
+	"marconi       conannex     5047"	\
+	"marvin        labannex16   5010"	\
+	"mcos-5v-1     labannex6    5003"	\
+	"mcos-5v-2     labannex5    5006"	\
+	"mcos-5v-4     labannex6    5001"	\
+	"mcos-5v-5     labannex15   5006"	\
+	"melrose       labannex11   5013"	\
+	"misty         labannex12   5003"	\
+	"mohawk        labannex17   5003"	\
+	"mp1           conannex     5011"	\
+	"mufasa        labannex16   5001"	\
+	"neptune       labannex17   5014"	\
+	"niagara       labannex14   5006"	\
+	"ocean         labannex11   5012"	\
+	"octopus       labannex13   5002"	\
+	"outback       labannex11   5004"	\
+	"ox            labannex15   5001"	\
+	"pandora       labannex9    5005"	\
+	"parrot        labannex11   5003"	\
+	"pc-c80-3      conannex     5014"	\
+	"pc-hw15       conannex     5038"	\
+	"piano         labannex15   5004"	\
+	"pitts         labannex14   5007"	\
+	"presto        labannex8    5006"	\
+	"ranger        labannex15   5008"	\
+	"raptor        labannex11   5011"	\
+	"raven         conannex     5053"	\
+	"releng-1604-1 misannex     5019"	\
+	"releng-1604-2 misannex     5034"	\
+	"releng-1675   labannex2    5006"	\
+	"releng-5v-1   labannex15   5005"	\
+	"releng-5v-3   labannex8    5003"	\
+	"robin         conannex     5014"	\
+	"saturn3       labannex13   5004"	\
+	"sharc-167     conannex     5042"	\
+	"sharc-167     labannex12   5009"	\
+	"sharc4        labannex9    5003"	\
+	"shawmut       labannex5    5003"	\
+	"shrapnel      labannex6    5002"	\
+	"simpson       labannex2    5002"	\
+	"snapple       labannex14   5002"	\
+	"snoopy        conannex     5002"	\
+	"snoopy1       labannex18   5005"	\
+	"sqa167-2      misannex     5036"	\
+	"sqa-2700-1    labannex15   5003"	\
+	"sqa-2700-2    labannex10   5005"	\
+	"sqa-2700-3    labannex15   5013"	\
+	"sqa-2700-4    labannex10   5001"	\
+	"sqa-2ce       labannex8    5001"	\
+	"sqa-50gt-1    labannex10   5004"	\
+	"sqa-50gt-2    labannex8    5008"	\
+	"sqa-6750-1    labannex18   5009"	\
+	"sqa-8vt-2     labannex18   5004"	\
+	"sqa-8vt-3     labannex18   5011"	\
+	"ssghw         console      5058"	\
+	"stap          labannex4    5006"	\
+	"stap2         conannex     5001"	\
+	"starfish      labannex11   5002"	\
+	"stars1        labannex16   5008"	\
+	"stars2        labannex16   5009"	\
+	"stars3        labannex15   5011"	\
+	"stars4        labannex15   5012"	\
+	"ste-177-1     labannex15   5009"	\
+	"ste-177-2     labannex15   5010"	\
+	"ste-20vt-2    labannex18   5003"	\
+	"ste-2604-1    labannex8    5002"	\
+	"ste-8vt-1     labannex18   5008"	\
+	"sterling      labannex11   5015"	\
+	"stingray      labannex11   5006"	\
+	"straw         labannex14   5001"	\
+	"sunra         labannex14   5016"	\
+	"symantec      labannex14   5008"	\
+	"symantec2     labannex14   5004"	\
+	"terra         labannex14   5005"	\
+	"testdrive     labannex4    5004"	\
+	"thor          labannex5    5002"	\
+	"tinman        labannex14   5009"	\
+	"titan         conannex     5006"	\
+	"tools-1604-1  labannex17   5001"	\
+	"tools-5v-1    labannex6    5005"	\
+	"tools-5v-2    labannex6    5006"	\
+	"venus         conannex     5057"	\
+	"villeneuve    labannex13   5003"	\
+	"vishnu        labannex11   5008"	\
+	"vol           labannex17   5005"	\
+	"werewolf      labannex5    5007"	\
+	"wilma         labannex6    5008"	\
+	"woodman       labannex7    5003"	\
+	"wren          misannex     5040"	\
+	"xanadu        labannex2    5008"	\
+	"yago          labannex5    5002"	\
+	"z1173         misannex     5026"	\
+	"z1281         labannex4    5006"	\
+	"zac           labannex12   5005"	\
+	"zeus          labannex2    5007"	\
+    )
+
+###############################################################################
+function dbTripleForKey()  {
+    if [ $# -ne 2 ]
+    then
+        echo "Internal error in $FUNCNAME() - need key and value"
+        exit 1
+    fi
+
+    indexLimit=${#dataBase[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${dataBase[$index]} )       # Index the database for a triple.
+        case "$1" in
+        1|2|3)
+           if [ ${triple[$[$1 - 1]]} == $2 ]        # Index triple for a field.
+           then
+#              echo "$triple"
+               echo ${dataBase[$index]}
+               return 0
+           fi;;
+        *)
+            echo "BOGUS key value specified"
+            exit 1;;
+        esac
+
+        let index++
+    done
+    return 1
+}
+
+###############################################################################
+function dbTripleForSystem()  {
+    if [ $# -ne 1 ]
+    then
+        echo "Internal error in $FUNCNAME() - must specify system"
+        exit 1
+    fi
+
+    dbTripleForKey 1 $1
+}
+
+###############################################################################
+function allSystemNames()  {
+    indexLimit=${#dataBase[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${dataBase[$index]} )
+        echo ${triple[0]}
+        let index++
+    done
+}
+
+###############################################################################
+function allAnnexNames()  {
+    indexLimit=${#dataBase[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${dataBase[$index]} )
+        echo ${triple[1]}
+        let index++
+    done
+}
+
+###############################################################################
+function allPortNumbers()  {
+    indexLimit=${#dataBase[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        triple=( ${dataBase[$index]} )
+        echo ${triple[2]}
+        let index++
+    done
+}
+
+###############################################################################
+function allDataBaseEntries()  {
+    indexLimit=${#dataBase[*]}
+    index=0
+    while [ $index -lt $indexLimit ]
+    do
+        echo ${dataBase[$index]}
+        let index++
+    done
+}
+
+###############################################################################
+function usage()  {
+
+    echo "Failed:" $@
+    echo ""
+    echo "Usage:"
+    echo "        $myName systemName"
+    echo ""
+
+    echo "where systemName specifies some system connected"
+    echo "to one of our Annex serial-port concentrators."
+    echo "A telnet session specifying the appropriate Annex"
+    echo "and port will be spawned if the specified system"
+    echo "is found in the list of known systems..."
+    echo ""
+
+    allSystemNames | fmt
+    exit 1
+}
+
+###############################################################################
+# True execution actually begins here...
+#
+
+if [ $# -eq 1 ]                                       # Number of args correct?
+then
+    triple=( `dbTripleForSystem $1` ) # Fetch appropriate triple from dataBase.
+    if [ $? -eq 0 ]                                   # Found specified system?
+    then
+        echo     ${triple[*]}                         # Announce what we found.
+        telnet   ${triple[1]} ${triple[2]}                # Attempt connection.
+        finger @"${triple[1]}"        # Sometimes useful after failed attempts.
+        exit 0
+    else
+        usage "Couldn't find system '$1'"
+    fi
+else
+    usage "exactly one systemName must be specified"
+fi
+

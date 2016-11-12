@@ -1,0 +1,67 @@
+#!/usr/bin/env python
+
+###############################################################################
+# We read every line of input, remembering the largest number of tokens
+# on any line as well as the maximum widths for each token position such
+# that we can later utter a printf format line suitable for aligning
+# the input in columnar format.  We (or rather Python's "string.split()"
+# function] define "tokens" as whitespace delimited strings.
+#
+# Example output from lineupFormat < /etc/fstab might be:
+#
+# { printf( "%-41s %-41s %-13s %-17s %-10s %-10s %-10s %-6s %-11s %-3s %-8s %-4s\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12); }
+#
+#   Example usage:
+#
+#  awk "$(lineupFormat < /etc/fstab)" < /etc/fstab
+#
+# ...or:
+#
+#  function lineupFunc() { awk "$(lineupFormat < $1)" < $1; }
+#  lineupFunc /etc/fstab
+
+import sys
+
+indexLimit =  0
+widest     = [0]
+
+# Gather statistics...
+#
+for line in sys.stdin.readlines() :
+    token      = line.split()
+    tokenLimit = len(token)
+    indexLimit = max( indexLimit, tokenLimit )
+    while len(widest) < indexLimit :
+        widest.append(0)
+
+    i = 0
+    while i < tokenLimit :
+        widest[i] = max( widest[i], len(token[i]) )
+        i += 1
+
+# Utter the format line...
+#
+# NOTE: Sad that Python's print statement is so dainbramaged that
+#       it sometimes "helpfully" inserts unwanted spaces into the
+#       output while uttering strings piecewise.  This misbehavior
+#       can, fortunately, be tediously worked around in various
+#       ways, one of which (seen here) is to construct strings in
+#       advance and then utter them all at once instead of piecewise.
+#
+if indexLimit > 0 :
+    fmt = "{ printf( " + '"%%-%ds' % widest[0]
+    if indexLimit > 1 :
+        i = 1
+        while i < indexLimit :
+            fmt += ' %%-%ds' % widest[i]
+            i += 1
+
+    fmt += '\\n"'
+    i = 1
+    while i <= indexLimit :
+        fmt += ', $%d' % i
+        i += 1
+
+    fmt += "); }\n"
+    print fmt
+

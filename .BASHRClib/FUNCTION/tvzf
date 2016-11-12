@@ -1,0 +1,9 @@
+function tvzf()  {
+    if [ $# -gt 0 ]
+    then
+        tar tvzf - <$*
+    else
+        tar tvzf -
+    fi
+}
+

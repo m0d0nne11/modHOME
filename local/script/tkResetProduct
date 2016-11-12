@@ -1,0 +1,5 @@
+#!/usr/local/bin/wish -f
+button	.productResetButton		\
+	-text "Power-cycle DOT Product"	\
+	-command { exec /afs/ri/project/norma-nd/farm/bin/mule -f -reset product >/dev/tty }
+pack	.productResetButton

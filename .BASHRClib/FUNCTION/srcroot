@@ -1,0 +1,31 @@
+
+function srcroot()  {
+    # Usage: srcroot [dirName]
+    #
+    # Looks for a directory node named 'afn' in either $PWD
+    # or the specified path and sets SRCROOT to that (sub)path.
+
+    if [ $# -lt 1 ]
+    then
+        echo SRCROOT currently ${SRCROOT:-(Currently undefined)}
+        return 0
+    fi
+
+    local origin=$PWD
+    cd "$1" || return 1
+    local pathName=$PWD
+    while [ "$(basename $PWD)" != "afn" ]; do
+        if [ $PWD = '/' ]; then
+            echo "Can't find an 'afn' in PATH $pathName"
+            cd $origin
+            return 1
+        fi
+        cd "$(dirname $PWD)"
+    done
+
+    export SRCROOT="$PWD"
+    export BRANCH="$SRCROOT"
+    echo "SRCROOT and BRANCH set to $SRCROOT"
+    cd $origin
+}
+

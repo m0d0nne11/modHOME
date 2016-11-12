@@ -1,0 +1,4 @@
+while read input
+do
+    echo '    <DT><A HREF="'$input'" ADD_DATE="964439188" LAST_VISIT="964439188" LAST_MODIFIED="964439188">'$input'</A>'
+done

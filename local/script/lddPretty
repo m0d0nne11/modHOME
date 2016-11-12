@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Crunch the output of ldd such that it can be lined up.
+#
+
+test -n "$MIKE_DEBUG" && set -x
+
+function lddPrettyFuncLine()  { case $# in 4) echo $@ ;; 3) echo $1 $2 - $3 ;; 2) echo $1 - - $2 ;; *) ;; esac ; }
+function lddPrettyFunc()      { (ldd $@ | while read x ; do lddPrettyFuncLine $x ; done) | lineup ; }
+
+lddPrettyFunc $@
+

@@ -1,0 +1,46 @@
+#!/bin/csh -f
+onintr cleanUp
+
+set allTags=/tmp/allTags$$
+set ctagsOutput=/tmp/ctagsOut$$
+
+#
+# Preserve an existing tags-file if found in the current directory.
+#
+if ( -f tags ) then
+    set count=0
+    set save="SAVEDtags0"
+    while ( -f $save )
+        @ count ++
+        set save="SAVEDtags"$count
+    end
+    echo "Preserving existing tags file as $save..."
+    mv tags $save || exit 1
+endif
+
+while ( 1 )
+    set file=($<)
+    if ( $file == "" ) then
+        break
+    endif
+    echo "############ Collecting tags for $file"
+    ctags -f $ctagsOutput $file
+    if ( -f $ctagsOutput ) then
+        cat $ctagsOutput >>$allTags
+        rm $ctagsOutput
+    endif
+end
+
+#
+# Now sort the tags file, placing the results into the final tags-file.
+#
+sort -u <$allTags >tags
+
+#
+# One way or another, we're done.
+#
+cleanUp:
+rm -f          \
+    $allTags    \
+    $ctagsOutput \
+

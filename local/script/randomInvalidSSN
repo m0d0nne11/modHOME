@@ -1,0 +1,755 @@
+#!/bin/bash
+
+# The SSN is divided as follows: the area number (first three digits), group
+# number (fourth and fifth digits), and serial number (last four digits).
+#
+# To determine if an SSN is invalid consider the following: No SSNs with
+# an area number in the 800 or 900 series, or 000 area number, have been
+# assigned.  No SSNs with an area number above 772 have been assigned in
+# the 700 series.
+#
+# No SSN's with a 00 group number or 0000 serial number have been assigned.
+#
+# No SSNs with an area number of 666 have been or will be assigned.
+# Information about the SSN and SSNs that have been assigned is available
+# at High Group List and Other Ways to Determine if an SSN is Valid .
+#
+# Common "pocketbook" or specimen/advertising Social Security numbers:
+#
+#   987-65-4320 -> 987-65-4329
+#
+#  022-28-1852  042-10-3580  049-38-0913  062-36-0749  062-36-0794
+#  078-05-1120  095-07-3645  128-03-6045  135-01-6629  141-18-5941
+#  155-18-7999  165-15-7999  165-16-7999  165-18-7999  165-20-7999
+#  165-22-7999  165-24-7999  189-09-2294  212-09-7694  219-09-9998
+#  219-09-9999  306-30-2348  308-12-5070  468-28-8779  549-24-1889
+#
+# If someone absolutely insists on getting your Social Security Number,
+# you may want to give a fake number.  There is no legal penalty as long
+# as you're not doing it to get something from a government agency or to
+# commit fraud.  There are a few good choices for "anonymous" numbers.
+# Making one up at random is a bad idea, as it may coincide with
+# someone's real number and cause them some amount of grief.
+
+# To maintain the following list of functions, position (in vi) the cursor on
+# the first line in the list and then execute one of the following verbatim:
+#
+# !}grep -e '^function ' % | awk '{ print $2 }' | sort -bfd | sed -e 's/^/\# /'
+# !}grep -e '^function ' % | awk '{ print $2 }' |             sed -e 's/^/\# /'
+# FUNCTIONS:
+
+# randomInvalidSSN()
+# randomNumberRange()
+# randomDigit()
+# randomPunctuation()
+# randomAlpha()
+# randomHexAlpha()
+# randomAlphaWhite()
+# randomAlphaStringSized()
+# randomAlphaNumStringSized()
+# randomAlphaNumStringSizeRange()
+# randomHexStringSized()
+# randomHexStringSizeRange()
+# randomTokenStringSized()
+# randomTokenStringSizeRange()
+# randomAlphaStringSized()
+# randomAlphaStringSizeRange()
+# randomDigitStringSized()
+# randomDigitStringSizeRange()
+# randomDomainString()
+# randomEmailAddress()
+
+# When used on world w/nonstandard bash...
+#
+#test -z "$BASH_VERSINFO" && exec /usr/local/bin/bash-2.0 < "$0"
+#
+
+if [ -n "$MIKE_DEBUG" ] ; then
+    set -x ; set -v
+fi
+
+knownInvalidSSN=(	\
+	"022-28-1852"	\
+	"042-10-3580"	\
+	"049-38-0913"	\
+	"062-36-0749"	\
+	"062-36-0794"	\
+	"078-05-1120"	\
+	"095-07-3645"	\
+	"128-03-6045"	\
+	"135-01-6629"	\
+	"141-18-5941"	\
+	"155-18-7999"	\
+	"165-15-7999"	\
+	"165-16-7999"	\
+	"165-18-7999"	\
+	"165-20-7999"	\
+	"165-22-7999"	\
+	"165-24-7999"	\
+	"189-09-2294"	\
+	"212-09-7694"	\
+	"219-09-9998"	\
+	"219-09-9999"	\
+	"306-30-2348"	\
+	"308-12-5070"	\
+	"468-28-8779"	\
+	"549-24-1889"	\
+	"987-65-4320"	\
+	"987-65-4321"	\
+	"987-65-4322"	\
+	"987-65-4323"	\
+	"987-65-4324"	\
+	"987-65-4325"	\
+	"987-65-4326"	\
+	"987-65-4327"	\
+	"987-65-4328"	\
+	"987-65-4329"	\
+
+    )
+
+punctuation=(	\
+	"."	\
+	"-"	\
+	"_"	\
+	"+"	\
+	"/"	\
+	","	\
+
+    )
+
+domain=(	\
+	"biz"	\
+	"com"	\
+	"ch"	\
+	"co.uk"	\
+	"de"	\
+	"edu"	\
+	"info"	\
+	"mil"	\
+	"name"	\
+	"net"	\
+	"org"	\
+	"tv"	\
+
+    )
+
+alpha=(		\
+	"A"	\
+	"B"	\
+	"C"	\
+	"D"	\
+	"E"	\
+	"F"	\
+	"G"	\
+	"H"	\
+	"I"	\
+	"J"	\
+	"K"	\
+	"L"	\
+	"M"	\
+	"N"	\
+	"O"	\
+	"P"	\
+	"Q"	\
+	"R"	\
+	"S"	\
+	"T"	\
+	"U"	\
+	"V"	\
+	"W"	\
+	"X"	\
+	"Y"	\
+	"Z"	\
+	"a"	\
+	"b"	\
+	"c"	\
+	"d"	\
+	"e"	\
+	"f"	\
+	"g"	\
+	"h"	\
+	"i"	\
+	"j"	\
+	"k"	\
+	"l"	\
+	"m"	\
+	"n"	\
+	"o"	\
+	"p"	\
+	"q"	\
+	"r"	\
+	"s"	\
+	"t"	\
+	"u"	\
+	"v"	\
+	"w"	\
+	"x"	\
+	"y"	\
+	"z"	\
+	" "	\
+    )
+
+###############################################################################
+function randomInvalidSSN()  {
+    echo "${knownInvalidSSN[$RANDOM % ${#knownInvalidSSN[*]}]}"
+    return 0
+}
+
+###############################################################################
+function randomNumberRange()  {                                      # Min, Max
+    local size
+
+    if [ $1 -gt $2 ]
+    then
+        return 0
+    fi
+
+    size=$[$2 - $1]
+    size=$[$size + 1]
+    size=$[$RANDOM % $size]
+    echo $[$1 + $size]
+    return 0
+}
+
+###############################################################################
+function randomDigit()  {
+    randomNumberRange 0 9
+    return 0
+}
+
+###############################################################################
+function randomPunctuation()  {
+    echo "${punctuation[$RANDOM % ${#punctuation[*]}]}"
+    return 0
+}
+
+###############################################################################
+function randomAlpha()  {
+    echo "${alpha[$RANDOM % (${#alpha[*]} - 12)]}"
+    return 0
+}
+
+###############################################################################
+function randomHexAlpha()  {
+    echo "${alpha[$RANDOM % 6]}"
+    return 0
+}
+
+###############################################################################
+function randomAlphaWhite()  {
+    echo "${alpha[$RANDOM % ${#alpha[*]}]}"
+    return 0
+}
+
+###############################################################################
+# Recursive, which is cute but EXTREMELY slow with
+# large strings - S/B rewritten as a loop...
+#
+function randomAlphaStringSized()  {                                # Length
+    local i
+
+    if [ $# -ne 1 ]
+    then
+        echo "Error in $FUNCNAME() - need length"
+        exit 1
+    fi
+
+    if [ $1 -lt 1 ]
+    then
+        return 0
+    fi
+    if [ $1 -gt 1 ]
+    then
+        echo "`randomAlphaStringSized $[$1 - 1]``randomAlpha`"
+        return 0
+    fi
+
+    randomAlpha
+    return 0
+}
+
+###############################################################################
+# Recursive, which is cute but EXTREMELY slow with
+# large strings - S/B rewritten as a loop...
+#
+function randomAlphaNumStringSized()  {                                # Length
+    local i
+
+    if [ $# -ne 1 ]
+    then
+        echo "Error in $FUNCNAME() - need length"
+        exit 1
+    fi
+
+    if [ $1 -lt 1 ]
+    then
+        return 0
+    fi
+    if [ $1 -gt 1 ]
+    then
+        if [ $[$RANDOM % 2] -eq 0 ]
+        then
+            echo "`randomAlphaNumStringSized $[$1 - 1]``randomAlpha`"
+        else
+            echo "`randomAlphaNumStringSized $[$1 - 1]``randomDigit`"
+        fi
+
+        return 0
+    fi
+
+    randomAlpha
+    return 0
+}
+
+###############################################################################
+function randomAlphaNumStringSizeRange()  {                          # Min, Max
+    randomAlphaNumStringSized `randomNumberRange $1 $2`
+    return 0
+}
+
+###############################################################################
+# Recursive, which is cute but EXTREMELY slow with
+# large strings - S/B rewritten as a loop...
+#
+function randomHexStringSized()  {                                     # Length
+    local i
+
+    if [ $# -ne 1 ]
+    then
+        echo "Error in $FUNCNAME() - need length"
+        exit 1
+    fi
+
+    if [ $1 -lt 1 ]
+    then
+        return 0
+    fi
+
+    if [ $[$RANDOM % 2] -eq 0 ]
+    then
+        echo "`randomHexStringSized $[$1 - 1]``randomHexAlpha`"
+    else
+        echo "`randomHexStringSized $[$1 - 1]``randomDigit`"
+    fi
+
+    return 0
+}
+
+###############################################################################
+function randomHexStringSizeRange()  {                               # Min, Max
+    randomHexStringSized `randomNumberRange $1 $2`
+    return 0
+}
+
+###############################################################################
+# Recursive, which is cute but EXTREMELY slow with
+# large strings - S/B rewritten as a loop...
+#
+function randomTokenStringSized()  {                                   # Length
+    local i
+
+    if [ $# -ne 1 ]
+    then
+        echo "Error in $FUNCNAME() - need length"
+        exit 1
+    fi
+
+    if [ $1 -lt 1 ]
+    then
+        return 0
+    fi
+    if [ $1 -gt 1 ]
+    then
+        if [ $[$RANDOM % 2] -eq 0 ]
+        then
+            echo "`randomTokenStringSized $[$1 - 1]``randomAlphaWhite`"
+        else
+            echo "`randomTokenStringSized $[$1 - 1]``randomDigit`"
+        fi
+
+        return 0
+    fi
+
+    randomAlpha
+    return 0
+}
+
+###############################################################################
+function randomTokenStringSizeRange()  {                             # Min, Max
+    randomTokenStringSized `randomNumberRange $1 $2`
+    return 0
+}
+
+###############################################################################
+# Recursive, which is cute but EXTREMELY slow with
+# large strings - S/B rewritten as a loop...
+#
+function randomAlphaStringSized()  {                                   # Length
+    local i
+
+    if [ $# -ne 1 ]
+    then
+        echo "Error in $FUNCNAME() - need length"
+        exit 1
+    fi
+
+    if [ $1 -lt 1 ]
+    then
+        return 0
+    fi
+    if [ $1 -gt 1 ]
+    then
+        echo "`randomAlphaStringSized $[$1 - 1]``randomAlpha`"
+        return 0
+    fi
+
+    randomAlpha
+    return 0
+}
+
+###############################################################################
+function randomAlphaStringSizeRange()  {                             # Min, Max
+    randomAlphaStringSized `randomNumberRange $1 $2`
+    return 0
+}
+
+###############################################################################
+# Recursive, which is cute but EXTREMELY slow with
+# large strings - S/B rewritten as a loop...
+#
+function randomDigitStringSized()  {                                   # Length
+    local i
+
+    if [ $# -ne 1 ]
+    then
+        echo "Error in $FUNCNAME() - need length"
+        exit 1
+    fi
+
+    if [ $1 -lt 1 ]
+    then
+        return 0
+    fi
+    if [ $1 -gt 1 ]
+    then
+        echo "`randomDigitStringSized $[$1 - 1]``randomDigit`"
+        return 0
+    fi
+
+    randomDigit
+    return 0
+}
+
+###############################################################################
+function randomDigitStringSizeRange()  {                             # Min, Max
+    randomDigitStringSized `randomNumberRange $1 $2`
+    return 0
+}
+
+###############################################################################
+function randomDomainString()  {
+    echo "${domain[$RANDOM % ${#domain[*]}]}"
+    return 0
+}
+
+###############################################################################
+function randomEmailAddress()  {
+    printf '%s%s.%s%s@%s%s.%s' `randomAlpha` `randomAlphaNumStringSizeRange 3 9` `randomAlpha` `randomAlphaNumStringSizeRange 3 9` `randomAlpha` `randomAlphaNumStringSizeRange 3 9` `randomDomainString`
+    return 0
+}
+
+###############################################################################
+#function CYANCAR.COM2()  {
+#    printf 'http://CYANCAR.COM/2/AS/MB/rdr.asp?r=%s' `randomEmailAddress`
+#    return 0
+#}
+#
+#function sofnpn.info()  {
+#    printf 'http://sofnpn.info:80/in.php?aid=%s&%s' `randomDigitStringSized 2` `randomAlphaStringSized 9`
+#    return 0
+#}
+#
+#VALIDATED_HTTP="                                \
+#    CYANCAR.COM2                                \
+#    "
+#
+#HTTP_VALIDATE="                                 \
+#    sofnpn.info                                 \
+#    "
+#
+# while :
+# do
+#     for url in $HTTP_VALIDATE
+#     do
+#         echo "###############################################" VALIDATING $url 1>&2
+#         wget --user-agent="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)" -O /dev/null "`$url`"
+#         echo "################################################" VALIDATED $url 1>&2
+#     done
+# done
+
+echo `randomInvalidSSN`
+
+exit
+
+# lynx -dump 'http://www.beyondweird.com/conspiracies/ssn-priv.html'
+#
+#         What to do when they ask for your Social Security Number
+#
+#                             by Chris Hibbert
+#
+#                          Computer Professionals
+#                        for Social Responsibility
+#
+#  Many people are concerned about the number of organizations asking for
+#  their Social Security Numbers.  They worry about invasions of privacy
+#  and the oppressive feeling of being treated as just a number.
+#  Unfortunately, I can't offer any hope about the dehumanizing effects
+#  of identifying you with your numbers.  I *can* try to help you keep
+#  your Social Security Number from being used as a tool in the invasion
+#  of your privacy.
+#
+#  Surprisingly, government agencies are reasonably easy to deal with;
+#  private organizations are much more troublesome.  Federal law
+#  restricts the agencies at all levels of government that can demand
+#  your number and a fairly complete disclosure is required even if its
+#  use is voluntary.  There are no comparable laws restricting the uses
+#  non-government organizations can make of it, or compelling them to
+#  tell you anything about their plans.  With private institutions, your
+#  main recourse is refusing to do business with anyone whose terms you
+#  don't like.
+#
+#                              Short History
+#
+#  Social Security numbers were introduced by the Social Security Act of
+#  1935.  They were originally intended to be used only by the social
+#  security program, and public assurances were given at the time that
+#  use would be strictly limited.  In 1943 Roosevelt signed Executive
+#  Order 9397 which required federal agencies to use the number when
+#  creating new record-keeping systems.  In 1961 the IRS began to use it
+#  as a taxpayer ID number.  The Privacy Act of 1974 required
+#  authorization for government agencies to use SSNs in their data bases
+#  and required disclosures (detailed below) when government agencies
+#  request the number.  Agencies which were already using SSN as an
+#  identifier were allowed to continue using it.  The Tax Reform Act of
+#  1976 gave authority to state or local tax, welfare, driver's license,
+#  or motor vehicle registration authorities to use the number in order
+#  to establish identities.  The Privacy Protection Study Commission of
+#  1977 recommended that the Executive Order be repealed after some
+#  agencies referred to it as their authorization to use SSNs.  I don't
+#  know whether it was repealed, but that practice has stopped.
+#
+#  Several states use the SSN as a driver's license number, while others
+#  record it on applications and store it in their database.  Some states
+#  that routinely use it on the license, will make up another number if
+#  you insist.  According to the terms of the Privacy Act, any that have
+#  a space for it on the application forms should have a disclosure
+#  notice.  Many don't, and until someone takes them to court, they
+#  aren't likely to change.
+#
+#  The Privacy Act of 1974 (5 USC 552a) requires that any federal, state,
+#  or local government agency that requests your Social Security Number
+#  has to tell you three things:
+#
+#  1:  Whether disclosure of your Social Security Number is required or optional,
+#
+#  2:  What law authorizes them to ask for your Social Security Number, and
+#
+#  3:  How your Social Security Number will be used if you give it to them.
+#
+#  In addition, the Act says that only Federal law can make use of the
+#  Social Security Number mandatory.  So anytime you're dealing with a
+#  government institution and you're asked for your Social Security
+#  Number, just look for the Privacy Act Statement.  If there isn't one,
+#  complain and don't give your number.  If the statement is present,
+#  read it.  If it says giving your Social Security Number is voluntary,
+#  you'll have to decide for yourself whether to fill in the number.
+#
+#   Private Organizations
+#
+#  The guidelines for dealing with non-governmental institutions are much
+#  more tenuous.  Most of the time private organizations that request
+#  your Social Security Number can get by quite well without your number,
+#  and if you can find the right person to negotiate with, they'll
+#  willingly admit it.  The problem is finding that right person.  The
+#  person behind the counter is often told no more than "get the
+#  customers to fill out the form completely."
+#
+#  Most of the time, you can convince them to use some other number.
+#  Usually the simplest way to refuse to give your Social Security Number
+#  is simply to leave the appropriate space blank.  One of the times when
+#  this isn't a strong enough statement of your desire to conceal your
+#  number is when dealing with institutions which have direct contact
+#  with your employer.  Most employers have no policy against revealing
+#  your Social Security Number; they apparently believe the omission must
+#  have been an unintentional slip.
+#
+#   Lenders and Borrowers
+#
+#  Banks and credit card issuers are required by the IRS to report the
+#  SSNs of account holders to whom they pay deductible interest or when
+#  they charge interest and report it to the IRS.  If you don't tell them
+#  your number you will probably either be refused an account or be
+#  charged a penalty such as withholding of taxes on your interest.
+#
+#  Many Banks, Brokerages, and other financial institutions have started
+#  implemenenting automated systems to let you check your balance. All
+#  too often, they are using SSNs as the PIN that lets you get access to
+#  your personal account information.  If your bank does this to you,
+#  write them a letter pointing out how many of the people you have
+#  financial business with know your SSN.  Ask them to change your PIN,
+#  and if you feel like doing a good, ask them to stop using the SSN as a
+#  default identifier.  Some customers will believe that there's some
+#  security in it, and be insufficiently protective of their account
+#  numbers.
+#
+#  When buying (and possibly refinancing) a house, most banks will now
+#  ask for your Social Security Number on the Deed of Trust.  This is
+#  because Fannie Mae (FNMA?) recently started requiring it.  The fine
+#  print in their regulation admits that some consumers won't want to
+#  give their number, and allows banks to leave it out when pressed.  [It
+#  first recommends getting it on the loan note, but then admits that
+#  it's already on various other forms that are a required part of the
+#  package, so they already know it.  The Deed is a public document, so
+#  there are good reasons to refuse to put it there, even though all
+#  parties to the agreement already have access to your number.]
+#
+#   Insurers, Hospitals, Doctors
+#
+#  No laws require medical service providers to use your Social Security
+#  Number as an ID number.  (except for Medicare, Medicaid, etc.)  They
+#  often use it because it's convenient or because your employer uses it
+#  to certify employees to its groups health plan.  In the latter case,
+#  you have to get your employer to change their policies.  Often, the
+#  people who work in personnel assume that the employer or insurance
+#  company requires use of the SSN when that's not really the case.  When
+#  my current employer asked for my SSN for an insurance form, I asked
+#  them to try to find out if they had to use it.  After a week they
+#  reported that the insurance company had gone along with my request and
+#  told me what number to use.  Blood banks also ask for the number but
+#  are willing to do without if pressed on the issue.  After I asked
+#  politely and persistently, the blood bank I go to agreed that they
+#  didn't have any use for the number, and is in the process of teaching
+#  their receptionists not to request the number.
+#
+#             Why use of Social Security Numbers is a problem
+#
+#  The Social Security Number doesn't work well as an identifier for
+#  several reasons.  The first reason is that it isn't at all secure; if
+#  someone makes up a nine-digit number, it's quite likely that they've
+#  picked a number that is assigned to someone.  There are quite a few
+#  reasons why people would make up a number: to hide their identity or
+#  the fact that they're doing something; because they're not allowed to
+#  have a number of their own (illegal immigrants, e.g.), or to protect
+#  their privacy.  In addition, it's easy to write the number down wrong,
+#  which can lead to the same problems as intentionally giving a false
+#  number.  There are several numbers that have been used by thousands of
+#  people because they were on sample cards shipped in wallets by their
+#  manufacturers.  (One is given below.)
+#
+#  When more than one person uses the same number, it clouds up the
+#  records.  If someone intended to hide their activities, it's likely
+#  that it'll look bad on whichever record it shows up on.  When it
+#  happens accidentally, it can be unexpected, embarrassing, or worse.
+#  How do you prove that you weren't the one using your number when the
+#  record was made?
+#
+#  A second problem with the use of SSNs as identifiers is that it makes
+#  it hard to control access to personal information.  Even assuming you
+#  want someone to be able to find out some things about you, there's no
+#  reason to believe that you want to make all records concerning
+#  yourself available.  When multiple record systems are all keyed by the
+#  same identifier, and all are intended to be easily accessible to some
+#  users, it becomes difficult to allow someone access to some of the
+#  information about a person while restricting them to specific topics.
+#
+#                  What you can do to protect your number
+#
+#  If despite your having written "refused" in the box for Social
+#  Security Number, it still shows up on the forms someone sends back to
+#  you (or worse, on the ID card they issue), your recourse is to write
+#  letters or make phone calls.  Start politely, explaining your position
+#  and expecting them to understand and cooperate.  If that doesn't work,
+#  there are several more things to try:
+#
+#  1: Talk to people higher up in the organization.  This often works
+#          simply because the organization has a standard way of dealing
+#          with requests not to use the SSN, and the first person you
+#          deal with just hasn't been around long enough to know what it
+#          is.
+#
+#  2: Enlist the aid of your employer.  You have to decide whether
+#          talking to someone in personnel, and possibly trying to change
+#          corporate policy is going to get back to your supervisor and
+#          affect your job.
+#
+#  3: Threaten to complain to a consumer affairs bureau.  Most
+#          newspapers can get a quick response.  Some cities, counties,
+#          and states also have programs that might be able to help.
+#
+#  4: Tell them you'll take your business elsewhere (and follow through
+#          if they don't cooperate.)
+#
+#  5: If it's a case where you've gotten service already, but someone
+#          insists that you have to provide your number in order to have
+#          a continuing relationship, you can choose to ignore the
+#          request in hopes that they'll forget or find another solution
+#          before you get tired of the interruption.
+#
+#  If someone absolutely insists on getting your Social Security Number,
+#  you may want to give a fake number.  There is no legal penalty as long
+#  as you're not doing it to get something from a government agency or to
+#  commit fraud.  There are a few good choices for "anonymous" numbers.
+#  Making one up at random is a bad idea, as it may coincide with
+#  someone's real number and cause them some amount of grief.  It's
+#  better to use a number like 078-05-1120, which was printed on "sample"
+#  cards inserted in thousands of new wallets sold in the 40's and 50's.
+#  It's been used so widely that both the IRS and SSA recognize it
+#  immediately as bogus, while most clerks haven't heard of it.  It's
+#  also safe to invent a number that has only zeros in one of the fields.
+#  The Social Security Administration never issues numbers with this
+#  pattern.  They also recommend that people showing Social Security
+#  cards in advertisements use numbers in the range 987-65-4320 through
+#  987-65-4329.
+#
+#  The Social Security Administration recommends that you request a copy
+#  of your file from them every few years to make sure that your records
+#  are correct (your income and "contributions" are being recorded for
+#  you, and no one else's is.)  The statute of limitations for getting
+#  corrections without either an "obvious error on the face of the
+#  record" or good proof of earnings is 3 Years, 3 months and 15 days.
+#  The reason for this (the 3 years, not the 3 months and 15 days) seems
+#  to be that details are only kept for earnings in the last 3 years and
+#  older earnings are lumped together.  Call the Social Security
+#  Administration at (800) 772-1213 and ask for a "Request for Earnings
+#  and Benefit Estimate Statement".
+#
+#               Some Legal Cases Currently (1/9/91) Pending
+#
+#  CPSR has recently joined two legal cases concerning Social Security
+#  Numbers and privacy.  One of them challenges the IRS practice of
+#  printing Social Security Numbers on mailing labels when they send out
+#  tax forms and related correspondance.  The other challenges Virginia's
+#  requirement of a Social Security Number in order to register to vote.
+#
+#  Dr. Peter Zilahy Ingerman filed suit against the IRS in Federal
+#  District Court in 1991, and CPSR filed a friend of the court brief in
+#  August.
+#
+#  The Virginia case was filed by a resident of the state who refused to
+#  supply a Social Security Number when registering to vote.  When the
+#  registrar refused to accept his registration, he filed suit.  He is
+#  also challenging the state of Virginia on two other bases: the
+#  registration form apparently lacked a Privacy Act notice, and the
+#  voter lists the state publishes include Social Security Numbers.
+#
+#  If you have suggestions for improving this document please send them
+#  to me at:
+#                                         Chris Hibbert
+#  hibbert@xanadu.com        or           Xanadu Operating Company
+#                                         550 California Ave, Suite 101
+#                                         Palo Alto, CA 94306
+#
+#References
+#
+#   1. http://www.beyondweird.com/
+

@@ -1,0 +1,4 @@
+echo ".if !defined($@)"
+cat
+echo ".else #.if !defined($@)" | rjshc
+echo ".endif #.else .if !defined($@)" | rjshc

@@ -1,0 +1,4 @@
+function lr()  {
+	l -R "$@"
+}
+

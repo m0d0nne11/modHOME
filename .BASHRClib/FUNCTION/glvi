@@ -1,0 +1,7 @@
+function glvi
+{
+    local z
+    eval z=$(echo $#)
+    vi +/"$z" $(gl -l "$@")
+}
+

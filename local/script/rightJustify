@@ -1,0 +1,18 @@
+#
+# After capturing stdin in a temp file, we note the widest token
+# length and use that information to generate an AWK format string
+# suitable for use during a second pass, in which we actually emit
+# (as stdout) the right-justified text.
+#
+
+   timeStamp=`date '+%Y%m%d%H%M%S'`
+    tempFile=/tmp/$$tempFile$timeStamp
+nawkCommandScript=/tmp/$$format$timeStamp
+
+fmt -1          > $tempFile
+lineup dummyArg < $tempFile | head -1 \
+  | sed -e 's/-//' -e 's;\\;;' >$nawkCommandScript
+chmod +x               $nawkCommandScript
+sed -e 1d <$tempFile | $nawkCommandScript
+rm   -f $nawkCommandScript  $tempFile
+
