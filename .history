@@ -1,4 +1,3 @@
-for h in $(seq 36 55) ; do echo nlet-$h $(fgrep loss <(ping -c3 nlet-$h)) ; done
 function lineupFunc() { column -t | sed -e 's/\([^ ]\)  /\1 /g' ; }
 host $(hostname)
 ipconfig getifaddr
@@ -13,26 +12,12 @@ sudo port  -d selfupdate
 ldapSearch jeffr
 git clone https://github.com/pddenhar/esxi-linked-clone
 
-ssh b0rken.com
 function everyCharacter() {
 cat << "EOF"
 ! " # $ % & ' ( ) * + , - . / 0 1 2 3 4 5 6 7 8 9 : ; < = > ? @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [ \ ] ^ _ ` a b c d e f g h i j k l m n o p q r s t u v w x y z { | } ~
 EOF
 } ; for f in "$(everyCharacter)" ; do echo "${f}"; done
 
-ldapsearch -x -H ldap://modldapserver/
-ldapsearch -x -H mdldapserver
-ldapsearch -x -L -h llemail -b o=MIT_LINCOLN_LABORATORY '*'
-ldapsearch -x -L -h llemail -b o=MIT_LINCOLN_LABORATORY '*' > ldapDumpMITLL.$(ymd)
-ldapsearch -x -L -h modldapserver
-ldapsearch -x -L -h modldapserver -b
-ldapsearch -x -L -h modldapserver -b dc=testbed,dc=local
-ldapsearch -x -L -h modldapserver -b o=MIT_LINCOLN_LABORATORY
-ldapsearch -x -L -h modldapserver -b o=MIT_LINCOLN_LABORATORYhgrep ldap
-ldapsearch -x -L -h modldapserver -b o=mitll
-ldapsearch -x -L -h modldapserver -b testbed
-ldapsearch -x -L -h modldapserver -b testbed.local
-ldapsearch -x -L -h modldapserver -b testbed.local '(*)'
 ( find . -type d | sed -e 's/..//' | sort -r | while read f; do rmdir "${f}"; done ) 2>&1 | wc
 (f=ContenTable.STORAGE/ContenTable.`hostname`.`ymd` ; mkdir -p ContenTable.STORAGE ; find . -xdev -type f | sed -e 's/..//' | sort -bfd > "${f}" ; rm -f ContenTable ; ln -s "${f}" ContenTable) &
 (find . -type d | sed -e 's/..//' | sort -r | while read f; do rmdir "${f}"; done) 2>&1 | wc
@@ -46,18 +31,15 @@ drutil burn -drive 2 -nofs yourISOhere
 for f in * ; do diff $jnk/$f $f && (echo TOSS $f ; rm -f $f) ; done
 function cdllth() { cdll -tr "$@" | head -$(( $(($LINES / 5)) * 4)) ; }
 function lineupFunc() { column -t | sed -e 's/\([^ ]\)  /\1 /g' ; }
-git clone https://llcad-github.llan.ll.mit.edu/mehta/sec-accredit
 lpoptions -l
 lpr -o landscape -o cpi=18 < ~/Desktop/MacOS10.9.5systems.txt
 ssh -o 'ServerAliveInterval 60' mod@b0rken.com
-ssh root@core20 #MI25714
 sudo id ; ( sudo ~/modmacNamePreservation.sh < /dev/null > /dev/null 2>&1 & ) < /dev/null > /dev/null 2>&1 & sleep 3 ; kill -9 $$
 sudo id ; while read m f ; do if fgrep -e $m /tmp/mi25714downloadsDesktopMD5.sessionLog ; then echo TOSS $f ; sudo rm "${f}" ; else echo KEEP $f; fi; done < /tmp/desktopMODmd5.sessionLog
 sudo port -d selfupdate
 sudo port install wget
 xcodebuild
 ~/modHOME/local/script/isLinux || echo NOPE
-exec ssh root@atdl-adm ; kill -9 $$
 
 function everyCharacter() {
 cat << "EOF"
@@ -68,7 +50,6 @@ EOF
 (cd ~/Desktop/AVstaging && ./AVfetchScript.sh && ls -latr | tail)
 cd Documents/Virtual\ Machines.localized/
 cd modHOME/local/alternative/
-curl http://b0rken.com/rootMOD.tgz -o rootMOD.tgz
 declare -a rzq=("")
 echo g65help@issues
 echo http://b0rken.com/putty-0.64-installer.exe
@@ -84,7 +65,6 @@ xcodebuild
 sudo tcpdump -i en0 -nev udp port 68
 cd ~/Desktop/MITLL/bureaucracy/timesheet/
 drutil burn -drive 2 -nofs ~/Desktop/ISO/ubuntu-12.04.5-desktop-amd64.iso
-exec ssh root@atdl-adm ; die
 pd ~/'Library/Application Support/Firefox/Profiles/adrmdgba.default'
 pushd ~ ; history -c ; history -r ; . Bmod ; popd
 rsync -vax --exclude=SNAPSHOT . SNAPSHOT/test
