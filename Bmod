@@ -23,7 +23,7 @@
 # be good manners to talk to me first, if possible...  ;->
 #
 # SEE ALSO: the Xmod script in modHOME to aid in removal.
-# Michael.ODonnell@ll.mit.edu  mod.modHOME@spineless.org
+# mod.modHOME@spineless.org
 
 startingDir=$PWD
 
