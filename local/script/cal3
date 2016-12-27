@@ -1,0 +1,36 @@
+#!/bin/bash
+
+function lastMonthNumber() { echo $(( ( ( ($(date '+%m') - 1) + 11) % 12 ) + 1 )) ; }
+function thisMonthNumber() { echo $(( ( ( ($(date '+%m') - 1) + 12) % 12 ) + 1 )) ; }
+function nextMonthNumber() { echo $(( ( ( ($(date '+%m') - 1) + 13) % 12 ) + 1 )) ; }
+
+thisMonthYear=$(date '+%Y')
+
+if [ $(lastMonthNumber) -gt $(thisMonthNumber) ] ; then
+    lastMonthYear=$(( $thisMonthYear - 1 )) ;
+else
+    lastMonthYear=$thisMonthYear;
+fi
+
+if [ $(thisMonthNumber) -gt $(nextMonthNumber) ] ; then
+    nextMonthYear=$(( $thisMonthYear + 1 )) ;
+else
+    nextMonthYear=$thisMonthYear;
+fi
+
+
+function spacePadAfter22() {
+    expand |                                       \
+    sed -E -e 's/$/                        /'      \
+           -e 's/^(......................).*$/\1/'
+}
+
+function space22paddedCal() { cal -m $1 $2 | spacePadAfter22 ; }
+
+######################################################################
+#
+
+paste <(space22paddedCal $(lastMonthNumber) $lastMonthYear ) \
+      <(space22paddedCal $(thisMonthNumber) $thisMonthYear ) \
+      <(space22paddedCal $(nextMonthNumber) $nextMonthYear )
+

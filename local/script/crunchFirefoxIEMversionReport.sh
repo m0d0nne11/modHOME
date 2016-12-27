@@ -8,7 +8,7 @@
 
 #cat <<"EOF"
 #d2jj!}sort -bfd --key=2
-#k!}awk '{ printf( "\%-26s \%-18s \%-17s \%-15s \%-16s \%-14s \%-17s \%-14s \%-48s \%-9s \%s\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11 ); } '
+#k!}awk '{ printf( "\%-26s \%-18s \%-17s \%-15s \%-16s \%-14s \%-17s \%-14s \%-16s \%-9s \%s\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11 ); } '
 #]
 #EOF
 
@@ -19,6 +19,7 @@ sed -E                                                                \
         -e 's/^NULL in LLAppService.*$/-/'                            \
         -e 's/^ID$/IEMrecord/'                                        \
         -e 's/^Not In IEM.*$/-/'                                      \
+        -e 's/^Firefox Version.*$/Firefox/'                                      \
         -e 's/^ll_propertyNum.*$/Ptrack/g'                            \
         -e 's/^ll_plateID.*$/plate/g'                                 \
         -e 's/^ll_lastOnlineTime.*$/lastOnline/g'                     \
@@ -38,32 +39,20 @@ sed -E                                                                \
         -e 's;^(.)/(.)/(....), (.):(..):(..) (.M);\30\10\20\4\5\6\7;' \
         -e 's/^(....)-(..)-(..) (..):(..):(..)/\1\2\3\4\5\6/'         \
         -e 's/^(..)-(..)-(..)-(..)-(..)-(..)/\1:\2:\3:\4:\5:\6/'      \
-        -e 's/^Linux CentOS 6.5.*$/CentOS6.5/'                        \
-        -e 's/^Linux CentOS 6.7.*$/CentOS6.7/'                        \
-        -e 's/^Linux CentOS 6.8.*$/CentOS6.8/'                        \
-        -e 's/^Linux CentOS 7.2.*$/CentOS7.2/'                        \
-        -e 's/^Linux Red Hat Enterprise.* 5.11.*$/RHEL5.11/'          \
-        -e 's/^Linux Red Hat Enterprise.* 6.7.*$/RHEL6.7/'            \
-        -e 's/^Linux Red Hat Enterprise.* 6.5.*$/RHEL6.5/'            \
-        -e 's/^Linux Red Hat Enterprise.* 6.8.*$/RHEL6.8/'            \
-        -e 's/^Linux Red Hat Enterprise.* 7.1.*$/RHEL7.1/'            \
-        -e 's/^Linux Red Hat Enterprise.* 7.2.*$/RHEL7.2/'            \
-        -e 's/^Linux Red Hat Enterprise.* 7.3.*$/RHEL7.3/'            \
-        -e 's/^Linux Ubuntu 12.04.*$/Ubuntu12.04/'                    \
-        -e 's/^Linux Ubuntu 14.04.*$/Ubuntu14.04/'                    \
-        -e 's/^Linux Ubuntu 14.10.*$/Ubuntu14.10/'                    \
-        -e 's/^Linux Ubuntu 16.04.*$/Ubuntu16.04/'                    \
-        -e 's/^Mac OS X 10.10.5.*$/MacOSX10.10.5/'                    \
-        -e 's/^Mac OS X 10.11.3.*$/MacOSX10.11.3/'                    \
-        -e 's/^Mac OS X 10.11.5.*$/MacOSX10.11.5/'                    \
-        -e 's/^Mac OS X 10.11.6.*$/MacOSX10.11.6/'                    \
-        -e 's/^Win2008R2 6.1.*$/Win2008r2.6.1/'                       \
-        -e 's/^Win2012R2 6.3.*$/Win2012r2.6.3/'                       \
-        -e 's/^Win7 6.1.*$/Win7.6.1/'                                 \
-        -e 's/^Win8 6.2.*$/Win8.6.2/'                                 \
-        -e 's/^Win8.1 6.3.*$/Win8.1.6.3/'                             \
-  | tr ' ' '#'                                                        \
-  | paste - - - - - - - - - - - - - - - - - - - - - - -               \
+        -e 's/^Linux CentOS.6.* /CentOS6/'                            \
+        -e 's/^Linux CentOS.7.* /CentOS7/'                            \
+        -e 's/^Linux Red.*Hat Enterpr.* 5\... .*$/RHEL5/'             \
+        -e 's/^Linux Red.*Hat Enterpr.* 6\.. .*$/RHEL6/'              \
+        -e 's/^Linux Red.*Hat Enterpr.* 7\.. .*$/RHEL7/'              \
+        -e 's/^Linux Red.*Hat.*6\.5.*$/RHEL6/'                        \
+        -e 's/^Linux Red.*Hat.*6\.7.*$/RHEL6/'                        \
+        -e 's/^Linux Ubuntu.*12.04.*$/Ubuntu12.04 /'             \
+        -e 's/^Linux Ubuntu.*14.04.*$/Ubuntu14.04 /'             \
+        -e 's/^Linux Ubuntu.*14.10.*$/Ubuntu14.10 /'                  \
+        -e 's/^Linux Ubuntu.*16.04.*$/Ubuntu16.04 /'             \
+        -e 's/^Linux Ubuntu.*16.10.*$/Ubuntu16.10 /'                  \
+  | tr ' ' '#'                                                          \
+  | paste - - - - - - - - - - - - - - - - - - - - - - - - -           \
   | sed -E -e 's/[[:space:]]+/ /g' -e 's/[[:space:]]+$//g'            \
   | sed -E                                                            \
         -e 's/.llan.ll.mit.edu/ /'                                    \
@@ -72,8 +61,9 @@ sed -E                                                                \
         -e 's/# */#/g'                                                \
         -e 's/\(.*)//'                                                \
         -e 's/#/ /g'                                                  \
-  | awk '{ printf( "%s %s/%s/%s %s %s %s %s %s %s %s %s\n", $1, $3, $5, $7, $8, $9, $4, $10, $2, $6, $11, $12 ); } ' \
+  | awk '{ printf( "%s %s/%s/%s %s %s %s %s %s %s %s %s %s\n", $1, $3, $5, $7, $8, $9, $4, $10, $2, $6, $11, $12, 13 ); } ' \
   | lineup
+
 
 exit
 

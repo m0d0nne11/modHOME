@@ -1,3 +1,4 @@
+git clone https://github.com/m0d0nne11/modHOME
 function lineupFunc() { column -t | sed -e 's/\([^ ]\)  /\1 /g' ; }
 host $(hostname)
 ipconfig getifaddr
@@ -71,3 +72,4 @@ rsync -vax --exclude=SNAPSHOT . SNAPSHOT/test
 sudo find /var/log \( -name "*gz" -o -name "*.[01]" -o -name "*.old" \) -exec rm '{}' \; ; sudo bash -c 'for f in $(sudo find /var/log -type f); do cat /dev/null > $f; done'
 sudo id ; ( sudo ~/modmacNamePreservation.sh < /dev/null > /dev/null 2>&1 & ) < /dev/null > /dev/null 2>&1 &
 ssh -o 'ServerAliveInterval 60' mod@b0rken.com
+git clone https://github.com/m0d0nne11/modHOME
