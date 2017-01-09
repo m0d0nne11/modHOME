@@ -63,9 +63,12 @@ unset verbose
 
 currentOptArg=""
 while : ; do
-    getopts "vm:r" currentOptArg
+    getopts "hvm:r" currentOptArg
 
     case "$currentOptArg" in
+    'h')                                                # End of supplied args.
+        usage
+        ;;
     '?')                                                # End of supplied args.
         break
         ;;

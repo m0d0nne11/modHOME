@@ -1,1 +1,1 @@
-function macDVDcloseUpper() { drutil tray -drive 2 close      ; } ; macDVDcloseUpper "$@"
+function macDVDcloseUpper() { drutil tray -drive $(macDVDupperDriveNumber) close      ; } ; macDVDcloseUpper "$@"

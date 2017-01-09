@@ -1,1 +1,1 @@
-function macDVDcloseLower() { drutil tray -drive 1 close      ; } ; macDVDcloseLower "$@"
+function macDVDcloseLower() { drutil tray -drive $(macDVDlowerDriveNumber) close      ; } ; macDVDcloseLower "$@"
