@@ -1,4 +1,4 @@
-#echo "#define	$*	0"
-echo "#if	!$*"
+#echo "#define	$@	0"
+echo "#if	!$@"
 cat
-echo "#endif /* #if !$* */" | rjc
+echo "#endif /* #if !$@ */" | rjc

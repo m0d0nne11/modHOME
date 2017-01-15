@@ -1,5 +1,5 @@
 function word()  {
-#gunzip < $WORDLIST | egrep $*
- cat      $WORDLIST | egrep $*
+#gunzip < $WORDLIST | egrep $@
+ cat      $WORDLIST | egrep $@
 }
 

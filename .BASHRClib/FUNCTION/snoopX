@@ -1,5 +1,5 @@
 function snoopX
 {
-    xwd -display $* -root | xwud
+    xwd -display $@ -root | xwud
 }
 

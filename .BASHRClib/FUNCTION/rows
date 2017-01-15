@@ -1,7 +1,7 @@
 function rows
 {
-    stty   rows $*
-    export ROWS=$*
-    export LINES=$*
+    stty   rows $@
+    export ROWS=$@
+    export LINES=$@
 }
 

@@ -1,5 +1,5 @@
 function rotALL ()  {
-    jnk="$*"
+    jnk="$@"
 echo RZQ is "${jnk}"
     x=26
     while [ $x -gt 0 ]

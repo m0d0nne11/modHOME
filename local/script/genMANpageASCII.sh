@@ -20,7 +20,7 @@ cd ~
 stty   columns 2400
 export COLUMNS=2400
 
-man $* | cat
+man $@ | cat
 EOF
 
 chmod +x $cmdFile
@@ -28,9 +28,9 @@ chmod +x $cmdFile
 # ...launch the captive shell:
 
 if [ -n "$RZQlinux" ] ; then
-    script --quiet --command "$cmdFile $*" $asciiOutput
+    script --quiet --command "$cmdFile $@" $asciiOutput
 else # assume: Mac OSX
-    script  -q                             $asciiOutput $cmdFile $*
+    script  -q                             $asciiOutput $cmdFile $@
 fi
 
 # ...tidy the results a bit:
@@ -39,4 +39,4 @@ sed -e 's/$//' -e 's/.//g' -e 's/[[:space:]]*$//' < $asciiOutput > $cmdFile
 
 mv        $cmdFile $asciiOutput
 
-echo "#### OUTPUT for $* captured in $asciiOutput"
+echo "#### OUTPUT for $@ captured in $asciiOutput"

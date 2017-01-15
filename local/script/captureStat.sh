@@ -34,7 +34,7 @@ STAT_X='%X' \
 STAT_y='%y' \
 STAT_Y='%Y' \
 STAT_z='%z' \
-STAT_Z='%Z'" $*
+STAT_Z='%Z'" $@
 
 exit
 

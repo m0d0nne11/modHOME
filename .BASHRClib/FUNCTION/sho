@@ -1,5 +1,5 @@
 function sho
 {
-    show $* | cat
+    show $@ | cat
 }
 

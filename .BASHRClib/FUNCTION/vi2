@@ -1,5 +1,5 @@
 
 function vi2()  {
-    vi -O2 $*
+    vi -O2 $@
 }
 

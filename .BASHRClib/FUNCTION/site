@@ -1,5 +1,5 @@
 function site
 {
-    echo $* >>~/.siteList
+    echo $@ >>~/.siteList
 }
 

@@ -1,5 +1,5 @@
 
 function vi4()  {
-    vi -O4 $*
+    vi -O4 $@
 }
 

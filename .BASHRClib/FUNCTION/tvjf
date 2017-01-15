@@ -1,7 +1,7 @@
 function tvjf()  {
     if [ $# -gt 0 ]
     then
-        tar tvjf - <$*
+        tar tvjf - < $@
     else
         tar tvjf -
     fi

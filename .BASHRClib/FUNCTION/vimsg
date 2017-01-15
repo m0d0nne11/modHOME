@@ -1,5 +1,5 @@
 function vimsg
 {
-    vi $(mhpath $*)
+    vi $(mhpath $@)
 }
 

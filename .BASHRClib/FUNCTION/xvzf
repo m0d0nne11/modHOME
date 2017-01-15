@@ -1,5 +1,5 @@
 function xvzf
 {
-    gunzip <$* | tar xvf -
+    gunzip <$@ | tar xvf -
 }
 

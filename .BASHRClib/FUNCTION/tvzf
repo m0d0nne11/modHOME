@@ -1,7 +1,7 @@
 function tvzf()  {
     if [ $# -gt 0 ]
     then
-        tar tvzf - <$*
+        tar tvzf - < $@
     else
         tar tvzf -
     fi

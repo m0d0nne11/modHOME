@@ -1,5 +1,5 @@
 
-echo "#### PROBLEM - this script needs work...  $0 $*"
+echo "#### PROBLEM - this script needs work...  $0 $@"
 
 exit 1
 

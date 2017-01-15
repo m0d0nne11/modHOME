@@ -1,6 +1,6 @@
 function stty_a
 {
-stty -a <$* | sed -e '/[^;]$/s/ /\
+stty -a <$@ | sed -e '/[^;]$/s/ /\
 /g' -e 's/; /;\
  /g' | sed -e 's/^/ /' -e 's/[	 ][	 ]*/ /g' -e '/^ -/s//-/'
 }

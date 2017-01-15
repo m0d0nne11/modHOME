@@ -1,6 +1,6 @@
 function pss
 {
-    folder -pack $*
+    folder -pack $@
     sortMailBySubject
     scan
     folder

@@ -6,12 +6,12 @@
 #
 function treeCopy()  {
   if [ $# -ne 2 ] ; then
-    echo $FUNCNAME: ERROR - wrong number of args "($*)"
+    echo $FUNCNAME: ERROR - wrong number of args "($@)"
     return 1
   fi
 
   if ! [ -d $2/. ] ; then
-    echo $FUNCNAME: ERROR - second arg must be a directory "($*)"
+    echo $FUNCNAME: ERROR - second arg must be a directory "($@)"
     return 1
   fi
 

@@ -1,2 +1,2 @@
-echo -n "#endif $*"
+echo -n "#endif $@"
 ccmnt

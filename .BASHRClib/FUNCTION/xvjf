@@ -1,5 +1,5 @@
 function xvjf
 {
-    bunzip2 <$* | tar xvf -
+    bunzip2 <$@ | tar xvf -
 }
 
