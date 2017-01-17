@@ -7,9 +7,11 @@ function bashRCfunc()  {
     for d in $modHOME/.BASHRClib "$modHOME".custom/.BASHRClib ; do
         if pushd "${d}" > /dev/null 2>&1 ; then 
             for t in ALIAS ENVARphase0 ENVARphase1 FUNCTION COMMAND ; do
-                for f in $(find "${t}" -type f | sort) ; do
-                    . "${f}"
-                done
+                if [ -d "${t}" ] ; then
+                    for f in $(find "${t}" -type f ) ; do
+                        . "${f}"
+                    done
+                fi
             done
             popd >/dev/null
         fi

@@ -37,7 +37,6 @@ function cdllth() { cdll -tr "$@" | head -$(( $(($LINES / 5)) * 4)) ; }
 function lineupFunc() { column -t | sed -e 's/\([^ ]\)  /\1 /g' ; }
 lpoptions -l
 lpr -o landscape -o cpi=18 < ~/Desktop/MacOS10.9.5systems.txt
-ssh -o 'ServerAliveInterval 60' mod@b0rken.com
 sudo id ; ( sudo ~/modmacNamePreservation.sh < /dev/null > /dev/null 2>&1 & ) < /dev/null > /dev/null 2>&1 & sleep 3 ; kill -9 $$
 sudo id ; while read m f ; do if fgrep -e $m /tmp/mi25714downloadsDesktopMD5.sessionLog ; then echo TOSS $f ; sudo rm "${f}" ; else echo KEEP $f; fi; done < /tmp/desktopMODmd5.sessionLog
 sudo port -d selfupdate
@@ -74,5 +73,4 @@ pushd ~ ; history -c ; history -r ; . Bmod ; popd
 rsync -vax --exclude=SNAPSHOT . SNAPSHOT/test
 sudo find /var/log \( -name "*gz" -o -name "*.[01]" -o -name "*.old" \) -exec rm '{}' \; ; sudo bash -c 'for f in $(sudo find /var/log -type f); do cat /dev/null > $f; done'
 sudo id ; ( sudo ~/modmacNamePreservation.sh < /dev/null > /dev/null 2>&1 & ) < /dev/null > /dev/null 2>&1 &
-ssh -o 'ServerAliveInterval 60' mod@b0rken.com
 git clone https://github.com/m0d0nne11/modHOME
