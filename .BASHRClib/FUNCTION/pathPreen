@@ -28,7 +28,7 @@ function rememberPATH()  {
     if [ -f "${modHOME}.custom/.BASHRClib/ENVARphase1/PATH" ] ; then
         f="${modHOME}.custom/.BASHRClib/ENVARphase1/PATH" ; 
     else
-        echo MAYBE mkdir -p "${modHOME}.custom/.BASHRClib/ENVARphase1" ; chmod -R go-rwx "${modHOME}.custom/. '; echo PATH=$PATH >' "${modHOME}.custom/.BASHRClib/ENVARphase1"/PATH ;
+        echo MAYBE mkdir -p "${modHOME}.custom/.BASHRClib/ENVARphase1 ; chmod -R go-rwx ${modHOME}.custom/." '; echo PATH=$PATH >' "${modHOME}.custom/.BASHRClib/ENVARphase1"/PATH ;
                f="${modHOME}/.BASHRClib/ENVARphase1/PATH" ; 
     fi ;
     if ! [ -r "${f}" ] ; then
