@@ -1,28 +1,46 @@
-# This file (Bmod) is installed as part of the expansion of the
-# modHOME.tgz archive, something that I (mod=Michael O'Donnell)
-# sometimes inflict on systems so that I can have familiar
+# This file (Bmod) is part of modHOME, a portable (and almost
+# entirely non-invasive) home directory implementation that I
+# (mod=Michael O'Donnell) sometimes inflict on systems (via
+# "git clone" or tarball expansion) so that I can have familiar
 # surroundings (aliases, functions, environment variables, init
 # scripts, etc) that reflect my preferences.  The modHOME
-# environment can be installed/initialized for any user after
-# expanding the archive in that account's home directory:
+# environment can be installed/initialized for any user, thus:
 #
-#  cd ~; tar xvzf modHOME.tgz; . Bmod; pathPreen; rememberPATH
+#    cd; git clone https://github.com/m0d0nne11/modHOME
 #
-# ...with subsequent uses then requiring only that this Bmod
-# script be sourced:
+# ...or (assuming tarball available) thus:
+#
+#    cd; tar xvzf modHOME.tgz
+#
+# ...followed thus:
+#
+#    . Bmod; pathPreen; rememberPATH
+#
+# Subsequent uses then require only sourcing this Bmod script:
 #
 #    . Bmod
 #
-# It should be true that this modHOME stuff can be left in
-# place since it generally has no (well, OK - very little...)
+# It should be true that this modHOME stuff can be safely left
+# in place since it generally has no (well, OK - very little...)
 # effect on other users who do not explicitly put it into
-# effect via that Bmod script.  Also, please note that I try
-# not to leave precious files anywhere in the modHOME
-# hierarchy so it should always be OK to delete it without
-# notice if you feel the need to tidy things up, though it'd
-# be good manners to talk to me first, if possible...  ;->
+# effect via the Bmod script.
 #
-# SEE ALSO: the Xmod script in modHOME to aid in removal.
+# Please note that I try not to leave precious files anywhere in
+# the modHOME hierarchy so it should always be OK to delete it
+# without notice if you feel the need to tidy things up, though
+# it'd be good manners to talk to me first, if possible...  ;->
+#
+# REMOVAL: rm -rf ~/modHOME should pretty much do it, though check
+#          for dangling symlinks in ~/. pointing into modHOME/...
+# (RE)CREATING TARBALL: modHOME/modHOMEtarballUpdate.sh
+# ROOT USAGE: I frequently install/use this as root in root's
+#             home directory but security-conscious folks will,
+#             of course, not just take my word for it that
+#             there's nothing nasty herein!  Once you've
+#             verified, though, you'll want to then do something
+#             like "chown -R 0.0 ~/modHOME" or otherwise adjust
+#             ownerships/permissions to suit your circumstances.
+#
 # mod.modHOME@spineless.org
 
 startingDir=$PWD
@@ -38,7 +56,7 @@ if cd ~/modHOME/. ; then
     #
     shopt -s nullglob
 
-    # Lose ALL curently defined aliases
+    # Lose ALL currently defined aliases
     #eval "$(alias | sed -e 's/=.*$//' -e 's/^.* //' | while read f; do if alias "${f}" > /dev/null 2>&1 ; then echo "unalias '${f}' ;" ; fi; done)"
     unalias -a
 
