@@ -11,19 +11,19 @@ function llproxy()  {
     # Curl uses variables (other than http_proxy) with all caps
     # ALL_PROXY is a convenient "catchall" (see 'man curl' for more)
     #
-    export  http_proxy="http://llproxy.llan.ll.mit.edu:8080"
+    export   http_proxy="http://llproxy.llan.ll.mit.edu:8080" ;
+    export   HTTP_PROXY="${http_proxy}"                       ;
 
-    export  HTTP_PROXY="${http_proxy}"
-    export   all_proxy="${http_proxy}"
-    export   ALL_PROXY="${http_proxy}"
-    export   ftp_proxy="${http_proxy}"
-    export   FTP_PROXY="${http_proxy}"
-    export https_proxy="${http_proxy}"
-    export HTTPS_PROXY="${http_proxy}"
-    export       proxy="${http_proxy}"
-    export       PROXY="${http_proxy}"
+    export    all_proxy="${http_proxy}"                       ;
+    export    ALL_PROXY="${http_proxy}"                       ;
+    export    ftp_proxy="${http_proxy}"                       ;
+    export    FTP_PROXY="${http_proxy}"                       ;
+    export  https_proxy="${http_proxy}"                       ;
+    export  HTTPS_PROXY="${http_proxy}"                       ;
+    export        proxy="${http_proxy}"                       ;
+    export        PROXY="${http_proxy}"                       ;
 
-    export    no_proxy=localhost,127.0.0.1,.llan.ll.mit.edu
-    export    NO_PROXY="${no_proxy}"
+    export     no_proxy=localhost,127.0.0.1,.llan.ll.mit.edu  ;
+    export     NO_PROXY="${no_proxy}"                         ;
 }
 

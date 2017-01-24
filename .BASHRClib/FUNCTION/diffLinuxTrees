@@ -1,5 +1,4 @@
-function diffLinuxTrees
-{
+function diffLinuxTrees() {
     diffLinuxTreesRAW -w -b -B "$@"
 }
 

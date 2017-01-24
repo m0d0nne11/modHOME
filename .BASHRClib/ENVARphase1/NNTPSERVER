@@ -1,4 +1,4 @@
 #export NNTPSERVER=netnews.comcast.net
 
- export NNTPSERVER=news.comcast.giganews.com
+#export NNTPSERVER=news.comcast.giganews.com
 

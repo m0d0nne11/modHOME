@@ -1,7 +1,7 @@
 function logMake
 {
     banner "$@" >>makeLog
-    make "$@"   >>makeLog 2>&1 &
+    make   "$@" >>makeLog 2>&1 &
     Tmake
 }
 

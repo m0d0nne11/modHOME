@@ -1,5 +1,4 @@
-function mail2()
-{
+function mail2() {
     if [ $# -ne 3 ]                                   # Number of args correct?
     then #               0          1          2          3
         echo "usage: $FUNCNAME emailAddr{s} fromAddr Subject <stdin"

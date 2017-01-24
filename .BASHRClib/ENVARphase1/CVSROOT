@@ -1,2 +1,2 @@
- export CVSROOT=/nfs/projects/cvsroot
+#export CVSROOT=/nfs/projects/cvsroot
 

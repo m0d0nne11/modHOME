@@ -1,1 +1,1 @@
- PATH=/home/mod/modHOME/local/script:/home/mod/modHOME/local/alternative:/home/mod/modHOME/local/bin:/etc/alternatives:/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin/X11:/usr/local/share:/usr/local/games:/usr/games:/usr/local:/usr/local/uvscan:.
+ PATH=/root/modHOME/local/script:/root/modHOME/local/alternative:/root/modHOME/local/bin:/etc/alternatives:/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin/X11:/usr/local/share:/usr/local/games:/usr/games:/usr/local:/usr/local/uvscan:NOTICEdefaultPATHsetIn/ENVARphase1/PATH

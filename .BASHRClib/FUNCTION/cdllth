@@ -5,4 +5,4 @@
 #fi
 
 # 20160505 the logic above seems no longer necessary on MacOSX?
-     function cdllth { cdll -t  "$@" | head -$(( $(($LINES / 5)) * 4)) ; }
+    function cdllth { cdll -t  "$@" | head -$(( $(($LINES / 5)) * 4)) ; }

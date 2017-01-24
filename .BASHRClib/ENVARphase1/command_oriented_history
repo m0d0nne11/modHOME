@@ -1,2 +1,2 @@
- export command_oriented_history=setInBASHrcFile
+ export command_oriented_history=setInENVARphase1/command_oriented_history
 

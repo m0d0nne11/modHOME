@@ -1,4 +1,4 @@
 function CscopeDWide()  {
-	CscopeD -p 5 "$@"
+    CscopeD -p 5 "$@"
 }
 
