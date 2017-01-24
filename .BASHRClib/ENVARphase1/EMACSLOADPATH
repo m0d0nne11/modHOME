@@ -1,2 +1,2 @@
- export EMACSLOADPATH=~/.my-emacs-lib:/usr/local/share/emacs/19.31/site-lisp:/usr/local/share/emacs/site-lisp:/usr/local/share/emacs/19.31/lisp
+#export EMACSLOADPATH=~/.my-emacs-lib:/usr/local/share/emacs/19.31/site-lisp:/usr/local/share/emacs/site-lisp:/usr/local/share/emacs/19.31/lisp
 
