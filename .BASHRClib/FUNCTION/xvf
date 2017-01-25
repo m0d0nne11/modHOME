@@ -1,5 +1,4 @@
-function xvf
-{
+function xvf()  {
     tar xvf - <$@
 }
 

@@ -10,8 +10,7 @@
 # them when necessary) and then ensures that the makeLog
 # symlink points at the most recent log.
 #
-function updateMakeLogLink
-{
+function updateMakeLogLink()  {
     timeStamp=$(tds)
 
     # Do we have a directory?

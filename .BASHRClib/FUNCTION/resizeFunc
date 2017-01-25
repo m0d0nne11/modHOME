@@ -1,5 +1,4 @@
-function resizeFunc
-{
+function resizeFunc()  {
     eval $(resize)
 }
 

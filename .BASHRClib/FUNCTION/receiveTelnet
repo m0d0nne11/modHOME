@@ -1,5 +1,4 @@
-function receiveTelnet
-{
+function receiveTelnet()  {
     while :
     do
         echo "################" START in.telnetd $(date) ;

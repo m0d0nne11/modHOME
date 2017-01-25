@@ -1,5 +1,4 @@
-function diffPairs
-{
+function diffPairs()  {
     while read old new
     do
         echo "#######################################################################"

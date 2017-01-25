@@ -1,5 +1,4 @@
-function vimsg
-{
+function vimsg()  {
     vi $(mhpath $@)
 }
 

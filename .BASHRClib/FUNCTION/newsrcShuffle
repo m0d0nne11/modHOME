@@ -1,5 +1,4 @@
-function newsrcShuffle
-{
+function newsrcShuffle()  {
     fgrep \! ~/.newsrc  >/tmp/UNSUBSCRIBED
     fgrep :  ~/.newsrc  >  /tmp/SUBSCRIBED
     cat                    /tmp/SUBSCRIBED  >~/.newsrc

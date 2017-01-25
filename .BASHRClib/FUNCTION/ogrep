@@ -1,5 +1,4 @@
-function ogrep
-{
+function ogrep()  {
     while read obj
     do
         hit=0

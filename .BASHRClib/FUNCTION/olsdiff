@@ -1,5 +1,4 @@
-function olsdiff
-{
+function olsdiff()  {
     echo "##############################" OLD/"$@" versus "$@"
     sdiff -b -w 160 OLD/"$@" "$@"
     echo "#####################" That was OLD/"$@" versus "$@"

@@ -1,5 +1,4 @@
-function pathUpdate
-{
+function pathUpdate()  {
     for f in $(echo $PATH | sed -e 's/:/ /g' )
     do
         echo "####" $f....

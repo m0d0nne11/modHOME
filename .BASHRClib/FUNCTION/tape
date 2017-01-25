@@ -1,5 +1,4 @@
-function tape
-{
+function tape()  {
     rzqxxxTimeSTAMp=$(timeDateString)
     echo "####################" Enter info for tape $rzqxxxTimeSTAMp...
     echo "####################" $rzqxxxTimeSTAMp >>~/.tapeInfo

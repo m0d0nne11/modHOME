@@ -1,5 +1,4 @@
-function mileages
-{
+function mileages()  {
     cat ~/.mileageList
 }
 

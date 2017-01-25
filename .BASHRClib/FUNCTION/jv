@@ -1,5 +1,4 @@
-function jv
-{
+function jv()  {
     vi $jnk/"$@" "$@"
 }
 

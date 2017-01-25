@@ -1,5 +1,4 @@
-function jvl
-{
+function jvl()  {
     vi $jnk/$1 $1
 }
 

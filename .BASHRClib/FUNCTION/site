@@ -1,5 +1,4 @@
-function site
-{
+function site()  {
     echo $@ >>~/.siteList
 }
 

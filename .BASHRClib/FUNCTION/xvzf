@@ -1,5 +1,4 @@
-function xvzf
-{
+function xvzf()  {
     gunzip <$@ | tar xvf -
 }
 

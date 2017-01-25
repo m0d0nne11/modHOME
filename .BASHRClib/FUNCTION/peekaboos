@@ -1,5 +1,4 @@
-function peekaboos
-{
+function peekaboos()  {
     cat ~/.peekabooFile
 }
 

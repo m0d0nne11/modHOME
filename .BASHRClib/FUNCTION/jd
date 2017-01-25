@@ -1,5 +1,4 @@
-function jd
-{
+function jd()  {
     echo "##############################" $jnk/"$@" versus "$@"
     diff -b --recursive -U10    $jnk/./"$@" "$@"
 #   diff -b                     $jnk/./"$@" "$@"

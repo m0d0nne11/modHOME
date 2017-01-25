@@ -1,5 +1,4 @@
-function mv2tagsTail
-{
+function mv2tagsTail()  {
     fgrep -v "$@"   tags  >tagsSSS
     fgrep    "$@"   tags >>tagsSSS
     cat tagsSSS > tags

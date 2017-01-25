@@ -1,5 +1,4 @@
-function newsrcToggle
-{
+function newsrcToggle()  {
     pd ~
     bits=0
     ls -l .newsrcJob .newsrcNOjob .newsrc

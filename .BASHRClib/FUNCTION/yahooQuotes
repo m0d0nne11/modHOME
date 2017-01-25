@@ -1,5 +1,4 @@
-function yahooQuotes
-{
+function yahooQuotes()  {
     while :; do
         wget -O - 'http://quote.yahoo.com/d/quotes.csv?s=aes+faf+ccur+genz+lnux+rhat&f=sl1d1t1c1ohgv&e=.csv' 2>/dev/null | sed -e 's/,/ /g' | lineup
         echo "#####################" ; date ; sleep 5

@@ -1,5 +1,4 @@
-function pss
-{
+function pss()  {
     folder -pack $@
     sortMailBySubject
     scan

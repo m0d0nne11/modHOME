@@ -1,5 +1,4 @@
-function sho
-{
+function sho()  {
     show $@ | cat
 }
 

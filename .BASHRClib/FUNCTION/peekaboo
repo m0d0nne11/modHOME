@@ -1,5 +1,4 @@
-function peekaboo
-{
+function peekaboo()  {
     echo "####################" Recording comments...
     echo "####################" $(tds) >>~/.peekabooFile
     cat >>~/.peekabooFile

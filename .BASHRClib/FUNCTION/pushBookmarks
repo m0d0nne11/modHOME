@@ -1,5 +1,4 @@
-function pushBookmarks
-{
+function pushBookmarks()  {
     pd ~/.netscape && gzMail2mod bookmarks.html && popd
 }
 

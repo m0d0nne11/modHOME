@@ -1,5 +1,4 @@
-function o2
-{
+function o2()  {
     if [ -z "$@" ]
     then
         echo No destination specified...

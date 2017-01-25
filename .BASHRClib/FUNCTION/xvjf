@@ -1,5 +1,4 @@
-function xvjf
-{
+function xvjf()  {
     bunzip2 <$@ | tar xvf -
 }
 

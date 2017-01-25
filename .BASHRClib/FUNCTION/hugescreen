@@ -1,5 +1,4 @@
-function hugescreen
-{
+function hugescreen () {
     rows    70
     columns 160
 }

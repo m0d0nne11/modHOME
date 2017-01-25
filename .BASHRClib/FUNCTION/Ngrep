@@ -1,5 +1,4 @@
-function Ngrep
-{
+function Ngrep()  {
     Notes | grep "$@"
 }
 

@@ -1,5 +1,4 @@
-function OLDstty_a
-{
+function OLDstty_a()  {
     tempFile=/tmp/gzMailTemp$$$(tds)
     fileName=$1$(tds).gz
     stty -a <"$@" | fmt -2000 | sed -e 's/;/;\

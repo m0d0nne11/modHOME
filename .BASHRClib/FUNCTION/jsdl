@@ -1,5 +1,4 @@
-function jsdl
-{
+function jsdl()  {
     echo "##############################" $jnk/"$@" versus "$@"
     sdiff -W -b -w $COLUMNS $jnk/"$@" "$@"
     echo "#####################" That was $jnk/"$@" versus "$@"

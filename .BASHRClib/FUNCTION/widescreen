@@ -1,5 +1,4 @@
-function widescreen
-{
+function widescreen()  {
     rows    50
     columns 160
 }

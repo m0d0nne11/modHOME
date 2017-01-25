@@ -1,5 +1,4 @@
-function tapes
-{
+function tapes()  {
     cat ~/.tapeInfo
 }
 

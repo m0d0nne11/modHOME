@@ -6,11 +6,11 @@ function zaproxy()  {
     unset no_proxy NO_PROXY http_proxy HTTP_PROXY all_proxy ALL_PROXY ftp_proxy FTP_PROXY https_proxy HTTPS_PROXY proxy PROXY
 }
 
-function llproxy()  {
     # MIT/LL proxy environment variables
     # Curl uses variables (other than http_proxy) with all caps
     # ALL_PROXY is a convenient "catchall" (see 'man curl' for more)
     #
+function llproxy()  {
     export   http_proxy="http://llproxy.llan.ll.mit.edu:8080" ;
     export   HTTP_PROXY="${http_proxy}"                       ;
 

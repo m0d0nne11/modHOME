@@ -1,10 +1,10 @@
 function killVNC()  {
-	if [ $# -lt 1 ]
-	then
-		echo "killVNC displayNum"
-		return 1
-	fi
-	vncserver -kill :$1
-	rm -f /tmp/.X"$1"-lock /tmp/.X11-unix/X"$1" ~/.vnc/$(hostname):"$1".*
+    if [ $# -lt 1 ]
+    then
+        echo "killVNC displayNum"
+        return 1
+    fi
+    vncserver -kill :$1
+    rm -f /tmp/.X"$1"-lock /tmp/.X11-unix/X"$1" ~/.vnc/$(hostname):"$1".*
 }
 

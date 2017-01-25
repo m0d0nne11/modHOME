@@ -1,5 +1,4 @@
-function glvir
-{
+function glvir () {
     local z
     eval z=$(echo $#)
     view +/"$z" $(gl -l "$@")

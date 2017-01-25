@@ -1,5 +1,4 @@
-function ssn
-{
+function ssn()  {
     echo "####################" $(timeDateString) >>~/.ssnFile
     echo $@   >>~/.ssnFile
 }

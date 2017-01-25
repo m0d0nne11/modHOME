@@ -1,5 +1,4 @@
-function sites
-{
+function sites()  {
     cat ~/.siteList
 }
 

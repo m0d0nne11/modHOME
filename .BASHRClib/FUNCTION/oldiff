@@ -1,5 +1,4 @@
-function oldiff
-{
+function oldiff()  {
     echo "##############################" OLD/"$@" versus "$@"
     diff -b OLD/"$@" "$@"
     echo "#####################" That was OLD/"$@" versus "$@"

@@ -1,2 +1,2 @@
- AC_EDITOR_GUI="xterm -n AccuRevBlack80x44vi -bc -bdc -bg black -cb +cm -cr yellow +dc -fg white -fn -misc-fixed-medium-r-normal--14-110-100-100-c-70-iso8859-1 -geometry 80x44+-12+-4 -sb -sl 5000 -ulc -e vi"
+#AC_EDITOR_GUI="xterm -n AccuRevBlack80x44vi -bc -bdc -bg black -cb +cm -cr yellow +dc -fg white -fn -misc-fixed-medium-r-normal--14-110-100-100-c-70-iso8859-1 -geometry 80x44+-12+-4 -sb -sl 5000 -ulc -e vi"
 

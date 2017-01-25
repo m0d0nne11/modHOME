@@ -1,5 +1,4 @@
-function snoopX
-{
+function snoopX()  {
     xwd -display $@ -root | xwud
 }
 

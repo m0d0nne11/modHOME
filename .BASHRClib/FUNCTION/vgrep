@@ -1,5 +1,4 @@
-function vgrep
-{
+function vgrep()  {
     vi +/$@ $(grep -l $@)
 }
 

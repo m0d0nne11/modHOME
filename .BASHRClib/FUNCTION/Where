@@ -1,5 +1,4 @@
-function where
-{
+function where()  {
     for fileListFile in /Cont*
     do
         gunzip <$fileListFile | grep $@
@@ -7,8 +6,7 @@ function where
     done
 }
 
-function Where
-{
+function Where()  {
     for fileListFile in /Cont*
     do
         gunzip <$fileListFile | grep $@
