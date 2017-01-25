@@ -4,7 +4,9 @@
 # the terminal set very wide so as to minimize hyphenation, making
 # it slightly easier to reformat that output for other purposes.
 
-unset RZQlinux ; uname -a | fgrep -qi -e linux && export RZQlinux=1
+[ "XXX_MIKE_DEBUG" ] && set -x
+
+RZQlinux=$(uname -a | fgrep -i -e linux) || unset RZQlinux
 
     cmdFile=/tmp/GMPAtemp"$$".sh
 asciiOutput=/tmp/GMPAoutput"$$".sessionLog
@@ -15,7 +17,7 @@ asciiOutput=/tmp/GMPAoutput"$$".sessionLog
 cat > $cmdFile << EOF
 #!/bin/bash
 cd ~
-. .bashrc
+[ -f .bashrc ] && . .bashrc
 
 stty   columns 2400
 export COLUMNS=2400
@@ -27,8 +29,9 @@ chmod +x $cmdFile
 
 # ...launch the captive shell:
 
-if [ -n "$RZQlinux" ] ; then
-    script --quiet --command "$cmdFile $@" $asciiOutput
+if [ "$RZQlinux" ] ; then
+#   script --quiet --command "$cmdFile $@" $asciiOutput # RHEL is apparently dainbramaged
+    script  -q      -c       "$cmdFile $@" $asciiOutput
 else # assume: Mac OSX
     script  -q                             $asciiOutput $cmdFile $@
 fi
