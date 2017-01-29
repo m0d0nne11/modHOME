@@ -24,7 +24,7 @@ function pathPreen() {
 
 function rememberPATH()  { 
     local f
-    if [ -f "${modHOME}.custom/.BASHRClib/ENVARphase1/PATH" ] ; then
+    if [ -d "${modHOME}.custom/.BASHRClib/ENVARphase1/." ] ; then
         f="${modHOME}.custom/.BASHRClib/ENVARphase1/PATH" ; 
     else
         f="${modHOME}/.BASHRClib/ENVARphase1/PATH" ; 
@@ -33,11 +33,11 @@ function rememberPATH()  {
         echo " ## " Please consider doing this: ;
         echo mkdir -p "${modHOME}.custom/.BASHRClib/ENVARphase1 ; chmod -R go-rwx ${modHOME}.custom/." '; echo PATH=$PATH >' "${f}" ;
     fi ;
+    echo " PATH=${PATH}" > "${f}" ;
     if ! [ -r "${f}" ] ; then
         echo Cannot find PATH environment definition file "${f}" ... ;
         return ;
     fi ;
-    echo " PATH=${PATH}" > "${f}" ;
     echo "${f}"
     cat  "${f}"
 }
