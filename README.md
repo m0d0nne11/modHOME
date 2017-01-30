@@ -1,3 +1,1 @@
-# modHOME
-mod's portable (and almost entirely non-invasive) HOME directory - scripts/aliases/functions/etc...
-See Bmod for further descripton.
+Bmod
