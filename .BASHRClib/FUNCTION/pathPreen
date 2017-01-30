@@ -24,22 +24,19 @@ function pathPreen() {
 
 function rememberPATH()  { 
     local f
-    if [ -d "${modHOME}.custom/.BASHRClib/ENVARphase1/." ] ; then
-        f="${modHOME}.custom/.BASHRClib/ENVARphase1/PATH" ; 
-    else
-        f="${modHOME}/.BASHRClib/ENVARphase1/PATH" ; 
+    if ! [ -d "${modHOME}.custom/.BASHRClib/ENVARphase1/." ] ; then
         echo " ## " MISSING "${modHOME}.custom/.BASHRClib/ENVARphase1" ;
-        echo " ## " Defaulting to "${f}" ; 
-        echo " ## " Please consider doing this: ;
-        echo mkdir -p "${modHOME}.custom/.BASHRClib/ENVARphase1 ; chmod -R go-rwx ${modHOME}.custom/." '; echo PATH=$PATH >' "${f}" ;
+        read -p "  OK to create necessary (sub)dirs? (Ctl-C to abort) " f ;
+        mkdir -p "${modHOME}".custom/.BASHRClib/ENVARphase1 ; 
     fi ;
+    f="${modHOME}.custom/.BASHRClib/ENVARphase1/PATH" ; 
     if [ -f "${f}" ] ; then
         echo " ## " PREVIOUS "${f}" : ;
         cat                  "${f}"   ;
     fi ;
     echo " PATH=${PATH}" > "${f}" ;
     if ! [ -r "${f}" ] ; then
-        echo Cannot find PATH environment definition file "${f}" ... ;
+        echo 'PATH environment definition file not readable?' "${f}" ;
         return ;
     fi ;
     echo " ### " CURRENT "${f}" : ;
