@@ -42,7 +42,7 @@ function rememberPATH()  {
         echo Cannot find PATH environment definition file "${f}" ... ;
         return ;
     fi ;
-    echo " ## " PREVIOUS "${f}" : ;
+    echo " ### " CURRENT "${f}" : ;
     cat                  "${f}"   ;
 }
 
