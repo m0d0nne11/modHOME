@@ -1,15 +1,24 @@
 function pathPreen() {
     local d
+    local lARCH
     local temPath=""
     if [ -z "$ARCH" ] ; then
         echo ARCH envar not set
+        if d=$(type -p arch) ; then
+            lARCH=$(arch)
+        else
+            lARCH="UnknownARCH"
+        fi
+        echo ...will use "${lARCH}"
+    else
+        lARCH="${ARCH}"
     fi
 
     for d in $ALL_POSSIBLE_PATH_DIRS "$@" ; do
         d=$(eval echo $d)
-        if [ "$d" = ARCH_DEPENDENT_LOCAL_BIN ] ; then
-                d=~/local/bin.$ARCH
-                d=$(eval echo $d)
+        if [ "${d}" = ARCH_DEPENDENT_LOCAL_BIN ] ; then
+            d="${modHOME}".custom/local/bin."${lARCH}"
+            d=$(eval echo $d)
         fi
         if [ -d $d/. ] ; then
             echo "INCLUDE $d"
@@ -19,7 +28,9 @@ function pathPreen() {
         fi
     done
 
-    export PATH=$(echo $temPath | sed -e 's/::*/:/g' -e 's/^::*//' -e 's/::*$//')
+    export PATH=$(echo "${temPath}" | sed -e 's/::*/:/g' -e 's/^::*//' -e 's/::*$//')
+    echo " #### PATH components now:"
+    echo $PATH | tr ':' '\n'
 }
 
 function rememberPATH()  { 

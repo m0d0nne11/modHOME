@@ -10,28 +10,18 @@
  export ALL_POSSIBLE_PATH_DIRS=" \
 
     "${modHOME}".custom/local/script
-    $modHOME/local/script
+    "${modHOME}"/local/script
 
     ARCH_DEPENDENT_LOCAL_BIN
 
-    "${modHOME}".custom/JAVA/jdk1.5.0_03/bin
     "${modHOME}".custom/bin
     "${modHOME}".custom/local/alternative
-    "${modHOME}".custom/local/alternative/osxVMWareOVFtoolDir
-    "${modHOME}".custom/local/alternative/osxVMwareFusionLibrarySymlink
     "${modHOME}".custom/local/bin
-    "${modHOME}".custom/local/bin.i686
     "${modHOME}".custom/local/symlink
-    "${modHOME}".custom/perl5/bin
-    $modHOME/JAVA/jdk1.5.0_03/bin
-    $modHOME/bin
-    $modHOME/local/alternative
-    $modHOME/local/alternative/osxVMWareOVFtoolDir
-    $modHOME/local/alternative/osxVMwareFusionLibrarySymlink
-    $modHOME/local/bin
-    $modHOME/local/bin.i686
-    $modHOME/local/symlink
-    $modHOME/perl5/bin
+    "${modHOME}"/bin
+    "${modHOME}"/local/alternative
+    "${modHOME}"/local/bin
+    "${modHOME}"/local/symlink
 
     ~/local/bin
     ~/local/script
@@ -72,9 +62,6 @@
     /u/scripts
     /u/mh
 
-    /usr/local/Eiffel52/studio/spec/linux-glibc2.1/bin
-    /Applications/MacVim.app/Contents/MacOS
-
     /Builds/btools2/afn/buildtools/bin
     /Builds/btools2/afn/testing/bin
     /afs/ri/vice/bin
@@ -108,7 +95,19 @@
     /vobs/build/exports/scripts
     /vobs/gdb/kgdb
     /vobs/mcos/ccbuild/exports/bin
+
+    "${modHOME}".custom/JAVA/jdk1.5.0_03/bin
+    "${modHOME}"/JAVA/jdk1.5.0_03/bin
+    "${modHOME}".custom/local/alternative/osxVMwareFusionLibrarySymlink
+    "${modHOME}".custom/local/alternative/osxVMWareOVFtoolDir
+    "${modHOME}".custom/perl5/bin
+    "${modHOME}"/local/alternative/osxVMwareFusionLibrarySymlink
+    "${modHOME}"/local/alternative/osxVMWareOVFtoolDir
+    "${modHOME}"/perl5/bin
+
+    /Applications/MacVim.app/Contents/MacOS
     ~/JAVA/jdk1.5.0_03/bin
+    /usr/local/Eiffel52/studio/spec/linux-glibc2.1/bin
 
     ~cgeggis/bin
     ~jeffc/bin
