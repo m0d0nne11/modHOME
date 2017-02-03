@@ -1,3 +1,10 @@
+
+# XXX_MIKE_TODO: still need to incorporate these because
+#                even on MacOS the arch command says "i386"
+#
+function isLinuxFunc() { uname -a | fgrep -qi -e linux  ; }
+function isMacOSfunc() { uname -a | fgrep -q  -e Darwin ; }
+
 function pathPreen() {
     local d
     local lARCH

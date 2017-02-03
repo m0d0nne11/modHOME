@@ -1,3 +1,14 @@
+#!/bin/bash
+
+# Create a tarball from a working modHOME installation.
+
+# Propagation of my modHOME mess can be accomplished using tarballs
+# but it will probably always be better to pull a copy over the wire from
+# github.com or from another machine with a snapshot already installed:
+#
+#    cd; git clone https://github.com/m0d0nne11/modHOME
+#    cd; git clone ssh://someUserID@someHost/some/path/to/modHOME
+#
 
 [ -n "$MIKE_DEBUG" ] && set -x
 
@@ -97,3 +108,4 @@ cd ..
 rm -rf $STAGING
 
 echo "#### GENERATED modHOME.tgz.$timeStamp"
+
