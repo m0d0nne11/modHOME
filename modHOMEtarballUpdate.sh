@@ -95,9 +95,10 @@ rm -f                                     modHOME/modHOMEsnapshotVersion*
 echo                         $timeStamp > modHOME/modHOMEsnapshotVersion.$timeStamp
 ln -s modHOMEsnapshotVersion.$timeStamp   modHOME/modHOMEsnapshotVersion
 
-vimInitFiles=".exrc .vim .vimrc"
-for f in        $vimInitFiles ; do ln -s modHOME/$f ; done
-tar cvzf modHOME/vimInitFiles.tgz $archSpecificOpts $vimInitFiles
+# Now using vimSymlinkInit() instead of tarball
+#vimInitFiles=".exrc .vim .vimrc"
+#for f in        $vimInitFiles ; do ln -s modHOME/$f ; done
+#tar cvzf modHOME/vimInitFiles.tgz $archSpecificOpts $vimInitFiles
 
 (chmod -R mod.mod modHOME) >&/dev/null # OK to fail
 ln -s modHOME/Bmod
