@@ -11,11 +11,14 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 function usage() {
+    echo ""
     echo USAGE:
     echo "   ${myName}" -[io] [-d]
-    echo Syncs specified hierarchies inbound/outbound with
-    echo  other host "(currently '${otherHost}')"
-    echo  WARNING: the -d option permits ruthless deletion
+    echo Syncs specified hierarchies inbound/outbound via
+    echo  rsync with other host "(currently '${otherHost}')"
+    echo  ""
+    echo  WARNING: the -d option accomplishes complete sync by
+    echo  permiting ruthless deletion of destination files.
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -39,12 +42,14 @@ function FAILED()  {
 
    myName="${0}"
     myPID=$$
-otherHost=vmobuntu1404
+otherHost=otherHostNotYetDefined
 
 unset ruthlessDelete
-unset otherUser
 unset direction # No default
-otherUser=MI25714@ # NOTE: must have trailing @
+
+unset otherUser     # Defaults to current user
+#otherUser=MI25714@ # NOTE: if set, otherUser must have trailing @
+#otherUser=mi25714@ # NOTE: if set, otherUser must have trailing @
 
 currentOptArg=""
 while getopts "iod" currentOptArg ; do
@@ -71,7 +76,7 @@ done
 
 [ "${direction}" ] || FAILED must specify -o or -i
 
-[ "${otherHost}" ] || FAILED - other host not specified in script
+[ "${otherHost}" ] || FAILED - other host not specified
 
 cd ~               || FAILED "Cannot cd ~ ?"
 
@@ -80,17 +85,17 @@ cd ~               || FAILED "Cannot cd ~ ?"
 while read dir ; do
     [ -d "${dir}"/. ] || FAILED "${dir}" "...not a Directory?"
     if ! [ "${dir}" ] ; then
-        echo '  #### SKIPPING null entry - maybe blank line in list?'
+        echo '  #### SKIPPING null entry - blank line between yourDirectoryListHere tags?'
         continue
     fi
-    echo "  #### BEGIN $direction ${otherUser}${otherHost}":"${dir}"/.
+    echo "  #### BEGIN $direction ${otherUser}${otherHost}":"'${dir}'"/.
 
     if [ "$direction" = "outbound" ] ; then
-        rsync -vax ${ruthlessDelete} "${dir}"/. ${otherUser}"${otherHost}":"${dir}"/.
+        rsync -vax ${ruthlessDelete} "${dir}"/. ${otherUser}"${otherHost}":"'${dir}'"/.
     else
-        rsync -vax ${ruthlessDelete}            ${otherUser}"${otherHost}":"${dir}"/. "${dir}"/.
+        rsync -vax ${ruthlessDelete}            ${otherUser}"${otherHost}":"'${dir}'"/. "${dir}"/.
     fi
-    echo "  ##### DONE $direction ${otherUser}${otherHost}":"${dir}"/.
+    echo "  ##### DONE $direction ${otherUser}${otherHost}":"'${dir}'"/.
 
 done <<"yourDirectoryListHere"
 Desktop/exampleShuttleDirectory
