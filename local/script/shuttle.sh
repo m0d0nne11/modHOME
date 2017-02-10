@@ -44,13 +44,13 @@ function FAILED()  {
     myPID=$$
 otherHost=otherHostNotYetDefined
 
-unset ruthlessDelete
 unset direction # No default
 
 unset otherUser     # Defaults to current user
 #otherUser=MI25714@ # NOTE: if set, otherUser must have trailing @
 #otherUser=mi25714@ # NOTE: if set, otherUser must have trailing @
 
+options=""
 currentOptArg=""
 while getopts "iod" currentOptArg ; do
     case "$currentOptArg" in
@@ -64,7 +64,7 @@ while getopts "iod" currentOptArg ; do
         direction="outbound"
         ;;
     d)
-        ruthlessDelete="--delete"
+        options="${options} --delete" # Permit ruthless deletion of dest files.
         ;;
     *)
         failed "Unexpected commandline parameter: $currentOptArg"
@@ -76,7 +76,7 @@ done
 
 [ "${direction}" ] || FAILED must specify -o or -i
 
-[ "${otherHost}" ] || FAILED - other host not specified
+[ "${otherHost}" ] || FAILED other host not specified
 
 cd ~               || FAILED "Cannot cd ~ ?"
 
@@ -91,9 +91,9 @@ while read dir ; do
     echo "  #### BEGIN $direction ${otherUser}${otherHost}":"'${dir}'"/.
 
     if [ "$direction" = "outbound" ] ; then
-        rsync -vax ${ruthlessDelete} "${dir}"/. ${otherUser}"${otherHost}":"'${dir}'"/.
+        rsync -vax ${options} "${dir}"/. ${otherUser}"${otherHost}":"'${dir}'"/.
     else
-        rsync -vax ${ruthlessDelete}            ${otherUser}"${otherHost}":"'${dir}'"/. "${dir}"/.
+        rsync -vax ${options}            ${otherUser}"${otherHost}":"'${dir}'"/. "${dir}"/.
     fi
     echo "  ##### DONE $direction ${otherUser}${otherHost}":"'${dir}'"/.
 
@@ -101,6 +101,7 @@ done <<"yourDirectoryListHere"
 Desktop/exampleShuttleDirectory
 yourDirectoryListHere
 
-# Specify root nodes of hierarchies to transfer in the list above,
-# one per line, between the yourDirectoryListHere lines.
-
+# Specify (in the list above) root nodes of hierarchies to transfer,
+# one per line, between the "yourDirectoryListHere" lines.  Assumed
+# to be relative to home directory; absolute paths may also work...
+#
