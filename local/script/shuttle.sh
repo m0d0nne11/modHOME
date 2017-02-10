@@ -39,25 +39,21 @@ function FAILED()  {
 
    myName="${0}"
     myPID=$$
-direction="inbound"
 otherHost=vmobuntu1404
 
 unset ruthlessDelete
 unset otherUser
+unset direction # No default
 otherUser=MI25714@ # NOTE: must have trailing @
 
-
 currentOptArg=""
-while :
-do
-    getopts "iod" currentOptArg
-
+while getopts "iod" currentOptArg ; do
     case "$currentOptArg" in
     '?')                                                # End of supplied args.
-        break
+        FAILED unexpected option
         ;;
     i)
-        direction="inbound"   # Default is inbound
+        direction="inbound"
         ;;
     o)
         direction="outbound"
@@ -71,10 +67,15 @@ do
     esac
 done
 
+  #  #  #  #  #  #  #  #
+
+[ "${direction}" ] || FAILED must specify -o or -i
 
 [ "${otherHost}" ] || FAILED - other host not specified in script
 
 cd ~               || FAILED "Cannot cd ~ ?"
+
+  #  #  #  #  #  #  #  #
 
 while read dir ; do
     [ -d "${dir}"/. ] || FAILED "${dir}" "...not a Directory?"
@@ -82,14 +83,14 @@ while read dir ; do
         echo '  #### SKIPPING null entry - maybe blank line in list?'
         continue
     fi
-    echo "  #### READY $direction ${dir}"/.
+    echo "  #### BEGIN $direction ${otherUser}${otherHost}":"${dir}"/.
 
     if [ "$direction" = "outbound" ] ; then
         rsync -vax ${ruthlessDelete} "${dir}"/. ${otherUser}"${otherHost}":"${dir}"/.
     else
         rsync -vax ${ruthlessDelete}            ${otherUser}"${otherHost}":"${dir}"/. "${dir}"/.
     fi
-    echo "  ##### DONE $direction ${dir}"/.
+    echo "  ##### DONE $direction ${otherUser}${otherHost}":"${dir}"/.
 
 done <<"yourDirectoryListHere"
 Desktop/exampleShuttleDirectory
