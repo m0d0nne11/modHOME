@@ -25,6 +25,7 @@
 
     ~/local/bin
     ~/local/script
+    ~/.local/bin
 
     /etc/alternatives
     /sbin
