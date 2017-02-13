@@ -2,7 +2,6 @@
 
 ###############################################################################
 # Script using rsync to shuttle hierarchies back and forth between systems.
-#
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # BEGIN CONFIGURABLES:
@@ -10,8 +9,7 @@
 otherHost=otherHostNotYetDefined
 
 unset otherUser     # Defaults to current user when undefined/unset
-#otherUser=MI25714@ # NOTE: if set, otherUser must have trailing @
-#otherUser=mi25714@ # NOTE: if set, otherUser must have trailing @
+#otherUser=mi25714@ # NOTE: if defined/set, otherUser *MUST* have trailing @
 
 # Modify utterDirList() here to specify pathnames for root directories
 # (not individual files) of any hierarchies to be recursively rsync'd.
@@ -22,7 +20,7 @@ unset otherUser     # Defaults to current user when undefined/unset
 
 function utterDirList() {
     cat <<"DIR_LIST_BOUNDARY"
-your/Directory/here
+relativePaths/to/your/directory/here
 DIR_LIST_BOUNDARY
 }
 
@@ -34,7 +32,7 @@ DIR_LIST_BOUNDARY
 
 function utterFileList() {
     cat <<"FILE_LIST_BOUNDARY"
-your/individual/File/here
+relativePaths/to/your/file/here
 FILE_LIST_BOUNDARY
 }
 
@@ -49,7 +47,7 @@ function usage() {
     echo rsync with other host "(currently '${otherHost}')"
     echo "One of -i or -o must be present"
     echo "-d optionally specifies '--delete'"
-    echo "-F optionally specifies '--dry-run'"
+    echo "-F optionally specifies '--dry-run' (i.e. Fake)"
     echo ""
     echo WARNING: the -d option accomplishes complete sync by
     echo permitting ruthless deletion of destination files...
@@ -79,7 +77,7 @@ scriptName="${0}"
 
 unset direction # No default
 
-      options=""
+      rOptions=""
 currentOptArg=""
 
 while getopts "iodF" currentOptArg ; do
@@ -94,10 +92,10 @@ while getopts "iodF" currentOptArg ; do
         direction="outbound"
         ;;
     d)
-        options="${options} --delete" # Permit ruthless deletion of dest files.
+        rOptions="${rOptions} --delete" # Permit ruthless deletion of dest files.
         ;;
     F)
-        options="${options} --dry-run" # Fake it.
+        rOptions="${rOptions} --dry-run" # Fake it.
         ;;
     *)
         failed "Unexpected commandline parameter: $currentOptArg"
@@ -115,7 +113,7 @@ cd ~               || FAILED "Cannot cd ~ ?"
 
   #  #  #  #  #  #  #  #
 
-# The main loops...
+# The main loops - entire hierarchies first, then single files...
 
 utterDirList | while read dir ; do
     if ! [ "${dir}" ] ; then
@@ -123,17 +121,17 @@ utterDirList | while read dir ; do
         continue
     fi
     if ! [ -d "${dir}"/. ] ; then
-        echo ERROR - "${dir} not a Directory?"
+        echo SKIPPING "${dir} - not a Directory?"
         continue
     fi
-    echo "  #### BEGIN $direction ${options} ${otherUser}${otherHost}":"'${dir}'"/.
+    echo "  #### BEGIN $direction ${rOptions} ${otherUser}${otherHost}":"'${dir}'"/.
 
     if [ "$direction" = "outbound" ] ; then
-        rsync -vax ${options} "${dir}"/. ${otherUser}"${otherHost}":"'${dir}'"/.
+        rsync -vax ${rOptions} "${dir}"/. ${otherUser}"${otherHost}":"'${dir}'"/.
     else
-        rsync -vax ${options}            ${otherUser}"${otherHost}":"'${dir}'"/. "${dir}"/.
+        rsync -vax ${rOptions}            ${otherUser}"${otherHost}":"'${dir}'"/. "${dir}"/.
     fi
-    echo "  ##### DONE $direction ${options} ${otherUser}${otherHost}":"'${dir}'"/.
+    echo "  ##### DONE $direction ${rOptions} ${otherUser}${otherHost}":"'${dir}'"/.
 done
 
 utterFileList | while read f ; do
@@ -142,16 +140,16 @@ utterFileList | while read f ; do
         continue
     fi
     if ! [ -f "${f}" ] ; then
-        echo ERROR - "${f} not a File?"
+        echo SKIPPING "${f} - not a File?"
         continue
     fi
-    echo "  #### BEGIN $direction ${options} ${otherUser}${otherHost}":"'${f}'"
+    echo "  #### BEGIN $direction ${rOptions} ${otherUser}${otherHost}":"'${f}'"
 
     if [ "$direction" = "outbound" ] ; then
-        rsync -vax ${options} "${f}" ${otherUser}"${otherHost}":"'${f}'"
+        rsync -vax ${rOptions} "${f}" ${otherUser}"${otherHost}":"'${f}'"
     else
-        rsync -vax ${options}        ${otherUser}"${otherHost}":"'${f}'" "${f}"
+        rsync -vax ${rOptions}        ${otherUser}"${otherHost}":"'${f}'" "${f}"
     fi
-    echo "  ##### DONE $direction ${options} ${otherUser}${otherHost}":"'${f}'"
+    echo "  ##### DONE $direction ${rOptions} ${otherUser}${otherHost}":"'${f}'"
 done
 
