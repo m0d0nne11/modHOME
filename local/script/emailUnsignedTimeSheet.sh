@@ -11,7 +11,7 @@ function usage() {
     if [ $# -gt 0 ] ; then
         echo ERROR: "$@"
     fi
-    echo Usage: $myNAME timesheetMichaelODonnell201ymmdd-hh+xxh.xlsx
+    echo Usage: $myNAME 'timesheetMichaelODonnell201ymmdd-hh+xxh.xlsx [additionalSubjectLineStuff]'
     die
     exit 1
 }
@@ -20,11 +20,15 @@ if [ $# -ne 1 ] ; then
     usage Missing filename
 fi
 
-if ! echo $1 | grep -E -q -e '^timesheetMichaelODonnell201[[:digit:]]{5}-[[:digit:]]{2}\+[[:digit:]]{2}.\.xlsx$' ; then
-    usage $1 '- unexpected filename layout. (?)'
+f=$1
+shift
+
+if ! echo $f | grep -E -q -e '^timesheetMichaelODonnell201[[:digit:]]{5}-[[:digit:]]{2}\+[[:digit:]]{2}.\.xlsx$' ; then
+    usage $f '- unexpected filename layout. (?)'
 fi
 
-echo Transmitting uuencoded $1 to michael.odonnell@ll.mit.edu ...
+echo Transmitting uuencoded $f to michael.odonnell@ll.mit.edu ...
+echo Subject: line will be: "$f $*"
 
-cat <(echo -e "\n\nAttached please find unsigned $1\n\n" $1) <(uuencode $1 < $1) | mail -s"$1" michael.odonnell@ll.mit.edu
+cat <(echo -e "\n\nAttached please find unsigned $f\n\n" $f) <(uuencode $f < $f) | mail -s"$f $*" michael.odonnell@ll.mit.edu
 
