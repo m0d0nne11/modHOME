@@ -11,28 +11,28 @@ otherHost=otherHostNotYetDefined
 unset otherUser     # Defaults to current user when undefined/unset
 #otherUser=mi25714@ # NOTE: if defined/set, otherUser *MUST* have trailing @
 
-# Modify utterDirList() here to specify pathnames for root directories
+# Modify reciteDirList() here to specify pathnames for root directories
 # (not individual files) of any hierarchies to be recursively rsync'd.
 # Those pathnames:
 #  - must appear 1 per line between the "DIR_LIST_BOUNDARY" lines.
 #  - are assumed to be pathnames relative to the home directory;
 #    absolute paths may also work but have not been exercised...
 
-function utterDirList() {
+function reciteDirList() {
     cat <<"DIR_LIST_BOUNDARY"
-relativePaths/to/your/directory/here
+relativePaths/to/your/directories/here/1/per/line/but/delete/this/example
 DIR_LIST_BOUNDARY
 }
 
-# Modify utterFileList() here to specify pathnames for individual
+# Modify reciteFileList() here to specify pathnames for individual
 # files to be rsync'd.  Those pathnames:
 #  - must appear 1 per line between the "FILE_LIST_BOUNDARY" lines.
 #  - are assumed to be pathnames relative to the home directory;
 #    absolute paths may also work but have not been exercised...
 
-function utterFileList() {
+function reciteFileList() {
     cat <<"FILE_LIST_BOUNDARY"
-relativePaths/to/your/file/here
+relativePaths/to/your/files/here/1/per/line/but/delete/this/example
 FILE_LIST_BOUNDARY
 }
 
@@ -115,7 +115,7 @@ cd ~               || FAILED "Cannot cd ~ ?"
 
 # The main loops - entire hierarchies first, then single files...
 
-utterDirList | while read dir ; do
+reciteDirList | while read dir ; do
     if ! [ "${dir}" ] ; then
         echo '  #### SKIPPING null entry - blank line between DIR_LIST_BOUNDARY tags?'
         continue
@@ -134,7 +134,7 @@ utterDirList | while read dir ; do
     echo "  ##### DONE $direction ${rOptions} ${otherUser}${otherHost}":"'${dir}'"/.
 done
 
-utterFileList | while read f ; do
+reciteFileList | while read f ; do
     if ! [ "${f}" ] ; then
         echo '  #### SKIPPING null entry - blank line between FILE_LIST_BOUNDARY tags?'
         continue
