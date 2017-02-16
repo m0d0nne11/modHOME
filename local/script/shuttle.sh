@@ -42,7 +42,7 @@ FILE_LIST_BOUNDARY
 function usage() {
     echo ""
     echo USAGE:
-    echo "   ${scriptName}" -[io] [-d] [-F]
+    echo "   ${scriptName} -i|-o [-d] [-F]"
     echo Syncs the specified hierarchies inbound/outbound via
     echo rsync with other host "(currently '${otherHost}')"
     echo "One of -i or -o must be present"
