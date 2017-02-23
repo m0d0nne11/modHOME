@@ -113,6 +113,9 @@ cd ~               || FAILED "Cannot cd ~ ?"
 
   #  #  #  #  #  #  #  #
 
+echo "####    ####    ####    ####    ####    ####    ####    ####"
+echo "    ####    ####    ####    ####    ####    ####    ####    ####"
+
 # The main loops - entire hierarchies first, then single files...
 
 reciteDirList | while read dir ; do
