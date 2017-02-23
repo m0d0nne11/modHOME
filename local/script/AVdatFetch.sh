@@ -6,11 +6,15 @@
 # NOTE: some MacOSX versions of wget are apparently compatible
 #       with the Linux version, some aren't...
 #
-if uname -a | fgrep -qi -e linux ; then
-    PROGRESS_OPTION="--progress=bar"  # Linux  wget
-else
-    PROGRESS_OPTION="--show-progress" # MacOSX wget
-fi
+# ASSUME: blindly assume MacOS if not Linux.
+#
+#       If isLinux not available, uncomment the following:
+#if uname -a | fgrep -qi -e linux ; then
+ if                       isLinux ; then
+     PROGRESS_OPTION="--progress=bar"  # Linux  wget
+ else
+     PROGRESS_OPTION="--show-progress" # MacOSX wget
+ fi
 
 ###########################################################################
 # Show what's left after tossing everything that's NOT a digit...
@@ -79,7 +83,10 @@ rm -f exeSourceHTML.txt zipSourceHTML.txt
 
 ls -lF $x $z                                          || FAIL $x $z
 
-open  --reveal .           # Pop a Finder dialog in case we want to burn a DVD.
+echo $z $x $(date)
+if ! isLinux ; then
+    open --reveal .     # Pop a Finder dialog in case we want to burn a DVD.
+fi
 
 exit 0
 
