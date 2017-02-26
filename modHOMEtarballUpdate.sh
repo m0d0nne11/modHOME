@@ -70,6 +70,8 @@ if ! timeStamp=`date '+%Y%m%d%H%M%S'` ; then
 fi
 
 if isMacOS ; then
+	echo "NOTICE: execution under MacOS not recommended..."
+	echo "        case-insensitive file system causes name collisions."
 	archSpecificOpts="--disable-copyfile"
 	COPYFILE_DISABLE=1
 fi
