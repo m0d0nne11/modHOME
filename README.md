@@ -53,7 +53,9 @@
  of course, not just take my word for it that
  there's nothing nasty herein!  Once you've
  verified, though, you'll want to then do something
- like "chown -R 0.0 ~/modHOME*" or otherwise ensure
- that ownerships/permissions suit your circumstances.
+ like:
+    "chown -R 0.0 ~/modHOME*"
+ or otherwise ensure that ownerships/permissions
+ suit your circumstances.
 
  mod.modHOME@spineless.org
