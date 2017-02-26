@@ -35,15 +35,25 @@
  without notice if you feel the need to tidy things up, though
  it'd be good manners to talk to me first, if possible...  ;->
 
- REMOVAL: rm -rf ~/modHOME* should pretty much do it, though check
-          for dangling symlinks in ~/. pointing into modHOME/...
- (RE)CREATING TARBALL: modHOME/modHOMEtarballUpdate.sh
- ROOT USAGE: I frequently install/use this as root in root's
-             home directory but security-conscious folks will,
-             of course, not just take my word for it that
-             there's nothing nasty herein!  Once you've
-             verified, though, you'll want to then do something
-             like "chown -R 0.0 ~/modHOME*" or otherwise ensure
-             that ownerships/permissions suit your circumstances.
+ REMOVAL:
+
+    rm -rf ~/modHOME*
+
+ should pretty much do it, though check for dangling symlinks
+ in ~/. pointing into modHOME/...
+
+ (RE)CREATING TARBALL:
+
+    modHOME/modHOMEtarballUpdate.sh
+
+ ROOT USAGE:
+
+ I frequently install/use this as root in root's
+ home directory but security-conscious folks will,
+ of course, not just take my word for it that
+ there's nothing nasty herein!  Once you've
+ verified, though, you'll want to then do something
+ like "chown -R 0.0 ~/modHOME*" or otherwise ensure
+ that ownerships/permissions suit your circumstances.
 
  mod.modHOME@spineless.org
