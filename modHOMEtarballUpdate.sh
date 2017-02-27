@@ -2,13 +2,20 @@
 
 # Create a tarball from a working modHOME installation.
 
-# Propagation of my modHOME mess can be accomplished using tarballs
+# Propagation of my modHOME mess can be accomplished using these tarballs
 # but it will probably always be better to pull a copy over the wire from
 # github.com or from another machine with a snapshot already installed:
 #
 #    cd; git clone https://github.com/m0d0nne11/modHOME
 #    cd; git clone ssh://someUserID@someHost/some/path/to/modHOME
 #
+# When creating tarballs with this script only the modHOME
+# hierarchy is captured; the modHOME.custom hierarchy is
+# assumed to be private and specific to the local machine.
+#
+# Note that this script was previously the primary method
+# of propagation before converting to Git, so test carefully
+# as it is not maintained much since then...
 
 [ -n "$MIKE_DEBUG" ] && set -x
 
@@ -70,8 +77,8 @@ if ! timeStamp=`date '+%Y%m%d%H%M%S'` ; then
 fi
 
 if isMacOS ; then
-	echo "NOTICE: execution under MacOS not recommended..."
-	echo "        case-insensitive file system causes name collisions."
+	echo "NOTICE: execution under MacOS not recommended as the"
+	echo "        case-insensitive file system allows name collisions."
 	archSpecificOpts="--disable-copyfile"
 	COPYFILE_DISABLE=1
 fi
