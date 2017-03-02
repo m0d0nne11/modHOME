@@ -1,0 +1,20 @@
+
+# Usage: rigCustom [ optional subDir ]
+
+function rigCustomDir()  {
+    local f
+    if ! [ -d "${modHOME}.custom/." ] ; then
+        echo " ## " MISSING "${modHOME}.custom/" ;
+        read -p "  OK to create necessary (sub)dirs? (Ctl-C to abort) " f ;
+        mkdir -p "${modHOME}".custom || return 1 ;
+    fi
+    for f in local/bin.MacOSX       local/bin.x86_64       \
+             local/script           local/src/cmd          \
+             .BASHRClib/ALIAS       .BASHRClib/COMMAND     \
+             .BASHRClib/ENVARphase0 .BASHRClib/ENVARphase1 \
+             .BASHRClib/FUNCTION    local/alternative      .vim $* ;
+    do
+        mkdir -p "${modHOME}".custom/"${f}" ;
+    done ;
+}
+

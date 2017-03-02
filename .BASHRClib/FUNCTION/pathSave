@@ -1,0 +1,21 @@
+
+#
+
+function pathSave()  { 
+    local f
+
+    rigCustomDir         .BASHRClib/ENVARphase1 ; # Ensure dir exists.
+    f="${modHOME}.custom/.BASHRClib/ENVARphase1/PATH" ; 
+    if [ -f "${f}" ] ; then
+        echo " ## " PREVIOUS "${f}" : ;
+        cat                  "${f}"   ;
+    fi ;
+    echo " PATH=${PATH}"   > "${f}" ;
+    if ! [ -r "${f}" ] ; then
+        echo 'PATH environment definition file not readable?' "${f}" ;
+        return ;
+    fi ;
+    echo " ### " CURRENT "${f}" : ;
+    cat                  "${f}"   ;
+}
+

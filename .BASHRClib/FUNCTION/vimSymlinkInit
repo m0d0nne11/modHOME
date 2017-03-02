@@ -1,20 +1,27 @@
+
+#
+
 function vimSymlinkInit() {
-	local links ;
-	local f ;
-	if ! pushd ~ >/dev/null ; then
-		echo "Can't pushd ~ ?" ;
-		return 1 ;
-	fi ;
-	links=".exrc .vim .vimrc" ;
-	for f in $links ; do
-		if [ -e $f ] ; then
-			echo " ###### " Already have "$PWD"/$f ;
-		else
-			echo " ## " Creating symlink "$PWD"/$f ;
-			ln -s modHOME/$f ;
-		fi ;
-	done ;
-	ls -laCFld $links ;
-	popd >/dev/null ;
+    local links ;
+    local f ;
+
+    rigCustomDir .vim ;
+    if ! pushd "${modHOME}".custom >/dev/null ; then
+        echo "Can't pushd ${modHOME}.custom ?" ;
+        return 1 ;
+    fi ;
+    tar xvzf "${modHOME}"/vimInitFiles.tgz ; 
+    cd .. ; 
+    links=".exrc .vim .vimrc" ;
+    for f in $links ; do
+        if [ -e $f ] ; then
+            echo " ###### " Already have "$PWD"/$f ;
+        else
+            echo " ## " Creating symlink "$PWD"/$f ;
+            ln -s "${modHOME}".custom/$f ;
+        fi ;
+    done ;
+    ls -laCFld $links ;
+    popd >/dev/null ;
 }
 
