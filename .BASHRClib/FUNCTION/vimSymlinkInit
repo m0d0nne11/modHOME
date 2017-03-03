@@ -10,15 +10,16 @@ function vimSymlinkInit() {
         echo "Can't pushd ${modHOME}.custom ?" ;
         return 1 ;
     fi ;
-    tar xvzf "${modHOME}"/vimInitFiles.tgz ; 
-    cd .. ; 
+    tar xvzf "${modHOME}"/vimInitFiles.tgz ;
+    cd .. ;
     links=".exrc .vim .vimrc" ;
     for f in $links ; do
         if [ -e $f ] ; then
             echo " ###### " Already have "$PWD"/$f ;
         else
             echo " ## " Creating symlink "$PWD"/$f ;
-            ln -s "${modHOME}".custom/$f ;
+#           ln -s "${modHOME}".custom/$f ;
+            ln -s      modHOME.custom/$f ;
         fi ;
     done ;
     ls -laCFld $links ;
