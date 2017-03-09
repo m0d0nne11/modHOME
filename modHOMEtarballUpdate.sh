@@ -89,7 +89,7 @@ cp -a modHOME/. $STAGING/modHOME || exit 1
 cd              $STAGING         || exit 1
 
 ( cd modHOME/. &&							\
-	( rm -rf         .Adobe           .adobe        .config		\
+	( rm -rf .git    .Adobe           .adobe        .config		\
 		.dbus    Desktop          .gconf        .gconfd		\
 		.gnome2  hostDir          .ICEauthority .kde		\
 		.lesshst .mcop            .mozilla      .p4qt		\
