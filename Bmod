@@ -74,6 +74,10 @@
 #
 # mod.modHOME@spineless.org
 
+if ! [ "${BASH_VERSION}" ] ; then
+    echo "#### WARNING: expect problems with modHOME if not using bash..."
+fi
+
 startingDir=$PWD
 
 #HOME=$(eval "eval 'echo ~`whoami`'")
