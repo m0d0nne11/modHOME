@@ -11,7 +11,12 @@
 myName=$0
  myPID=$$
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# If we find any strings in the commandline args that look to be MAC
+# addrs we ask for a lookup, optionally (as controlled by [shudder!]
+# global variables) echoing back the entire line we were handed prior
+# to reporting the results and optionally uttering some additional
+# glop that may possibly be useful in further parsing the output...
 #
 function MACvendorFor()  {
     local m
@@ -41,7 +46,7 @@ function MACvendorFor()  {
     return ;
 }
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 function usage() {
     cat << EOF
@@ -54,7 +59,7 @@ EOF
 }
 
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #
 unset OPTARG
 unset repeat
