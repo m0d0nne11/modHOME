@@ -1,1 +1,1 @@
-drutil list | grep -e ' HL-DT-ST *BD-RE ' | word1
+drutil list | grep -e ' HL-DT-ST *BD-RE '  | word1

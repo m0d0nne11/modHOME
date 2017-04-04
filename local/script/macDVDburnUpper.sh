@@ -1,1 +1,1 @@
-function macDVDburnUpper()  { drutil burn -drive $(macDVDupperDriveNumber) -nofs "$@" ; } ; macDVDburnUpper "$@"
+function macDVDburnUpper()  { drutil burn -drive $(macDVDupperDriveNumber) -nofs "$@" ; } ; macDVDburnUpper  "$@"

@@ -1,1 +1,1 @@
-function macDVDopenLower()  { drutil tray -drive $(macDVDlowerDriveNumber) open       ; } ; macDVDopenLower "$@"
+function macDVDopenLower()  { drutil tray -drive $(macDVDlowerDriveNumber) open       ; } ; macDVDopenLower  "$@"
