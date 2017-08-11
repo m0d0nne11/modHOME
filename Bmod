@@ -14,7 +14,7 @@
 #
 # ...followed thus:
 #
-#    . modHOME/Bmod; pathPreen; rememberPATH
+#    . modHOME/Bmod; pathPreen; pathSave
 #
 # Subsequent uses then require only sourcing this Bmod script:
 #
@@ -106,6 +106,7 @@ if cd ~/modHOME/. ; then
 #    export PS1_EXTRA=SITE_NAME
     . $modHOME/.bashrc
 
+    rigCustomDir # Ensure modHOME.custom hierarchy exists
     history -c
     history -r
 else

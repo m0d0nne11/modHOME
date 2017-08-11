@@ -14,7 +14,7 @@
 
  ...followed thus:
 
-    . modHOME/Bmod; pathPreen; rememberPATH
+    . modHOME/Bmod; pathPreen; pathSave
 
  Subsequent uses then require only sourcing this Bmod script:
 
@@ -57,7 +57,7 @@
     modHOME/modHOMEtarballUpdate.sh
 
  ...though please note that since git is now the preferred method
- of propagation that script may possibly show signs of neglect.
+ of propagation that script may show signs of neglect.
 
  ROOT USAGE:
 
