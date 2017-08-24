@@ -67,7 +67,7 @@
  home directory but security-conscious folks will, of course,
  NOT just take my word for it that there's nothing nasty herein!
 
- Once you've satisified yourself that all's well, though, you'll
+ Once you've satisfied yourself that all's well, though, you'll
  want to then do something like:
 
     chown -R 0.0 ~/modHOME* ; chmod -R go-rwx ~/modHOME*
