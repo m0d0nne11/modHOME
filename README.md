@@ -67,7 +67,7 @@
  Once you've satisified yourself that all's well, though, you'll
  want to then do something like:
 
-    chown -R 0.0 ~/modHOME*
+    chown -R 0.0 ~/modHOME* ; chmod -R go-rwx ~/modHOME*
 
  ...or otherwise ensure that ownerships/permissions suit the
  circumstances and protect your godlike powers.
