@@ -52,9 +52,11 @@
  should pretty much do it, though check for dangling symlinks in ~/.
  pointing into modHOME/...
 
- (RE)CREATING TARBALL:
+ (RE)GENERATING THE TARBALL:
 
-    modHOME/modHOMEtarballUpdate.sh
+ A tarball of this mess can be (re)generated thus:
+
+    cd ; modHOME/modHOMEtarballUpdate.sh
 
  ...though please note that since git is now the preferred method
  of propagation that script may show signs of neglect.
@@ -63,7 +65,8 @@
 
  I frequently install/use this modHOME stuff as root in root's
  home directory but security-conscious folks will, of course,
- not just take my word for it that there's nothing nasty herein!
+ NOT just take my word for it that there's nothing nasty herein!
+
  Once you've satisified yourself that all's well, though, you'll
  want to then do something like:
 
