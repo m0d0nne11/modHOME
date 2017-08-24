@@ -22,9 +22,9 @@
 
  ...or if you first do this:
 
-    cd ; ln -s modHOME/Bmod Bmod
+    cd ; ln -s modHOME/Bmod
 
- ...you'll subsequently be able to do this:
+ ...you'll then be able to do this:
 
     . Bmod
 
