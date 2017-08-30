@@ -3,10 +3,10 @@
 # The timeStamp is handy for generating any
 # unique-per-script-invocation temp files and such...
 #
-timeStamp=`date '+%Y%m%d%H%M%S'`
+timeStamp=$(date '+%Y%m%d%H%M%S')
   md5List=md5List$timeStamp
  tempFile=tempFile$timeStamp
-parentDir=`dirname $PWD`
+parentDir=$(dirname $PWD)
 
 
 ####

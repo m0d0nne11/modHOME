@@ -64,10 +64,10 @@
 # The timeStamp is handy for generating any
 # unique-per-script-invocation temp files and such...
 #
-timeStamp=`date '+%Y%m%d%H%M%S'`
+timeStamp=$(date '+%Y%m%d%H%M%S')
   md5List=md5List$timeStamp
  tempFile=tempFile$timeStamp
-parentDir=`dirname $PWD`
+parentDir=$(dirname $PWD)
 
 cat /dev/null >$tempFile
 
@@ -75,7 +75,7 @@ cat /dev/null >$tempFile
 ####
 # Make sure we have an md5sum executable...
 #
-md5sumPath=`type md5sum | tail -1`
+md5sumPath=$(type md5sum | tail -1)
 
 if [ -z "$md5sumPath" ]
 then
@@ -148,12 +148,12 @@ then
     if [ -f CSCOPE_PACKAGE_LIST ]
     then
         echo "PACKAGE_LIST taken from file CSCOPE_PACKAGE_LIST"
-        PACKAGE_LIST=`fgrep -v "#" CSCOPE_PACKAGE_LIST`
+        PACKAGE_LIST=$(fgrep -v "#" CSCOPE_PACKAGE_LIST)
     else
         if [ -f ~/.CSCOPE_PACKAGE_LIST ]
         then
             echo "PACKAGE_LIST taken from file ~/.CSCOPE_PACKAGE_LIST"
-            PACKAGE_LIST=`fgrep -v "#" ~/.CSCOPE_PACKAGE_LIST`
+            PACKAGE_LIST=$(fgrep -v "#" ~/.CSCOPE_PACKAGE_LIST)
         else
             echo "Using DEFAULT_PACKAGE_LIST"
             PACKAGE_LIST="$DEFAULT_PACKAGE_LIST"
@@ -295,7 +295,7 @@ mv cscope.files $tempFile
 ####
 # Gather files...
 #
-for dir in `cat $tempFile`
+for dir in $(cat $tempFile)
 do
     if [ -L $dir ]
     then
@@ -337,7 +337,7 @@ do
 done
 
 
-oldLineCount=`wc -l cscope.files`
+oldLineCount=$(wc -l cscope.files)
 
 #cp                           cscope.files          cscope.filesRAW_DEBUG$timeStamp
 #echo "###DEBUG - raw copy of cscope.files saved as cscope.filesRAW_DEBUG$timeStamp"
@@ -493,7 +493,7 @@ fi
 echo "####" Done...
 ls -l cscope.files
 
-newLineCount=`wc -l cscope.files`
+newLineCount=$(wc -l cscope.files)
 echo "####" oldLineCount=$oldLineCount newLineCount=$newLineCount
 
 rm -f $tempFile $md5List

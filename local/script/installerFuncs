@@ -1,6 +1,6 @@
 ###############################################################################
 
-for a in `alias | sed -e 's/=.*$//' -e 's/^.* //'` ; do unalias "${a}" ; done
+for a in $(alias | sed -e 's/=.*$//' -e 's/^.* //') ; do unalias "${a}" ; done
 
 shopt -s nullglob
 
@@ -9,7 +9,7 @@ shopt -s nullglob
  export            SHELL=/bin/bash
  export             PATH="/root/autoinstall/bin:/sbin/:${PATH}"
 #export  LD_LIBRARY_PATH=/root/autoinstall/usr/lib                    # For rpm
- export sessionTimeStamp="`date '+%Y%m%d%H%M%S'`"
+ export sessionTimeStamp="$(date '+%Y%m%d%H%M%S')"
 
   # Spot the hardcoded values!
   #
@@ -260,7 +260,7 @@ function learnSYSTYPE()  {
     result=0
   fi
 
-  SYSTYPE_FILESTRING=`echo $SYSTYPE | tr ' ' '_'`
+  SYSTYPE_FILESTRING=$(echo $SYSTYPE | tr ' ' '_')
   return $result
 }
 
@@ -340,7 +340,7 @@ function determineARCHIVE()  {
   mkdir -p $ARCHIVEdir/ARCHIVE
   ARCHIVEpath=$ARCHIVEdir/ARCHIVE/$sessionTimeStamp
   echo ARCHIVEdev:$ARCHIVEdev ARCHIVEdir:$ARCHIVEdir ARCHIVEpath:$ARCHIVEpath
-  sessionID=systemImage.`head -1 /root/autoinstall/IMAGEVERSION | tr -d '[[:space:]]'`.$sessionTimeStamp
+  sessionID=systemImage.$(head -1 /root/autoinstall/IMAGEVERSION | tr -d '[[:space:]]').$sessionTimeStamp
   TARLIST=$sessionID.tarList
   TARCHIVE=$sessionID.tgz
 }
@@ -861,7 +861,7 @@ function saveLocalizedFiles0()  {
       chmod ug+rwx   $ARCHIVEdir/install $ARCHIVEdir/install/wsi-rpms
     fi
     pushd var/lib/wsi-rpms
-    for f in `find . -type f`
+    for f in $(find . -type f)
     do
       if file "${f}" | grep -q 'RPM v3' ; then
         treeCopy "${f}" $ARCHIVEdir/install/wsi-rpms

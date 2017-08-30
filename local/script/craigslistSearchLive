@@ -1,5 +1,5 @@
 #set -x -v
-tempFile=/tmp/tempFileCraig`tds`.$$
+tempFile=/tmp/tempFileCraig$(tds).$$
 craigslistSearch "$1" > $tempFile
 
 head -2 $tempFile

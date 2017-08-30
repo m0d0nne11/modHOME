@@ -35,7 +35,7 @@
 # The timeStamp is handy for generating any
 # unique-per-script-invocation temp files and such...
 #
-timeStamp=`date '+%Y%m%d%H%M%S'`
+timeStamp=$(date '+%Y%m%d%H%M%S')
  tempFile=tempFile$timeStamp
 
 cat /dev/null >$tempFile
@@ -80,12 +80,12 @@ xargs -l5 fgrep -e 'type_define'   \
                 -e 'GLOBAL(' /dev/null <cscope.files | while read line
 do
     echo "$line"                # Continuing evidence that we're still alive...
-    pattern=`echo "$line"    | sed -e 's/: */RZQcolonRZQ/' -e 's/^.*RZQcolonRZQ//' `
-       file=`echo "$line"    | sed -e 's/:.*$//' `
-     symbol=`echo "$pattern" | sed -e 's/^.*type_struct(//'    \
+    pattern=$(echo "$line"    | sed -e 's/: */RZQcolonRZQ/' -e 's/^.*RZQcolonRZQ//' )
+       file=$(echo "$line"    | sed -e 's/:.*$//' )
+     symbol=$(echo "$pattern" | sed -e 's/^.*type_struct(//'    \
                                    -e 's/^.*type_define(//'    \
                                    -e 's/^_\{0,1\}GLOBAL(//'   \
-                                   -e 's/).*$//' `
+                                   -e 's/).*$//' )
     echo -e "$symbol\t$file\t/$pattern" >>tags
 done
 

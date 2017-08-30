@@ -3,13 +3,13 @@
 # Gather msgs in the current MH folder with the
 # specified Subject: to the end of the list...
 
- timeStamp=$$`tds`
+ timeStamp=$$.$(tds)
    tempDir=gather$timeStamp
-origFolder=`folder -fast`
+origFolder=$(folder -fast)
 
     mkdir ~/.mail/$tempDir                   \
  && pushd ~/.mail/$tempDir                   \
- && refile       +$tempDir `pick -sub "$@" ` \
+ && refile       +$tempDir $(pick -sub "$@" ) \
  && folder -push +$tempDir                   \
  && refile +$origFolder *                    \
  && popd                                     \

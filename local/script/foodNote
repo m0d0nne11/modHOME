@@ -31,7 +31,7 @@ function fail()  {
 cd $NOTEROOT                   || fail cd $NOTEROOT
 
 while : ; do
-    timeStamp=`timeDateString` || fail timeDateString
+    timeStamp=$(timeDateString) || fail timeDateString
     if [ -z "$(echo "${timeStamp}"*)" ] ; then
         break   # OK - no existing file has this timeDateString value.
     fi
@@ -40,7 +40,7 @@ done
 
 noteFile="${timeStamp}".00000000000000000000000000000000
 
-[ -z "${NOTE_TAG}" ] && NOTE_TAG=`hostname`
+[ -z "${NOTE_TAG}" ] && NOTE_TAG=$(hostname)
 
 echo "${BANNER}" $timeStamp "${NOTE_TAG}"                      > $noteFile
 

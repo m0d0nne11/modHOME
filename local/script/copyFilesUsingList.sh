@@ -17,7 +17,7 @@ function tds()  {
     date '+%Y%m%d%H%M%S'
 }
 
-sessionTimestamp=`tds`$$
+sessionTimestamp=$(tds)$$
 
 function smile()  {
 cat <<EOF
@@ -68,7 +68,7 @@ function genHundredMbyteFileLists()  {
 	local name
 	local output
 
-	output=/tmp/part`printf "%03d" $part`.$sessionTimestamp
+	output=/tmp/part$(printf "%03d" $part).$sessionTimestamp
 
 	while read bytes file
 	do
@@ -79,7 +79,7 @@ echo $output : "${file}" bytes:$bytes total:$total
 		then
 			total=0
 			let part++
-			output=/tmp/part`printf "%03d" $part`.$sessionTimestamp
+			output=/tmp/part$(printf "%03d" $part).$sessionTimestamp
 		fi
 	done
 }
@@ -105,7 +105,7 @@ do
             if [ $total -gt $PER_CYCLE_BYTE_LIMIT ]
             then
                     total=0
-                    while [ `date '+%s'` -lt $deadline1m ]
+                    while [ $(date '+%s') -lt $deadline1m ]
                     do
                             echo Waiting for end of $SECONDS_PER_CYCLE second cycle...
                             sleep 2

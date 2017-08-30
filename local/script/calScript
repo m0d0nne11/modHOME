@@ -1,6 +1,6 @@
 if [ $# -lt 1 ]
 then
-    YEAR=`date '+%Y'`
+    YEAR=$(date '+%Y')
 else
     YEAR=$1
 fi

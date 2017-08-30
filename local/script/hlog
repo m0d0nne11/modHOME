@@ -3,5 +3,5 @@ then
     hourly on
 fi
 
-echo "####################" `timeDateString` >>~/modHOME/.hlog
+echo "####################" $(timeDateString) >>~/modHOME/.hlog
 cat                                          >>~/modHOME/.hlog

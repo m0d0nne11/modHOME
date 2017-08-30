@@ -1,5 +1,5 @@
 echo "######################################################################"
-echo "######## This concatenated file generated "`date`
+echo "######## This concatenated file generated "$(date)
 echo "######################################################################"
 for f in $@
 do

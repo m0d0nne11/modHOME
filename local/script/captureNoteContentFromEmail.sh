@@ -24,11 +24,11 @@ function tidySpaceFunc()  {
 #
 trap exitHandler EXIT
 
-tempFile=`mktemp    /tmp/captureNoteContentF.XXXXXXXX` || { echo FAILED mktemp    /tmp/captureNoteContentF.XXXXXXXX ; exit 1 ; }
+tempFile=$(mktemp    /tmp/captureNoteContentF.XXXXXXXX) || { echo FAILED mktemp    /tmp/captureNoteContentF.XXXXXXXX ; exit 1 ; }
 
 cat > $tempFile
 
-tempDir=`mktemp -d /tmp/captureNoteContentD.XXXXXXXX`  || { echo FAILED mktemp -d /tmp/captureNoteContentD.XXXXXXXX ; exit 1 ; }
+tempDir=$(mktemp -d /tmp/captureNoteContentD.XXXXXXXX)  || { echo FAILED mktemp -d /tmp/captureNoteContentD.XXXXXXXX ; exit 1 ; }
 
 cd $tempDir                                            || { echo FAILED cd $tempDir ; exit 1 ; }
 

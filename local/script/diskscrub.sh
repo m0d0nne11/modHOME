@@ -106,7 +106,7 @@ function trapSignals()  {
 # updateProgress
 
 function updateProgress()  {
-	echo $@ progressTime=`timeDateString` >$PROGRESS_FILE || fatal "Can't update $PROGRESS_FILE"
+	echo $@ progressTime=$(timeDateString) >$PROGRESS_FILE || fatal "Can't update $PROGRESS_FILE"
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -119,7 +119,7 @@ function recordCompletion()  {
 	then
 		fatal 'NULL completion record?'
 	fi
-	now=`timeDateString`
+	now=$(timeDateString)
 #	logger -d -t"scrubScan[$myPID]" "$@ completionTime=$now"
 	echo "scrubScan[$myPID]" "$@ completionTime=$now"
 	echo "$@ completionTime=$now" > $COMPLETION_DIR/$now || fatal "Can't write completion record in $COMPLETION_DIR/"
@@ -147,13 +147,13 @@ function scrubConfigFor()  {
 		return 0
 	fi
 
-	if ! configLine="`sed -e 's/#.*$//' <$CONFIG_FILE | grep -e scrubTarget="$1 "`"
+	if ! configLine="$(sed -e 's/#.*$//' <$CONFIG_FILE | grep -e scrubTarget="$1 ")"
 	then
 		echo ""        # Specified device need not have a config entry.
 		return 0
 	fi
 
-	configLine=`echo $configLine`                # Collapse multiple lines.
+	configLine=$(echo $configLine)                # Collapse multiple lines.
 	eval "$configLine"
 
 	echo -n "scrubTarget=$scrubTarget"
@@ -233,14 +233,14 @@ function lastKnownScrubTarget()  {
 		return 0                            # OK for file to be absent.
 	fi
 
-	if ! progressLine="`fgrep -e 'scrubTarget=' $PROGRESS_FILE`"
+	if ! progressLine="$(fgrep -e 'scrubTarget=' $PROGRESS_FILE)"
 	then
 		echo ""
 		return 0                    # We need not find anything useful.
 	fi
 
-	progressLine=`echo $progressLine` # Collapse multiple lines.
-	target=`unset scrubTarget ; eval $progressLine ; echo $scrubTarget`
+	progressLine=$(echo $progressLine) # Collapse multiple lines.
+	target=$(unset scrubTarget ; eval $progressLine ; echo $scrubTarget)
 	echo "$target"
 	return 0
 }
@@ -264,8 +264,8 @@ function deviceAvailable()  {
 		return 1		      # False: device is NOT available.
 	fi
 
-	result=`dd bs=1k if=$device of=/dev/null count=1 2>&1`
-	result=`echo $result`			     # Collapse multiple lines.
+	result=$(dd bs=1k if=$device of=/dev/null count=1 2>&1)
+	result=$(echo $result)			     # Collapse multiple lines.
 	test "$result" != "1+0 records in 1+0 records out"
 }
 
@@ -281,7 +281,7 @@ function halfKblocksInDevice()  {
 
 	test "$#" -ge 1 || fatal "usage: $FUNCNAME deviceName"
 
-	if ! udevPath=/sys`udevinfo -q path -n $1`
+	if ! udevPath=/sys$(udevinfo -q path -n $1)
 	then
 		warning $FUNCNAME "Can't query UDEV path for $1"
 		echo 0                           # Hopefully useless to caller.
@@ -295,7 +295,7 @@ function halfKblocksInDevice()  {
 		return 1
 	fi
 
-	if ! halfKblocks=`cat "$udevPath"/size`
+	if ! halfKblocks=$(cat "$udevPath"/size)
 	then
 		warning $FUNCNAME "Can't read halfKblock count from $udevPath/size"
 		echo 0                           # Hopefully useless to caller.
@@ -428,7 +428,7 @@ function latestIntentions()  {
 	local UUID              version           workingDeviceCount
 
 
-	timeStamp=`timeDateString`
+	timeStamp=$(timeDateString)
 
 	mdadmDetailScanLines | while read mdadmDSline
 	do
@@ -449,7 +449,7 @@ function latestIntentions()  {
 			continue
 		fi
 
-		mdadmDVAline="`mdadmDetailVerboseAssignments $ARRAY`"
+		mdadmDVAline="$(mdadmDetailVerboseAssignments $ARRAY)"
 		eval "$mdadmDVAline"                 # Collapse multiple lines.
 
 		if [ -z "$RAIDlevel" ]
@@ -469,20 +469,20 @@ function latestIntentions()  {
 			continue
 		fi
 
-		for scrubTarget in `echo $devices | tr "," ' '`
+		for scrubTarget in $(echo $devices | tr "," ' ')
 		do
 			if ! echo "$NMMDSinfo" | fgrep -q -e " $scrubTarget"
 			then
 				warning $FUNCNAME: scrubTarget $scrubTarget not mentioned in mdadm output'?'
 				continue
 			fi
-			if ! halfKblocksInDevice=`halfKblocksInDevice $scrubTarget`
+			if ! halfKblocksInDevice=$(halfKblocksInDevice $scrubTarget)
 			then
 				warning $FUNCNAME: "Can't compute halfKblocksInDevice for $scrubTarget"
 				continue
 			fi
 
-			config=`scrubConfigFor $scrubTarget`
+			config=$(scrubConfigFor $scrubTarget)
 
 			#
 			# Actual output lines generated here:
@@ -535,7 +535,7 @@ function scrub()  {
 
 	eval $@
 
-	timeStarted=`timeDateString`
+	timeStarted=$(timeDateString)
 
 	trapSignals
 #	notice "$@"
@@ -555,8 +555,8 @@ function scrub()  {
 
 	while [ $KblocksLeft -ge $BUFFER_K ]
 	do
-		result=`dd bs="$BUFFER_K"k if=$scrubTarget of=/dev/null count=1 skip=$skip 2>&1`
-		result=`echo $result`                # Collapse multiple lines.
+		result=$(dd bs="$BUFFER_K"k if=$scrubTarget of=/dev/null count=1 skip=$skip 2>&1)
+		result=$(echo $result)                # Collapse multiple lines.
 		if [ "$result" != "1+0 records in 1+0 records out" ]
 		then
 			warning Read Error for dd bs="$BUFFER_K"k if=$scrubTarget of=/dev/null count=1 skip=$skip
@@ -590,8 +590,8 @@ function scrub()  {
 
 	while [ $KblocksLeft -gt 0 ]
 	do
-		result=`dd bs=1k if=$scrubTarget of=/dev/null count=1 skip=$KblocksRead 2>&1`
-		result=`echo $result`		     # Collapse multiple lines.
+		result=$(dd bs=1k if=$scrubTarget of=/dev/null count=1 skip=$KblocksRead 2>&1)
+		result=$(echo $result)		     # Collapse multiple lines.
 		if [ "$result" != "1+0 records in 1+0 records out" ]
 		then
 			warning Read Error for dd bs=1k if=$scrubTarget of=/dev/null count=1 skip=$KblocksRead
@@ -651,11 +651,11 @@ DEFAULT_INTERVAL=5
 #
 DEFAULT_PROGRESS_UPDATE=30
 
-test `nice` -ge $MINIMUM_NICE || fatal "MINIMUM_NICE is $MINIMUM_NICE"
+test $(nice) -ge $MINIMUM_NICE || fatal "MINIMUM_NICE is $MINIMUM_NICE"
 cd $SCRUB_HOME_DIR            || fatal "Can't cd $SCRUB_HOME_DIR"
 mkdir -p $COMPLETION_DIR      || fatal "$COMPLETION_DIR inaccessible"
 
-resumeTarget=`lastKnownScrubTarget`         # Only considered during first pass.
+resumeTarget=$(lastKnownScrubTarget)         # Only considered during first pass.
 
 function main()  {
 	echo $$ >>$PID_FILE || fatal "Can't write $PID_FILE"
@@ -668,12 +668,12 @@ function main()  {
 		do
 			if [ -n "$resumeTarget" ]
 			then
-				thisTarget=`unset scrubTarget ; eval "$intention" ; echo $scrubTarget`
+				thisTarget=$(unset scrubTarget ; eval "$intention" ; echo $scrubTarget)
 				test "$resumeTarget" = "$thisTarget" || continue
 				notice RESUMING with scrubTarget=$thisTarget
 			fi
 
-			recordCompletion "`scrub "$intention"`"
+			recordCompletion "$(scrub "$intention")"
 		done
 
 		if [ -n "$resumeTarget" ]

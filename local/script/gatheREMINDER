@@ -4,13 +4,13 @@
 
 folder -push +inbox
 
- timeStamp=$$`tds`
+ timeStamp=$$.$(tds)
    tempDir=gather$timeStamp
-origFolder=`folder -fast`
+origFolder=$(folder -fast)
 
     mkdir ~/.mail/$tempDir                       \
  && pushd ~/.mail/$tempDir                       \
- && refile       +$tempDir `pick -from reminder` \
+ && refile       +$tempDir $(pick -from reminder) \
  && folder -push +$tempDir                       \
  && refile +$origFolder *                        \
  && popd                                         \

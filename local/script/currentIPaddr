@@ -14,7 +14,7 @@ function externallyVisibleIPaddr()  {
 ###############################################################################
 #
 function eth0ipAddr()  {
-  local line=(`/sbin/ifconfig eth0 | fgrep 'inet '`)
+  local line=($(/sbin/ifconfig eth0 | fgrep 'inet '))
   echo ${line[1]} | sed -e 's/^.*://'
 }
 

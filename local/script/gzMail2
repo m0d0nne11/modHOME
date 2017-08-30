@@ -7,8 +7,8 @@ function gzMail2func()
         echo "usage: $FUNCNAME emailAddr{s} fromAddr fileNameTag <stdin"
         return 1
     fi
-    tempFile=/tmp/gzMailTemp$$`tds`
-    fileName=$3.`tds`.gz
+    tempFile=/tmp/gzMailTemp$$.$(tds)
+    fileName=$3.$(tds).gz
     echo "To: $1"                  >$tempFile
     echo "From: $2"               >>$tempFile
     echo "Subject: $3"            >>$tempFile

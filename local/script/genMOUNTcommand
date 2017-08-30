@@ -15,7 +15,7 @@
   done
 ) | fgrep -v -e 'No such ' | while read l
 do
-    dev=`echo "$l" | sed -e 's/:.*$//'`
+    dev=$(echo "$l" | sed -e 's/:.*$//')
     if echo "$l" | fgrep -qi ntfs
     then
         echo FOUND "$l"

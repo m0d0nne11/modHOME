@@ -38,10 +38,10 @@ then
         exit 1
 fi
 
-  pathList=`mktemp /tmp/pathList.XXXXXXXX`   || { echo FAILED mktemp /tmp/pathList.XXXXXXXX   ; exit 1 ; }
-   dirList=`mktemp /tmp/dirList.XXXXXXXX`    || { echo FAILED mktemp /tmp/dirList.XXXXXXXX    ; exit 1 ; }
-  anchored=`mktemp /tmp/anchored.XXXXXXXX`   || { echo FAILED mktemp /tmp/anchored.XXXXXXXX   ; exit 1 ; }
-unanchored=`mktemp /tmp/unanchored.XXXXXXXX` || { echo FAILED mktemp /tmp/unanchored.XXXXXXXX ; exit 1 ; }
+  pathList=$(mktemp /tmp/pathList.XXXXXXXX)   || { echo FAILED mktemp /tmp/pathList.XXXXXXXX   ; exit 1 ; }
+   dirList=$(mktemp /tmp/dirList.XXXXXXXX)    || { echo FAILED mktemp /tmp/dirList.XXXXXXXX    ; exit 1 ; }
+  anchored=$(mktemp /tmp/anchored.XXXXXXXX)   || { echo FAILED mktemp /tmp/anchored.XXXXXXXX   ; exit 1 ; }
+unanchored=$(mktemp /tmp/unanchored.XXXXXXXX) || { echo FAILED mktemp /tmp/unanchored.XXXXXXXX ; exit 1 ; }
 
 
 # Gather a list of all files mentioned in the object file in question.

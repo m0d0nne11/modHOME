@@ -5,7 +5,7 @@
 echo "############" INCOMPLETE - $0 $@
 exit 1
 
-timeStamp=`date '+%Y%m%d%H%M%S'`
+timeStamp=$(date '+%Y%m%d%H%M%S')
  tempFile=/tmp/tempFile$timeStamp$$
 
 
