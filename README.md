@@ -34,16 +34,15 @@
  has (essentially) no effect on other users who do not explicitly
  put it into effect via the Bmod script.
 
- Since local modifications/customizations are maintained under the
- parallel modHOME.custom directory the modHOME hierarchy is usually
- in pristine condition and should technically be usable even if its
- contents are set Read-Only; best example of a local customization
- would be .../PATH
+ Local modifications/customizations are maintained under the parallel
+ modHOME.custom directory so the modHOME hierarchy is usually in pristine
+ condition and should technically be usable even if its contents are
+ set Read-Only; best example of a local customization would be .../PATH
 
- Since I generally don't leave precious files in the modHOME*
- hierarchies it should always be OK to delete them without notice
- if you feel the need to tidy things up, though it'd be good manners
- to talk to me first, if possible...  ;->
+ I generally don't leave precious files in the modHOME* hierarchies
+ so it should always be OK to delete them without notice if you feel
+ the need to tidy things up, though it'd be good manners to talk to
+ me first, if possible...  ;->
 
  REMOVAL:
 
@@ -61,14 +60,15 @@
  ...though please note that since git is now the preferred method
  of propagation that script may show signs of neglect.
 
- ROOT USAGE:
+ ROOT USAGE: (security)
 
  I frequently install/use this modHOME stuff as root in root's
  home directory but security-conscious folks will, of course,
  NOT just take my word for it that there's nothing nasty herein!
 
- Once you've satisfied yourself that all's well, though, you'll
- want to then do something like:
+ Since this mess is almost entirely scripts, though, it should
+ be possible to verify that all's well, after which you'll want
+ to then do something like:
 
     chown -R 0.0 ~/modHOME* ; chmod -R go-rwx ~/modHOME*
 
