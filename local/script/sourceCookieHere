@@ -1,2 +1,2 @@
-echo 'printk( "'`tds`'\n" );'
+echo 'printk( "'$(tds)'\n" );'
 cat

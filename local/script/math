@@ -1,4 +1,4 @@
 while read input
 do
-    echo "$input" = ` echo "$input" | bc -l `
+    echo "$input" = $( echo "$input" | bc -l )
 done

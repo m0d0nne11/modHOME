@@ -1,2 +1,2 @@
 echo "Enter ^D when quoted portion complete..."
-reminder $@ $( echo "`cat`" )
+reminder $@ $( echo "$(cat)" )

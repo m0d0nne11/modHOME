@@ -11,7 +11,7 @@
 #
 
 export CIVILIAN=mod
-export CIVILIAN_HOMEDIR=`eval echo ~"${CIVILIAN}"`
+export CIVILIAN_HOMEDIR=$(eval echo ~"${CIVILIAN}")
 
 export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/bin/X11:/usr/sbin:/bin:/sbin:/etc:.
 
@@ -92,7 +92,7 @@ function localXAUTHORITY()  {
     local x
     local targetPID
 
-    if targetPID=`XcapablePID` ; then
+    if targetPID=$(XcapablePID) ; then
         if x=$(fgrep -e 'XAUTHORITY=' <(xargs -0 -l1 < /proc/$targetPID/environ \
                                         | while read f ; do echo $f ; done))
         then
@@ -132,7 +132,7 @@ function localDISPLAY()  {
     local x
     local targetPID
 
-    if targetPID=`XcapablePID` ; then
+    if targetPID=$(XcapablePID) ; then
         if x=$(fgrep -e 'DISPLAY=' <(xargs -0 -l1 < /proc/$targetPID/environ \
                                         | while read f ; do echo $f ; done))
         then

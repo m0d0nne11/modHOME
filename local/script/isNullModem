@@ -18,7 +18,7 @@
 #
        tty0=${TTY0DEV:-/dev/ttyS0}                # Maybe /dev/ttyUSB0 instead?
        tty1=${TTY1DEV:-/dev/ttyS1}                # Maybe /dev/ttyUSB1 instead?
-  timeStamp=`date '+%Y%m%d%H%M%S'`
+  timeStamp=$(date '+%Y%m%d%H%M%S')
   tempFile0=/tmp/tempFile0$timeStamp
   tempFile1=/tmp/tempFile1$timeStamp
 #initString="1:0:800008bd:0:3:1c:7f:15:4:5:1:0:11:13:1a:0:12:f:17:16:0:0:2f:0:0:0:0:0:0:0:0:0:0:0:0:0" #MCLX
@@ -38,8 +38,8 @@ test -f $tempFile1                && fail "Temp file $tempFile1 already exists"
 #
 # Gratuitous open/close sequences...
 #
-pid0=`( dd bs=1 count=1 if=$tty0 >/dev/null 2>&1 & echo $! ) `
-pid1=`( dd bs=1 count=1 if=$tty1 >/dev/null 2>&1 & echo $! ) `
+pid0=$(( dd bs=1 count=1 if=$tty0 >/dev/null 2>&1 & echo $! ) )
+pid1=$(( dd bs=1 count=1 if=$tty1 >/dev/null 2>&1 & echo $! ) )
 sleep 2
 ( kill -9 $pid0 ) >/dev/null 2>&1
 ( kill -9 $pid1 ) >/dev/null 2>&1
@@ -48,8 +48,8 @@ sleep 2
 # Init serial ports to known values, same baud rates, etc...
 #
 wait
-rzq0=`stty -g <$tty0`     || fail "Couldn't read current settings from $tty0"
-rzq1=`stty -g <$tty1`     || fail "Couldn't read current settings from $tty1"
+rzq0=$(stty -g <$tty0)     || fail "Couldn't read current settings from $tty0"
+rzq1=$(stty -g <$tty1)     || fail "Couldn't read current settings from $tty1"
 stty $initString <$tty0   || (                     fail "Couldn't init $tty0" )
 stty $initString <$tty1   || ( stty $rzq0 <$tty0 ; fail "Couldn't init $tty1" )
 
@@ -88,8 +88,8 @@ else
     #
     # A parting gratuitous open/close sequence...
     #
-    pid0=`( dd bs=1 count=1 if=$tty0 >/dev/null 2>&1 & echo $! ) `
-    pid1=`( dd bs=1 count=1 if=$tty1 >/dev/null 2>&1 & echo $! ) `
+    pid0=$(( dd bs=1 count=1 if=$tty0 >/dev/null 2>&1 & echo $! ) )
+    pid1=$(( dd bs=1 count=1 if=$tty1 >/dev/null 2>&1 & echo $! ) )
     sleep 2
     ( kill -9 $pid0 ) >/dev/null 2>&1
     ( kill -9 $pid1 ) >/dev/null 2>&1
@@ -100,8 +100,8 @@ fi
 # Restore previous tty states...
 #
 echo " - cleaning up..."
-pid0=`( stty $rzq0 <$tty0 >/dev/null & echo $! ) `
-pid1=`( stty $rzq1 <$tty1 >/dev/null & echo $! ) `
+pid0=$(( stty $rzq0 <$tty0 >/dev/null & echo $! ) )
+pid1=$(( stty $rzq1 <$tty1 >/dev/null & echo $! ) )
 sleep 2
 ( kill -9 $pid0 ) >/dev/null 2>&1
 ( kill -9 $pid1 ) >/dev/null 2>&1

@@ -14,7 +14,7 @@ set +f
 # The timeStamp is handy for generating any
 # unique-per-script-invocation temp files and such...
 #
-timeStamp=`date '+%Y%m%d%H%M%S'`
+timeStamp=$(date '+%Y%m%d%H%M%S')
   md5List=md5List$timeStamp
   tempDir=/tmp/tempDir$timeStamp
  tempFile=$tempDir/tempFile$timeStamp
@@ -46,11 +46,11 @@ do
     enabled=$?
     if [ $enabled -eq 0 ]
     then                                                             # Disabled
-        line=`echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' )
     else                                                              # Enabled
-        line=`echo "$rawLine" | sed -e 's/^[	 ]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[	 ]*//' )
     fi
-    token=`echo $line  | sed -e 's/[	 =].*$//' `
+    token=$(echo $line  | sed -e 's/[	 =].*$//' )
 
     mkdir -p $dir1/$token
     if [ $enabled -eq 0 ]
@@ -71,11 +71,11 @@ do
     enabled=$?
     if [ $enabled -eq 0 ]
     then                                                             # Disabled
-        line=`echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' )
     else                                                              # Enabled
-        line=`echo "$rawLine" | sed -e 's/^[	 ]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[	 ]*//' )
     fi
-    token=`echo $line  | sed -e 's/[	 =].*$//' `
+    token=$(echo $line  | sed -e 's/[	 =].*$//' )
 
     mkdir -p $dir2/$token
     if [ $enabled -eq 0 ]

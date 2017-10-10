@@ -1,4 +1,4 @@
-timeStamp=`date '+%Y%m%d%H%M%S'`
+timeStamp=$(date '+%Y%m%d%H%M%S')
 TARCHIVE=/tmp/NvidiaSnapshot.$timeStamp.tgz
 cd /
 tar cvzf $TARCHIVE                                                    \

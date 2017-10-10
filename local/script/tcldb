@@ -1,1 +1,1 @@
-echo puts '"######## Checkpoint '`timeDateString`'"'
+echo puts '"######## Checkpoint '$(timeDateString)'"'

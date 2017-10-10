@@ -4,7 +4,7 @@
 # in a newly-created-for-the-occasion subdirectory of deleted/SNAP
 #
 GNUTAR=tar
-NOW=`timeDateString`
+NOW=$(timeDateString)
 
 for f in $HOME/.mail/deleted/SNAP $HOME/DeletedMailSNAP
 do

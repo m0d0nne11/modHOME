@@ -1,1 +1,1 @@
-echo `ymd``hms`
+echo $(ymd)$(hms)

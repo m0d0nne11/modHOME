@@ -36,7 +36,7 @@ function FAILED()  {
         exit 1
 }
 
-tempFile=`mktemp /tmp/screenCapture.XXXXXXXX.jpg` || \
+tempFile=$(mktemp /tmp/screenCapture.XXXXXXXX.jpg) || \
                  FAILED mktemp /tmp/screenCapture.XXXXXXXX.jpg
 echo "$0: sleeping 5 seconds before capture..." ; sleep 5
 xwd $@ | xwdtopnm | pnmtojpeg        >"$tempFile" || \

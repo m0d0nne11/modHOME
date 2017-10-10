@@ -8,7 +8,7 @@
 
 onintr cleanUp
 
-set here=`basename $cwd`
+set here=$(basename $cwd)
 if ( $here != "src" ) then
     echo "This only works in the src directory of your sandbox"
     exit 1

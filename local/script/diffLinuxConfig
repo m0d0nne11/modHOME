@@ -21,7 +21,7 @@ set +f
 # The timeStamp is handy for generating any
 # unique-per-script-invocation temp files and such...
 #
-timeStamp=`date '+%Y%m%d%H%M%S'`
+timeStamp=$(date '+%Y%m%d%H%M%S')
   md5List=md5List$timeStamp
   tempDir=/tmp/tempDir$timeStamp
      dir1=$tempDir/dir1
@@ -95,11 +95,11 @@ do
     enabled=$?
     if [ $enabled -eq 0 ]
     then                                                             # Disabled
-        line=`echo "$rawLine" | sed -e 's/^[[:space:]]*#[[:space:]]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[[:space:]]*#[[:space:]]*//' )
     else                                                              # Enabled
-        line=`echo "$rawLine" | sed -e 's/^[[:space:]]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[[:space:]]*//' )
     fi
-    token=`echo $line  | sed -e 's/[[:space:]] =].*$//' `
+    token=$(echo $line  | sed -e 's/[[:space:]] =].*$//' )
 
     mkdir -p $dir1/$token
     if [ $enabled -eq 0 ]
@@ -121,11 +121,11 @@ do
     enabled=$?
     if [ $enabled -eq 0 ]
     then                                                             # Disabled
-        line=`echo "$rawLine" | sed -e 's/^[[:space:]]*#[[:space:]]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[[:space:]]*#[[:space:]]*//' )
     else                                                              # Enabled
-        line=`echo "$rawLine" | sed -e 's/^[[:space:]]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[[:space:]]*//' )
     fi
-    token=`echo $line  | sed -e 's/[[:space:]] =].*$//' `
+    token=$(echo $line  | sed -e 's/[[:space:]] =].*$//' )
 
     mkdir -p $dir2/$token
     if [ $enabled -eq 0 ]
@@ -274,8 +274,8 @@ do
     then
         if [ -f $dir2/$token/ENABLED ]
         then
-            x1=`sed -e 's/^.*=/[[:space:]]=/' <      $token/ENABLED`
-            x2=`sed -e 's/^.*=/[[:space:]]=/' <$dir2/$token/ENABLED`
+            x1=$(sed -e 's/^.*=/[[:space:]]=/' <      $token/ENABLED)
+            x2=$(sed -e 's/^.*=/[[:space:]]=/' <$dir2/$token/ENABLED)
             echo "$token$x1 (vs)$x2" >>$tempDir/differentlyENABLED
             rm -rf $token $dir2/$token
         fi

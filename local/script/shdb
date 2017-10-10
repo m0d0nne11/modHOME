@@ -1,2 +1,2 @@
-echo echo '"######## Checkpoint"' `timeDateString`
+echo echo '"######## Checkpoint"' $(timeDateString)
 cat

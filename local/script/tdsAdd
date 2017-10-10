@@ -16,7 +16,7 @@ fi
 ###############################################################################
 # Output of tdsAtoms is in this form: Y0=2008 M0=01 D0=26 H0=16 T0=12 S0=07
 #
-eval `echo $1 $2 | fmt -1 | tdsAtoms`
+eval $(echo $1 $2 | fmt -1 | tdsAtoms)
 
  Y0=$(slz $Y0)
  M0=$(slz $M0)

@@ -8,18 +8,18 @@ function usage()  {
 
 ###############################################################################
 
-     tmp=`mktemp /tmp/tagMD5.XXXXXXXX` || usage mktemp /tmp/tagMD5.XXXXXXXX
+     tmp=$(mktemp /tmp/tagMD5.XXXXXXXX) || usage mktemp /tmp/tagMD5.XXXXXXXX
 startDir=$PWD
 
 while read f
 do
     cd $startDir
-    dir="`dirname $f`"
+    dir="$(dirname $f)"
     cd $dir                           ||        usage "can't CD to dirname($f)"
 
-    base="`basename $f`"
+    base="$(basename $f)"
     test -f "${base}"                 ||        usage "no basename($f) in $dir"
-    md5="`md5sum ${base} | word1`"
+    md5="$(md5sum ${base} | word1)"
     if [ -f $md5 ]
     then
         echo "already have file $md5 in $dir - ignoring ${base}"

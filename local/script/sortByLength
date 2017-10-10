@@ -13,13 +13,13 @@ exit
 
 # Previous clunky (and incorrect! due to whitespace handling) version...
 
-   timeStamp=`date '+%Y%m%d%H%M%S'`
+   timeStamp=$(date '+%Y%m%d%H%M%S')
     tempFile=/tmp/"$$"tempFile$timeStamp
 formatString=/tmp/"$$"format$timeStamp
 
 rq ' ' | eat | fmt -1 | sed -e 's/^ //' >$tempFile
 
-formatString=`lineup dummyArg <$tempFile | head -1 | sed -e 's/-//' -e 's;\\\%;%;'`
+formatString=$(lineup dummyArg <$tempFile | head -1 | sed -e 's/-//' -e 's;\\\%;%;')
 
 eval $formatString <$tempFile | LANG=C sort | tr -s '[:blank:]' | sed -e 's/^ //'
 

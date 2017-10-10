@@ -47,13 +47,13 @@ function tdsMD5retagFunc()  {
 
     f=$1
 
-    dir="`dirname $f`" # Extract from the specified pathname the directory the NoteFile resides in.
+    dir="$(dirname $f)" # Extract from the specified pathname the directory the NoteFile resides in.
     if ! cd "${dir}" ; then           # Attempt to stand in specified directory
         echo "can't CD to dirname($f)"
         return 1
     fi
 
-    base="`basename $f`"    # Extract the basename from the specified filename.
+    base="$(basename $f)"    # Extract the basename from the specified filename.
     if ! [ -f "${base}" ] ; then                          # Verify file exists.
         echo "no basename($f) in $dir"
         return 1
@@ -92,13 +92,13 @@ function tdsMD5retagFunc()  {
     # At this point we know that the file has a name we can work with,
     # even if it's contrived...
     #
-    tds=`echo   "${base}" | sed -e 's/\..*$//'` # Isolate just the TDS portion.
-    md5=`md5sum "${base}" | word1`                    # Compute proper MD5 sum.
+    tds=$(echo   "${base}" | sed -e 's/\..*$//') # Isolate just the TDS portion.
+    md5=$(md5sum "${base}" | word1)                    # Compute proper MD5 sum.
     proposed="$tds.$md5"           # Now we know what the file SHOULD be named.
 
     if [ "$base" != "$proposed" ] ; then                 # File has wrong name?
         if [ -e $proposed ] ; then
-            md5p=`md5sum "${proposed}" | word1`
+            md5p=$(md5sum "${proposed}" | word1)
             if [ "${md5}" = "${md5p}" ] ; then
                 echo "#### $base has duplicate ($proposed) in $dir - deleting..."
                 rm -f "${proposed}"

@@ -11,7 +11,7 @@ cat <<EOF
 <body bgcolor="#A5A5A5">
 
 <center>
-<h1>`basename $PWD`</h1>
+<h1>$(basename $PWD)</h1>
 
 <br>
 

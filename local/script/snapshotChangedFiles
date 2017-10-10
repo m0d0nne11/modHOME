@@ -4,7 +4,7 @@
 # order that the user have an opportunity to edit it before it's
 # used during creation of the curent snapshot.  O'Donnell 960817
 # 
-lastSnapshot=`ls SNAPSHOT/snapshot9* | tail -1`
+lastSnapshot=$(ls SNAPSHOT/snapshot9* | tail -1)
 GNUTAR=/usr/local/gnu/bin/tar
 snapShotList=/tmp/snapshot$$
 find . -type f -newer $lastSnapshot -print >$snapShotList
@@ -12,7 +12,7 @@ echo "#################### snapShotList is $snapShotList :"
 cat $snapShotList
 echo "#################### hit Return when ready..."
 read uselessData
-thisSnapshot=SNAPSHOT/snapshot`tds`.tgz
+thisSnapshot=SNAPSHOT/snapshot$(tds).tgz
 echo "############################## Creating $thisSnapshot..."
 $GNUTAR -c -v -z -f $thisSnapshot -T $snapShotList
 rm -f $snapShotList

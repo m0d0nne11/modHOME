@@ -1,2 +1,2 @@
-echo print '"######## Checkpoint' `timeDateString`'"'
+echo print '"######## Checkpoint' $(timeDateString)'"'
 noCR

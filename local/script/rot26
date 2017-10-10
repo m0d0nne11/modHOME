@@ -4,7 +4,7 @@ string=$@
 while [ $count -lt 26 ]
 do
   echo $string
-  string=`echo $string | rot1`
+  string=$(echo $string | rot1)
   count=$[$count + 1]
 done
 

@@ -12,10 +12,10 @@ export PATH=~/local/script:~/local/bin:/etc/alternatives:~/local/bin.i686:/sbin:
 
 export         SHELL=/bin/bash             # Defend against [t]csh dainbramage.
           scriptName=$0
-           timeStamp=`date '+%Y%m%d%H%M%S'`
+           timeStamp=$(date '+%Y%m%d%H%M%S')
                 argv=$*
              VERSION=1.0.20100201
-            HOSTNAME=`hostname`
+            HOSTNAME=$(hostname)
              BASEDIR=/tmp/DebugUSB
 
 # Next cycle started ASAP but no sooner than SECONDS_PER_CYCLE from

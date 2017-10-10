@@ -40,10 +40,10 @@
 #
 function zapKnownHostLine()  {
     if [ $# -gt 1 ] ; then
-        homeDir=`eval "echo ~$2"`
+        homeDir=$(eval "echo ~$2")
     else
-        if [ "`whoami`" = "root" ] ; then
-            homeDir=`eval "echo ~root"`
+        if [ "$(whoami)" = "root" ] ; then
+            homeDir=$(eval "echo ~root")
         else
             homeDir=~
         fi
@@ -63,8 +63,8 @@ function zapKnownHostLine()  {
         echo $FUNCNAME will operate by default on $homeDir/.ssh/known_hosts
         return 1
     fi
-    tempFile1=`mktemp /tmp/zapKnownHostLineTEMP.XXXXXXXXXX`         || return 1
-    tempFile2=`mktemp /tmp/zapKnownHostLineTEMP.XXXXXXXXXX`         || return 1
+    tempFile1=$(mktemp /tmp/zapKnownHostLineTEMP.XXXXXXXXXX)         || return 1
+    tempFile2=$(mktemp /tmp/zapKnownHostLineTEMP.XXXXXXXXXX)         || return 1
     echo $FUNCNAME deleting line $1 from $homeDir/.ssh/known_hosts
     echo "(temp files: $tempFile1 $tempFile2)"
     cat            $homeDir/.ssh/known_hosts > $tempFile1           || return 1

@@ -5,7 +5,7 @@
 # (as stdout) the right-justified text.
 #
 
-   timeStamp=`date '+%Y%m%d%H%M%S'`
+   timeStamp=$(date '+%Y%m%d%H%M%S')
     tempFile=/tmp/$$tempFile$timeStamp
 nawkCommandScript=/tmp/$$format$timeStamp
 

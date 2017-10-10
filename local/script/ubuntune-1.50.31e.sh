@@ -56,7 +56,7 @@ export PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/ga
 apt-get --yes -q --force-yes update
 #
 add-apt-repository "deb http://archive.canonical.com/ $(lsb_release -sc) partner"
-wget http://www.medibuntu.org/sources.list.d/`lsb_release -cs`.list --output-document=/etc/apt/sources.list.d/medibuntu.list
+wget http://www.medibuntu.org/sources.list.d/$(lsb_release -cs).list --output-document=/etc/apt/sources.list.d/medibuntu.list
 apt-get --yes -q  --force-yes --allow-unauthenticated install medibuntu-keyring
 add-apt-repository "deb http://www.geekconnection.org/remastersys/repository karmic/"
 add-apt-repository "deb http://ppa.launchpad.net/tualatrix/ppa/ubuntu $(lsb_release -sc) main"

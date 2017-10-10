@@ -8,7 +8,7 @@
 function rewriteInventorPathnamesIn()  {
     local ifile="${1}"
 
-    local tempFile=`mktemp /tmp/RIP.XXXXXXXX`
+    local tempFile=$(mktemp /tmp/RIP.XXXXXXXX)
 
     sed -r -e \
      '\;^[[:space:]]*(filename|texture_file|myFilename)[[:space:]]+"/mnt/(MD0|WXDISK);s;/mnt/(MD0|WXDISK)/;/wxdisk/;' \
