@@ -312,7 +312,7 @@ function usage()  {
 
 if [ $# -eq 1 ]                                       # Number of args correct?
 then
-    triple=( `dbTripleForSystem $1` ) # Fetch appropriate triple from dataBase.
+    triple=( $(dbTripleForSystem $1) ) # Fetch appropriate triple from dataBase.
     if [ $? -eq 0 ]                                   # Found specified system?
     then
         echo     ${triple[*]}                         # Announce what we found.

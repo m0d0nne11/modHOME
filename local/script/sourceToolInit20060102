@@ -13,7 +13,7 @@
 # The timeStamp is handy for generating any
 # unique-per-script-invocation temp files and such...
 #
- timeStamp=`date '+%Y%m%d%H%M%S'`
+ timeStamp=$(date '+%Y%m%d%H%M%S')
   tempFile=tempFile$timeStamp
       cTmp=cflowTemp$timeStamp
 
@@ -22,14 +22,14 @@ function gatherCflow()  {
     local x
 
     rm -f cflowResults cflowErrors
-    for f in `cat cscope.files `
+    for f in $(cat cscope.files )
     do
         echo "###############################" BEGIN $f  >$cTmp
         echo "###############################" BEGIN $f          >>cflowErrors
         cflow -X -x -v -g -d 30 $f                      >>$cTmp 2>>cflowErrors
         echo "###############################"   END $f >>$cTmp
         echo "###############################"   END $f          >>cflowErrors
-        x=`wc -l <$cTmp`
+        x=$(wc -l <$cTmp)
         if [ $x -gt 2 ]
         then
             cat $cTmp >>cflowResults

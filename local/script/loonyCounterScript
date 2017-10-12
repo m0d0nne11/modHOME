@@ -9,7 +9,7 @@ else
   echo "No art_proc file."
   touch art_proc
 fi
-for i in `ls $SPOOLDIR`
+for i in $(ls $SPOOLDIR)
 do
    echo $i
    if [ -f art_proc ] ; then
@@ -27,17 +27,17 @@ do
 done
 cat /dev/null > /tmp/file3
 cat /dev/null > /tmp/sfile3
-FIRSTCOUNT=`cat poster.list | wc -l `
+FIRSTCOUNT=$(cat poster.list | wc -l )
 SECONDCOUNT=0
 sort -u poster.list > /tmp/file2
 sort -u subject.list > /tmp/sfile2
 echo "Counting"
 cat /tmp/file2 | while read i ; do
   echo $i
-  COUNT=`grep "$i" poster.list | wc -l`
-  SECONDCOUNT=`echo "$COUNT + $SECONDCOUNT" | bc`
+  COUNT=$(grep "$i" poster.list | wc -l)
+  SECONDCOUNT=$(echo "$COUNT + $SECONDCOUNT" | bc)
   echo $SECONDCOUNT
-  PERCENT=`echo ${COUNT} ${FIRSTCOUNT} | awk '{printf ("scale=6;%d/%d*100\n",$1,$2)}' | bc`
+  PERCENT=$(echo ${COUNT} ${FIRSTCOUNT} | awk '{printf ("scale=6;%d/%d*100\n",$1,$2)}' | bc)
   echo "$COUNT ! $PERCENT ! $i" | awk -F '!' '{printf ("%03d %8.2f%% %s \n", $1, $2, $3)}' >> /tmp/file3
 done
 echo $FIRSTCOUNT 
@@ -46,10 +46,10 @@ cat /tmp/file3 | sort -r |  sed -e 's/^00/  /' -e 's/^0/ /' >> summary
 SECONDCOUNT=0
 cat /tmp/sfile2 | while read i ; do
   echo $i
-  COUNT=`grep "$i" subject.list | wc -l`
-  SECONDCOUNT=`echo "$COUNT + $SECONDCOUNT" | bc`
+  COUNT=$(grep "$i" subject.list | wc -l)
+  SECONDCOUNT=$(echo "$COUNT + $SECONDCOUNT" | bc)
   echo $SECONDCOUNT
-  PERCENT=`echo ${COUNT} ${FIRSTCOUNT} | awk '{printf ("scale=6;%d/%d*100\n",$1,$2)}' | bc`
+  PERCENT=$(echo ${COUNT} ${FIRSTCOUNT} | awk '{printf ("scale=6;%d/%d*100\n",$1,$2)}' | bc)
   echo "$COUNT ! $PERCENT ! $i" | awk -F '!' '{printf ("%03d %8.2f%% %s \n", $1, $2, $3)}' >> /tmp/sfile3
 done
 echo $FIRSTCOUNT 

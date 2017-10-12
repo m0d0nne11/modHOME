@@ -51,10 +51,10 @@ fi
              argv=$*
        scriptName=$0
           VERSION=1.0.20100820
-         HOSTNAME=`hostname`
+         HOSTNAME=$(hostname)
         LAST_DESC=/tmp/lastWoot
         THIS_DESC=/tmp/currentWoot
-        tempFile1=`mktemp /tmp/monitorWoot.XXXXXXXXXX`
+        tempFile1=$(mktemp /tmp/monitorWoot.XXXXXXXXXX)
          htmlTemp="$tempFile1".html
           diffLog="$tempFile1".diffLog
 
@@ -101,7 +101,7 @@ function mail2func()
         echo "usage: $FUNCNAME emailAddr{s} fromAddr subject <stdin"
         return 1
     fi
-    tempFile=/tmp/mail2funcTemp$$`tds`
+    tempFile=/tmp/mail2funcTemp$$$(tds)
     echo "To: $1"                  >$tempFile
     echo "From: $2"               >>$tempFile
     echo "Subject: $3"            >>$tempFile
@@ -171,7 +171,7 @@ fi
 
         # Send email only if this (non-null) DESC differs from previous.
         #
-        subj="`cat $THIS_DESC`"
+        subj="$(cat $THIS_DESC)"
         if [ -n "${subj}" ] ; then
 if [ -n "$MIKE_DEBUG" ] ; then
     echo SUBJ:
@@ -270,7 +270,7 @@ fi
 
         # Send email only if this (non-null) DESC differs from previous.
         #
-        subj="`cat $THIS_DESC`"
+        subj="$(cat $THIS_DESC)"
         if [ -n "${subj}" ] ; then
 if [ -n "$MIKE_DEBUG" ] ; then
     echo SUBJ:

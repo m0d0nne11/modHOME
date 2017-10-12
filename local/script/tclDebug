@@ -1,1 +1,1 @@
-echo puts \"Checkpoint `tds`\"
+echo puts \"Checkpoint $(tds)\"

@@ -2,6 +2,6 @@
 # put a proxy here if needed
 
 DEST=$1
-IP=`lynx -dump http://www.dnswatch.info/dns/dnslookup\?la=en\&host=+$DEST\&type=A\&submit=Resolve | grep 'A record found' |  awk '{print $NF}'`
+IP=$(lynx -dump http://www.dnswatch.info/dns/dnslookup\?la=en\&host=+$DEST\&type=A\&submit=Resolve | grep 'A record found' |  awk '{print $NF}')
 
 echo $IP

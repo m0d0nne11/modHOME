@@ -48,7 +48,7 @@ if [ $# -ne 3 ] ; then
     FAIL wrong number of commandline parameters
 fi
 
-launch="`date`"
+launch="$(date)"
 file1=$1
 file2=$2
 file3=$3
@@ -56,8 +56,8 @@ file3=$3
 test -e $file3                            && FAIL File $file3 already exists
 test -r $file1                            || FAIL File $file1 unreadable
 test -r $file2                            || FAIL File $file2 unreadable
-tempFile1=`mktemp /tmp/zoneName.XXXXXXXX` || FAIL mktemp1 /tmp/zoneName.XXXXXXXX
-tempFile2=`mktemp /tmp/zoneName.XXXXXXXX` || FAIL mktemp2 /tmp/zoneName.XXXXXXXX
+tempFile1=$(mktemp /tmp/zoneName.XXXXXXXX) || FAIL mktemp1 /tmp/zoneName.XXXXXXXX
+tempFile2=$(mktemp /tmp/zoneName.XXXXXXXX) || FAIL mktemp2 /tmp/zoneName.XXXXXXXX
 
 # Assemble a list of strings identifying the unique zones.
 # Don't be fooled by duplicate zones in file1.
@@ -94,7 +94,7 @@ sort -bfd --key=2 < $tempFile2 > $tempFile1
 echo "############## Generating $file3 from $file1 using sed (be patient)..."
 sed -n -f $tempFile1 < $file1 > $file3
 
-echo "LAUNCH -> FINISH:  $launch -> `date`"
+echo "LAUNCH -> FINISH:  $launch -> $(date)"
 echo "RESULTS: ${file3} is ${file1} with $zU unique zones out of $zT"
 ls -laCFl $file1 $file2 $file3
 

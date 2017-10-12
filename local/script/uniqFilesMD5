@@ -11,7 +11,7 @@ fi
 # The timeStamp is handy for generating any
 # unique-per-script-invocation temp files and such...
 #
-      timeStamp=`tds`
+      timeStamp=$(tds)
         tempDir=/tmp
         md5List=$tempDir/md5List$timeStamp
        tempFile=$tempDir/tempFile$timeStamp
@@ -59,7 +59,7 @@ then
 else
 
 #   echo "####" Selecting one representative from each set of duplicates...
-    for tag in `cat $tagsOfDups`
+    for tag in $(cat $tagsOfDups)
     do
 #       echo "####" tag:$tag
         fgrep $tag $md5List | head -1 >>$representatives

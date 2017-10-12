@@ -2,7 +2,7 @@
 
 fileList=$1
 
-# deadline1m=$[$(date '+%s') + 60] ; while [ `date '+%s'` -lt $deadline1m ]; do echo Tick...; sleep 1; done ; echo Ding
+# deadline1m=$[$(date '+%s') + 60] ; while [ $(date '+%s') -lt $deadline1m ]; do echo Tick...; sleep 1; done ; echo Ding
 
             destHost=syseng690a
              destDir=/wxdisk/Digital_Media/Movies_Output_1.0/Custom
@@ -92,7 +92,7 @@ do
     smile
     deadline1m=$[$(date '+%s') + $SECONDS_PER_CYCLE]
 
-    # while [ `date '+%s'` -lt $deadline1m ]; do echo Tick...; sleep 1; done ; echo Ding
+    # while [ $(date '+%s') -lt $deadline1m ]; do echo Tick...; sleep 1; done ; echo Ding
 
     echo
 

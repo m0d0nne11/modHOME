@@ -3,5 +3,5 @@ do
     mv /tmp/mailqLog1 /tmp/mailqLog0
     mailq | eat | fmt -1 | fgrep @ | sort -fdu >/tmp/mailqLog1
     diff /tmp/mailqLog*
-    echo "########################"`date`
+    echo "########################"$(date)
 done

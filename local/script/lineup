@@ -21,7 +21,7 @@
 #       the results, in a form suitable for use inside VI.
 #
 
-   timeStamp=`date '+%Y%m%d%H%M%S'`
+   timeStamp=$(date '+%Y%m%d%H%M%S')
     tempFile=/tmp/$$tempFile$timeStamp
 formatString=/tmp/$$format$timeStamp
 

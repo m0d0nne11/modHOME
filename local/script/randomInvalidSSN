@@ -260,7 +260,7 @@ function randomAlphaStringSized()  {                                # Length
     fi
     if [ $1 -gt 1 ]
     then
-        echo "`randomAlphaStringSized $[$1 - 1]``randomAlpha`"
+        echo "$(randomAlphaStringSized $[$1 - 1])$(randomAlpha)"
         return 0
     fi
 
@@ -289,9 +289,9 @@ function randomAlphaNumStringSized()  {                                # Length
     then
         if [ $[$RANDOM % 2] -eq 0 ]
         then
-            echo "`randomAlphaNumStringSized $[$1 - 1]``randomAlpha`"
+            echo "$(randomAlphaNumStringSized $[$1 - 1])$(randomAlpha)"
         else
-            echo "`randomAlphaNumStringSized $[$1 - 1]``randomDigit`"
+            echo "$(randomAlphaNumStringSized $[$1 - 1])$(randomDigit)"
         fi
 
         return 0
@@ -303,7 +303,7 @@ function randomAlphaNumStringSized()  {                                # Length
 
 ###############################################################################
 function randomAlphaNumStringSizeRange()  {                          # Min, Max
-    randomAlphaNumStringSized `randomNumberRange $1 $2`
+    randomAlphaNumStringSized $(randomNumberRange $1 $2)
     return 0
 }
 
@@ -327,9 +327,9 @@ function randomHexStringSized()  {                                     # Length
 
     if [ $[$RANDOM % 2] -eq 0 ]
     then
-        echo "`randomHexStringSized $[$1 - 1]``randomHexAlpha`"
+        echo "$(randomHexStringSized $[$1 - 1])$(randomHexAlpha)"
     else
-        echo "`randomHexStringSized $[$1 - 1]``randomDigit`"
+        echo "$(randomHexStringSized $[$1 - 1])$(randomDigit)"
     fi
 
     return 0
@@ -337,7 +337,7 @@ function randomHexStringSized()  {                                     # Length
 
 ###############################################################################
 function randomHexStringSizeRange()  {                               # Min, Max
-    randomHexStringSized `randomNumberRange $1 $2`
+    randomHexStringSized $(randomNumberRange $1 $2)
     return 0
 }
 
@@ -362,9 +362,9 @@ function randomTokenStringSized()  {                                   # Length
     then
         if [ $[$RANDOM % 2] -eq 0 ]
         then
-            echo "`randomTokenStringSized $[$1 - 1]``randomAlphaWhite`"
+            echo "$(randomTokenStringSized $[$1 - 1])$(randomAlphaWhite)"
         else
-            echo "`randomTokenStringSized $[$1 - 1]``randomDigit`"
+            echo "$(randomTokenStringSized $[$1 - 1])$(randomDigit)"
         fi
 
         return 0
@@ -376,7 +376,7 @@ function randomTokenStringSized()  {                                   # Length
 
 ###############################################################################
 function randomTokenStringSizeRange()  {                             # Min, Max
-    randomTokenStringSized `randomNumberRange $1 $2`
+    randomTokenStringSized $(randomNumberRange $1 $2)
     return 0
 }
 
@@ -399,7 +399,7 @@ function randomAlphaStringSized()  {                                   # Length
     fi
     if [ $1 -gt 1 ]
     then
-        echo "`randomAlphaStringSized $[$1 - 1]``randomAlpha`"
+        echo "$(randomAlphaStringSized $[$1 - 1])$(randomAlpha)"
         return 0
     fi
 
@@ -409,7 +409,7 @@ function randomAlphaStringSized()  {                                   # Length
 
 ###############################################################################
 function randomAlphaStringSizeRange()  {                             # Min, Max
-    randomAlphaStringSized `randomNumberRange $1 $2`
+    randomAlphaStringSized $(randomNumberRange $1 $2)
     return 0
 }
 
@@ -432,7 +432,7 @@ function randomDigitStringSized()  {                                   # Length
     fi
     if [ $1 -gt 1 ]
     then
-        echo "`randomDigitStringSized $[$1 - 1]``randomDigit`"
+        echo "$(randomDigitStringSized $[$1 - 1])$(randomDigit)"
         return 0
     fi
 
@@ -442,7 +442,7 @@ function randomDigitStringSized()  {                                   # Length
 
 ###############################################################################
 function randomDigitStringSizeRange()  {                             # Min, Max
-    randomDigitStringSized `randomNumberRange $1 $2`
+    randomDigitStringSized $(randomNumberRange $1 $2)
     return 0
 }
 
@@ -454,18 +454,18 @@ function randomDomainString()  {
 
 ###############################################################################
 function randomEmailAddress()  {
-    printf '%s%s.%s%s@%s%s.%s' `randomAlpha` `randomAlphaNumStringSizeRange 3 9` `randomAlpha` `randomAlphaNumStringSizeRange 3 9` `randomAlpha` `randomAlphaNumStringSizeRange 3 9` `randomDomainString`
+    printf '%s%s.%s%s@%s%s.%s' $(randomAlpha) $(randomAlphaNumStringSizeRange 3 9) $(randomAlpha) $(randomAlphaNumStringSizeRange 3 9) $(randomAlpha) $(randomAlphaNumStringSizeRange 3 9) $(randomDomainString)
     return 0
 }
 
 ###############################################################################
 #function CYANCAR.COM2()  {
-#    printf 'http://CYANCAR.COM/2/AS/MB/rdr.asp?r=%s' `randomEmailAddress`
+#    printf 'http://CYANCAR.COM/2/AS/MB/rdr.asp?r=%s' $(randomEmailAddress)
 #    return 0
 #}
 #
 #function sofnpn.info()  {
-#    printf 'http://sofnpn.info:80/in.php?aid=%s&%s' `randomDigitStringSized 2` `randomAlphaStringSized 9`
+#    printf 'http://sofnpn.info:80/in.php?aid=%s&%s' $(randomDigitStringSized 2) $(randomAlphaStringSized 9)
 #    return 0
 #}
 #
@@ -482,12 +482,12 @@ function randomEmailAddress()  {
 #     for url in $HTTP_VALIDATE
 #     do
 #         echo "###############################################" VALIDATING $url 1>&2
-#         wget --user-agent="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)" -O /dev/null "`$url`"
+#         wget --user-agent="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)" -O /dev/null "$($url)"
 #         echo "################################################" VALIDATED $url 1>&2
 #     done
 # done
 
-echo `randomInvalidSSN`
+echo $(randomInvalidSSN)
 
 exit
 

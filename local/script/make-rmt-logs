@@ -28,7 +28,7 @@ done
 
 (
 c=0
-for m in ${@-`hostname`}
+for m in ${@-$(hostname)}
 do
 	echo $m 1>&2
 	case $op in
@@ -41,13 +41,13 @@ do
 		;;
 	sum)	rsh $m sh -e <<- 'EOF'
 			< /tmp/remotebuildlog gawk 'BEGIN {FS=" |/[0-9]"}
-				$3 == "start" { print $1, "'`hostname`'" }' |
+				$3 == "start" { print $1, "'$(hostname)'" }' |
 			sort | uniq -c 
 			EOF
 		;;
 	esac &
 
-	c=`expr $c + 1`
+	c=$(expr $c + 1)
 	case $c in
 	10)     sleep 1; c=0;;
 	esac

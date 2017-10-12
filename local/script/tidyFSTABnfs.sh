@@ -9,7 +9,7 @@ function lineupText()  {
     column -t | sed -e 's/\([^ ]\)  /\1 /g'
 }
 
-timeStamp=$$`date '+%Y%m%d%H%M%S'`
+timeStamp=$$$(date '+%Y%m%d%H%M%S')
  tempFile=/tmp/lineupFSTABtemp$$.$timeStamp
 
 ##############################################################################

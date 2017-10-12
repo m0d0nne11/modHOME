@@ -11,7 +11,7 @@ function usage()  {
 # The timeStamp is handy for generating any
 # unique-per-script-invocation temp files and such...
 #
-timeStamp=`date '+%Y%m%d%H%M%S'`
+timeStamp=$(date '+%Y%m%d%H%M%S')
   md5List=md5List$timeStamp
   tempDir=/tmp/tempDir$timeStamp
  tempFile=$tempDir/tempFile$timeStamp
@@ -47,11 +47,11 @@ do
     enabled=$?
     if [ $enabled -eq 0 ]
     then                                                             # Disabled
-        line=`echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' )
     else                                                              # Enabled
-        line=`echo "$rawLine" | sed -e 's/^[	 ]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[	 ]*//' )
     fi
-    token=`echo $line  | sed -e 's/[	 =].*$//' `
+    token=$(echo $line  | sed -e 's/[	 =].*$//' )
 
     if [ $enabled -eq 0 ]
     then                                                             # Disabled
@@ -73,11 +73,11 @@ do
     enabled=$?
     if [ $enabled -eq 0 ]
     then                                                             # Disabled
-        line=`echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[	 ]*#[	 ]*//' )
     else                                                              # Enabled
-        line=`echo "$rawLine" | sed -e 's/^[	 ]*//' `
+        line=$(echo "$rawLine" | sed -e 's/^[	 ]*//' )
     fi
-    token=`echo $line  | sed -e 's/[	 =].*$//' `
+    token=$(echo $line  | sed -e 's/[	 =].*$//' )
 
     if [ $enabled -eq 0 ]
     then                                                             # Disabled
@@ -100,7 +100,7 @@ do
 done
 
 cd $dir1/COMMON/ENABLED
-for token in `find . -type f`
+for token in $(find . -type f)
 do
     if [ ! -f $dir2/COMMON/DISABLED/$token -a ! -f $dir2/COMMON/ENABLED/$token ]
     then
@@ -109,7 +109,7 @@ do
 done
 
 cd $dir1/COMMON/DISABLED
-for token in `find . -type f`
+for token in $(find . -type f)
 do
     if [ ! -f $dir2/COMMON/DISABLED/$token -a ! -f $dir2/COMMON/ENABLED/$token ]
     then
@@ -119,28 +119,28 @@ done
 
 echo "############# Disabled options unique to $1"
 cd $dir1/UNIQUE/DISABLED/
-for f in `find . -type f -print`
+for f in $(find . -type f -print)
 do
     cat $f
 done
 
 echo "############# Disabled options unique to $2"
 cd $dir2/UNIQUE/DISABLED/
-for f in `find . -type f -print`
+for f in $(find . -type f -print)
 do
     cat $f
 done
 
 echo "############# Enabled options unique to $1"
 cd $dir1/UNIQUE/ENABLED/
-for f in `find . -type f -print`
+for f in $(find . -type f -print)
 do
     cat $f
 done
 
 echo "############# Enabled options unique to $2"
 cd $dir2/UNIQUE/ENABLED/
-for f in `find . -type f -print`
+for f in $(find . -type f -print)
 do
     cat $f
 done
@@ -148,7 +148,7 @@ done
 
 echo "############# Common options, enabled but different..."
 cd $dir1/COMMON/ENABLED
-for token in `find . -type f -print`
+for token in $(find . -type f -print)
 do
     if ! diff -q $dir1/COMMON/ENABLED/$token $dir2/COMMON/ENABLED/$token >>$tempFile
     then

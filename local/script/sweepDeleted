@@ -1,4 +1,4 @@
- timeStamp=`date '+%Y%m%d%H%M%S'`
+ timeStamp=$(date '+%Y%m%d%H%M%S')
   tempFile=tempFile$timeStamp
 
  cat /dev/null >$tempFile

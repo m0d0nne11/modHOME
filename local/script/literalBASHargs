@@ -9,7 +9,7 @@ function backslashedQuotes()  {
 
 while [ $# -gt 0 ]
 do
-	argv[$argc]="`backslashedQuotes "$1"`"
+	argv[$argc]="$(backslashedQuotes "$1")"
 	let argc++
 	shift
 done
@@ -27,4 +27,4 @@ function allMyArgs()  {
 # command line with each arg string quoted.
 # In this example we just use ls...
 
-eval ls -l `allMyArgs`
+eval ls -l $(allMyArgs)

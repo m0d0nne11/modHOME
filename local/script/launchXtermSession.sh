@@ -87,7 +87,7 @@ function usage()  {
 
 if [ $# -eq 1 ]                                       # Number of args correct?
 then
-    string=( `commandForTag $1` )
+    string=( $(commandForTag $1) )
     if [ $? -eq 0 ]                           # Found specified command string?
     then
         echo           ${string[*]}

@@ -8,7 +8,7 @@ function usage()  {
 # The timeStamp is handy for generating any
 # unique-per-script-invocation temp files and such...
 #
-timeStamp=`date '+%Y%m%d%H%M%S'`
+timeStamp=$(date '+%Y%m%d%H%M%S')
   md5List=md5List$timeStamp
   tempDir=/tmp/tempDir$timeStamp
  tempFile=$tempDir/tempFile$timeStamp
@@ -42,13 +42,13 @@ mkdir    $dir2/COMMON
 
 fgrep CONFIG $1 | sed -e '/^[	 ]*#/d' | while read line
 do
-    token=`echo $line | sed -e 's/=.*$//' `
+    token=$(echo $line | sed -e 's/=.*$//' )
     echo $line >$dir1/COMMON/$token
 done
 
 fgrep CONFIG $2 | sed -e '/^[	 ]*#/d' | while read line
 do
-    token=`echo $line | sed -e 's/=.*$//' `
+    token=$(echo $line | sed -e 's/=.*$//' )
     if [ ! -f $dir1/COMMON/$token ]
     then
         echo $line >$dir2/ONLY/$token

@@ -36,7 +36,7 @@ function findhosts_26()  {
     elif [ -f $hostdir/lpfc_drvr_version ] ; then
         hostname="lpfc"
     else
-        hostname=`cat $hostdir/proc_name`
+        hostname=$(cat $hostdir/proc_name)
     fi
     hosts="$hosts $hostno"
     echo "Host adapter $hostno ($hostname) found."
@@ -55,7 +55,7 @@ function findhosts()  {
       num=$name
       driverinfo=$driver
       if test -r $hostdir/status; then
-        num=$(printf '%d\n' `sed -n 's/SCSI host number://p' $hostdir/status`)
+        num=$(printf '%d\n' $(sed -n 's/SCSI host number://p' $hostdir/status))
         driverinfo="$driver:$name"
       fi
       hosts="$hosts $num"
@@ -69,9 +69,9 @@ function findhosts()  {
 # result in SCSISTR, return code 1 means empty.
 function procscsiscsi()  {
   if test -z "$1"; then LN=2; else LN=$1; fi
-  CHANNEL=`printf "%02i" $channel`
-  ID=`printf "%02i" $id`
-  LUN=`printf "%02i" $lun`
+  CHANNEL=$(printf "%02i" $channel)
+  ID=$(printf "%02i" $id)
+  LUN=$(printf "%02i" $lun)
   if [ -d /sys/class/scsi_device ]; then
       SCSIPATH="/sys/class/scsi_device/${host}:${channel}:${id}:${lun}"
       if [ -d  "$SCSIPATH" ] ; then
@@ -115,7 +115,7 @@ $SCSITMP"
       fi
   else
       grepstr="scsi$host Channel: $CHANNEL Id: $ID Lun: $LUN"
-      SCSISTR=`cat /proc/scsi/scsi | grep -A$LN -e"$grepstr"`
+      SCSISTR=$(cat /proc/scsi/scsi | grep -A$LN -e"$grepstr")
   fi
   if test -z "$SCSISTR"; then return 1; else return 0; fi
 }
@@ -123,13 +123,13 @@ $SCSITMP"
 # Find sg device with 2.6 sysfs support
 function sgdevice26()  {
   if test -e /sys/class/scsi_device/$host\:$channel\:$id\:$lun/device/generic; then
-    SGDEV=`readlink /sys/class/scsi_device/$host\:$channel\:$id\:$lun/device/generic`
-    SGDEV=`basename $SGDEV`
+    SGDEV=$(readlink /sys/class/scsi_device/$host\:$channel\:$id\:$lun/device/generic)
+    SGDEV=$(basename $SGDEV)
   else
     for SGDEV in /sys/class/scsi_generic/sg*; do
-      DEV=`readlink $SGDEV/device`
+      DEV=$(readlink $SGDEV/device)
       if test "${DEV##*/}" = "$host:$channel:$id:$lun"; then
-        SGDEV=`basename $SGDEV`; return
+        SGDEV=$(basename $SGDEV); return
       fi
     done
     SGDEV=""
@@ -139,7 +139,7 @@ function sgdevice26()  {
 # Find sg device with 2.4 report-devs extensions
 function sgdevice24()  {
   if procscsiscsi 3; then
-    SGDEV=`echo "$SCSISTR" | grep 'Attached drivers:' | sed 's/^ *Attached drivers: \(sg[0-9]*\).*/\1/'`
+    SGDEV=$(echo "$SCSISTR" | grep 'Attached drivers:' | sed 's/^ *Attached drivers: \(sg[0-9]*\).*/\1/')
   fi
 }
 
@@ -149,14 +149,14 @@ function sgdevice()  {
   if test -d /sys/class/scsi_device; then
     sgdevice26
   else
-    DRV=`grep 'Attached drivers:' /proc/scsi/scsi 2>/dev/null`
+    DRV=$(grep 'Attached drivers:' /proc/scsi/scsi 2>/dev/null)
     repdevstat=$((1-$?))
     if [ $repdevstat = 0 ]; then
       echo "scsi report-devs 1" >/proc/scsi/scsi
-      DRV=`grep 'Attached drivers:' /proc/scsi/scsi 2>/dev/null`
+      DRV=$(grep 'Attached drivers:' /proc/scsi/scsi 2>/dev/null)
       if [ $? = 1 ]; then return; fi
     fi
-    if ! `echo $DRV | grep 'drivers: sg' >/dev/null`; then
+    if ! $(echo $DRV | grep 'drivers: sg' >/dev/null); then
       modprobe sg
     fi
     sgdevice24
@@ -177,13 +177,13 @@ function testonline()  {
   # echo -e "\e[A\e[A\e[A${yellow}Test existence of $SGDEV = $RC ${norm} \n\n\n"
   if test $RC = 1; then return $RC; fi
   # OK, device online, compare INQUIRY string
-  INQ=`sg_inq --len=36 /dev/$SGDEV`
-  IVEND=`echo "$INQ" | grep 'Vendor identification:' | sed 's/^[^:]*: \(.*\)$/\1/'`
-  IPROD=`echo "$INQ" | grep 'Product identification:' | sed 's/^[^:]*: \(.*\)$/\1/'`
-  IPREV=`echo "$INQ" | grep 'Product revision level:' | sed 's/^[^:]*: \(.*\)$/\1/'`
-  STR=`printf "  Vendor: %-08s Model: %-16s Rev: %-4s" "$IVEND" "$IPROD" "$IPREV"`
+  INQ=$(sg_inq --len=36 /dev/$SGDEV)
+  IVEND=$(echo "$INQ" | grep 'Vendor identification:' | sed 's/^[^:]*: \(.*\)$/\1/')
+  IPROD=$(echo "$INQ" | grep 'Product identification:' | sed 's/^[^:]*: \(.*\)$/\1/')
+  IPREV=$(echo "$INQ" | grep 'Product revision level:' | sed 's/^[^:]*: \(.*\)$/\1/')
+  STR=$(printf "  Vendor: %-08s Model: %-16s Rev: %-4s" "$IVEND" "$IPROD" "$IPREV")
   procscsiscsi
-  SCSISTR=`echo "$SCSISTR" | grep 'Vendor:'`
+  SCSISTR=$(echo "$SCSISTR" | grep 'Vendor:')
   if [ "$SCSISTR" != "$STR" ]; then
     echo -e "\e[A\e[A\e[A\e[A${red}$SGDEV changed: ${bold}\nfrom:${SCSISTR#* } \nto: $STR ${norm}\n\n\n"
     return 1
@@ -335,7 +335,7 @@ function doreportlun()  {
       return
     fi
   fi
-  lunsearch=`getluns`
+  lunsearch=$(getluns)
   lunremove=
   # Check existing luns
   for dev in /sys/class/scsi_device/$host\:$channel\:$id\:*; do
@@ -422,7 +422,7 @@ function expandlist()  {
             result="$result $beg";
         else
             end=${first#*-}
-            result="$result `seq $beg $end`"
+            result="$result $(seq $beg $end)"
         fi
         test "$rest" = "$first" && rest=""
         first=${rest%%,*}
@@ -442,7 +442,7 @@ modprobe sg >/dev/null 2>&1
 # defaults
 unsetcolor
 lunsearch=""
-idsearch=`seq 0 7`
+idsearch=$(seq 0 7)
 channelsearch="0"
 remove=
 forceremove=
@@ -458,18 +458,18 @@ opt="$1"
 while test ! -z "$opt" -a -z "${opt##-*}"; do
   opt=${opt#-}
   case "$opt" in
-    l) lunsearch=`seq 0 7` ;;
-    L) lunsearch=`seq 0 $2`; shift ;;
-    w) idsearch=`seq 0 15` ;;
+    l) lunsearch=$(seq 0 7) ;;
+    L) lunsearch=$(seq 0 $2); shift ;;
+    w) idsearch=$(seq 0 15) ;;
     c) channelsearch="0 1" ;;
     r) remove=1 ;;
     i) lipreset=1 ;;
     -remove)      remove=1 ;;
     -forceremove) remove=1; forceremove=1 ;;
-    -hosts=*)     arg=${opt#-hosts=};   hosts=`expandlist $arg` ;;
-    -channels=*)  arg=${opt#-channels=};channelsearch=`expandlist $arg` ;;
-    -ids=*)   arg=${opt#-ids=};         idsearch=`expandlist $arg` ;;
-    -luns=*)  arg=${opt#-luns=};        lunsearch=`expandlist $arg` ;;
+    -hosts=*)     arg=${opt#-hosts=};   hosts=$(expandlist $arg) ;;
+    -channels=*)  arg=${opt#-channels=};channelsearch=$(expandlist $arg) ;;
+    -ids=*)   arg=${opt#-ids=};         idsearch=$(expandlist $arg) ;;
+    -luns=*)  arg=${opt#-luns=};        lunsearch=$(expandlist $arg) ;;
     -color) setcolor ;;
     -nooptscan) optscan=0 ;;
     -issue-lip) lipreset=1 ;;

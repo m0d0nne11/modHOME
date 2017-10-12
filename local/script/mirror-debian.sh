@@ -31,7 +31,7 @@ EXCLUDE="--exclude *m68k.deb --exclude binary-m68k/ --exclude *s390.deb --exclud
 	 --exclude *hppa.deb --exclude binary-hppa/ --exclude *ia64.deb --exclude binary-ia64/ \
 	 --exclude *mips.deb --exclude binary-mips/ --exclude *mipsel.deb --exclude binary-mipsel"
 
-LOCK="${TO}/Archive-Update-in-Progress-`hostname -f`"
+LOCK="${TO}/Archive-Update-in-Progress-$(hostname -f)"
 
 # Get in the right directory and set the umask to be group writable
 # 
@@ -40,16 +40,16 @@ umask 002
 
 # Check to see if another sync is in progress
 if lockfile -! -l 43200 -r 0 "$LOCK"; then
-  echo `hostname` is unable to start rsync, lock file exists
+  echo $(hostname) is unable to start rsync, lock file exists
   exit 1
 fi
 trap "rm -f $LOCK > /dev/null 2>&1" exit  
 
 set +e
 rsync -rltvz --delete \
-     --exclude "Archive-Update-in-Progress-`hostname -f`" \
-     --exclude "project/trace/`hostname -f`" \
+     --exclude "Archive-Update-in-Progress-$(hostname -f)" \
+     --exclude "project/trace/$(hostname -f)" \
      $EXCLUDE \
      $RSYNC_HOST::$RSYNC_DIR $TO > rsync.log 2>&1
-date -u > "${TO}/project/trace/`hostname -f`"
+date -u > "${TO}/project/trace/$(hostname -f)"
 savelog rsync.log > /dev/null 2>&1

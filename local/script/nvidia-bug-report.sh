@@ -5,7 +5,7 @@ PATH="/sbin:/usr/sbin:$PATH"
 BASE_LOG_FILENAME="nvidia-bug-report.log"
 
 # check if gzip is present
-GZIP_CMD=`which gzip 2> /dev/null | head -n 1`
+GZIP_CMD=$(which gzip 2> /dev/null | head -n 1)
 if [ $? -eq 0 -a "$GZIP_CMD" ]; then
     GZIP_CMD="gzip -c"
 else
@@ -47,7 +47,7 @@ usage() {
 }
 
 NVIDIA_BUG_REPORT_CHANGE='$Change: 14225146 $'
-NVIDIA_BUG_REPORT_VERSION=`echo "$NVIDIA_BUG_REPORT_CHANGE" | tr -c -d "[:digit:]"`
+NVIDIA_BUG_REPORT_VERSION=$(echo "$NVIDIA_BUG_REPORT_CHANGE" | tr -c -d "[:digit:]")
 
 # Set the default filename so that it won't be empty in the usage message
 set_filename
@@ -142,7 +142,7 @@ append_silent() {
 #
 
 append_glob() {
-    for i in `ls $1 2> /dev/null;`; do
+    for i in $(ls $1 2> /dev/null;); do
         append "$i"
     done
 }
@@ -154,7 +154,7 @@ append_glob() {
 
 append_binary_file() {
     (
-        base64=`which base64 2> /dev/null | head -n 1`
+        base64=$(which base64 2> /dev/null | head -n 1)
 
         if [ $? -eq 0 -a -x "$base64" ]; then
                 if [ -f "$1" -a -r "$1" ]; then
@@ -181,7 +181,7 @@ append_binary_file() {
 # check that we are root (needed for `lspci -vxxx` and potentially for
 # accessing kernel log files)
 
-if [ `id -u` -ne 0 ]; then
+if [ $(id -u) -ne 0 ]; then
     echo "ERROR: Please run $(basename $0) as root."
     exit 1
 fi
@@ -236,8 +236,8 @@ echo -n "Running $(basename $0)...";
     echo ""
     echo "nvidia-bug-report.sh Version: $NVIDIA_BUG_REPORT_VERSION"
     echo ""
-    echo "Date: `date`"
-    echo "uname: `uname -a`"
+    echo "Date: $(date)"
+    echo "uname: $(uname -a)"
     echo "command line flags: $SAVED_FLAGS"
     echo ""
 ) | $GZIP_CMD >> $LOG_FILENAME
@@ -279,9 +279,9 @@ for log_basename in /var/log/XFree86 /var/log/Xorg; do
 
             # look for the X configuration files/directories referenced by this X log
             if [ -f ${log_filename} -a -r ${log_filename} ]; then
-                config_file=`grep "Using config file" ${log_filename} | cut -f 2 -d \"`
-                config_dir=`grep "Using config directory" ${log_filename} | cut -f 2 -d \"`
-                sys_config_dir=`grep "Using system config directory" ${log_filename} | cut -f 2 -d \"`
+                config_file=$(grep "Using config file" ${log_filename} | cut -f 2 -d \")
+                config_dir=$(grep "Using config directory" ${log_filename} | cut -f 2 -d \")
+                sys_config_dir=$(grep "Using system config directory" ${log_filename} | cut -f 2 -d \")
                 for j in "$config_file" "$config_dir" "$sys_config_dir"; do
                     if [ "$j" ]; then
                         # multiple of the logs we find above might reference the
@@ -301,7 +301,7 @@ for log_basename in /var/log/XFree86 /var/log/Xorg; do
                 done
 
                 # append NVIDIA 3D Vision Pro configuration settings
-                svp_conf_files=`grep "Option \"3DVisionProConfigFile\"" ${log_filename} | cut -f 4 -d \"`
+                svp_conf_files=$(grep "Option \"3DVisionProConfigFile\"" ${log_filename} | cut -f 4 -d \")
                 if [ "${svp_conf_files}" ]; then
                     OLD_IFS="$IFS"
                     IFS=$NEW_LINE
@@ -328,7 +328,7 @@ done
     echo "____________________________________________"
     echo ""
 
-    glxinfo=`which glxinfo 2> /dev/null | head -n 1`
+    glxinfo=$(which glxinfo 2> /dev/null | head -n 1)
 
     if [ $? -eq 0 -a -x "$glxinfo" ]; then
         echo "ldd $glxinfo"
@@ -347,7 +347,7 @@ done
     echo "____________________________________________"
     echo ""
 
-    lspci=`which lspci 2> /dev/null | head -n 1`
+    lspci=$(which lspci 2> /dev/null | head -n 1)
 
     if [ $? -eq 0 -a -x "$lspci" ]; then
         # Capture NVIDIA devices
@@ -384,7 +384,7 @@ done
     echo "____________________________________________"
     echo ""
 
-    lsusb=`which lsusb 2> /dev/null | head -n 1`
+    lsusb=$(which lsusb 2> /dev/null | head -n 1)
 
     if [ $? -eq 0 -a -x "$lsusb" ]; then
         echo "$lsusb"
@@ -403,7 +403,7 @@ done
     echo "____________________________________________"
     echo ""
 
-    dmidecode=`which dmidecode 2> /dev/null | head -n 1`
+    dmidecode=$(which dmidecode 2> /dev/null | head -n 1)
 
     if [ $? -eq 0 -a -x "$dmidecode" ]; then
         echo "$dmidecode"
@@ -422,7 +422,7 @@ done
     echo "____________________________________________"
     echo ""
 
-    modinfo=`which modinfo 2> /dev/null | head -n 1`
+    modinfo=$(which modinfo 2> /dev/null | head -n 1)
 
     if [ $? -eq 0 -a -x "$modinfo" ]; then
         echo "$modinfo nvidia | grep vermagic"
@@ -586,7 +586,7 @@ if [ $BUG_REPORT_SAFE_MODE -eq 0 ]; then
         echo "____________________________________________"
         echo ""
 
-        nvidia_smi=`which nvidia-smi 2> /dev/null | head -n 1`
+        nvidia_smi=$(which nvidia-smi 2> /dev/null | head -n 1)
 
         if [ $? -eq 0 -a -x "$nvidia_smi" ]; then
             echo "$nvidia_smi -q"
@@ -610,11 +610,11 @@ if [ $BUG_REPORT_SAFE_MODE -eq 0 ]; then
         echo "____________________________________________"
         echo ""
 
-        nvidia_debugdump=`which nvidia-debugdump 2> /dev/null | head -n 1`
+        nvidia_debugdump=$(which nvidia-debugdump 2> /dev/null | head -n 1)
 
         if [ $? -eq 0 -a -x "$nvidia_debugdump" ]; then
         
-            base64=`which base64 2> /dev/null | head -n 1`
+            base64=$(which base64 2> /dev/null | head -n 1)
             
             if [ $? -eq 0 -a -x "$base64" ]; then
                 # make sure what we can write to the temp file

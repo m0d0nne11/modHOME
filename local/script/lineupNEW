@@ -27,7 +27,7 @@ test -n "$MIKE_DEBUG" && set -xv
 
       myName=$0
         argv="$@"
-   timeStamp=`date '+%Y%m%d%H%M%S'`
+   timeStamp=$(date '+%Y%m%d%H%M%S')
     tempFile=/tmp/$$tempFile$timeStamp
 formatString=/tmp/$$format$timeStamp
 
