@@ -5,6 +5,7 @@ function vimSymlinkInit() {
     local links ;
     local f ;
 
+echo '#### FIX-ME! ...maybe launch Vim with -u / -U instead of modifying $HOME dir...'
     rigCustomDir .vim ;
     if ! pushd "${modHOME}".custom >/dev/null ; then
         echo "Can't pushd ${modHOME}.custom ?" ;
