@@ -1,1 +1,1 @@
- PATH=/root/modHOME/local/script:/root/modHOME/local/alternative:/root/modHOME/local/bin:/etc/alternatives:/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin/X11:/usr/local/share:/usr/local/games:/usr/games:/usr/local:/usr/local/uvscan:NOTICEthisDefaultPATHsetIn.BASHRClib/ENVARphase1/PATH
+ PATH=thisMinimalDefaultPATHdefinedIn_modHOME/.BASHRClib/ENVARphase1/PATH:executePathPreen:thenExecutePathSave:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
