@@ -29,7 +29,9 @@ find . -name .DS_Store | while read f ; do echo "${f}" ; done
 sudo find . -type f | fgrep -v -e ' ' | while read f; do sudo fgrep -i -e testing "${f}"; echo "##################" DONE "${f}"; done
 sudo find /var/log \( -name "*gz" -o -name "*.[01]" -o -name "*.old" \) -exec rm '{}' \; ; sudo bash -c 'for f in $(sudo find /var/log -type f); do cat /dev/null > $f; done'
 sudo id ; find . -name .DS_Store | while read f ; do sudo rm "${f}" ; done
-rsync -vax --delete --dry-run --link-dest=/Users/mi25714/SNAPSHOT/modldapclient/20160108092636/. root@modldapclient:/. /Users/mi25714/SNAPSHOT/modldapclient/$(tds)
+mkdir -p /SNAPSHOT ;                                                                               timeStamp=$(tds) ;
+rsync -vax --delete --exclude /SNAPSHOT                                              /. /SNAPSHOT/$timeStamp ;
+rsync -vax --delete --exclude /SNAPSHOT --link-dest=$(ls -d /SNAPSHOT/20* | tail -1) /. /SNAPSHOT/$timeStamp ;
 (cd ~/Desktop/AVstaging && ./AVfetchScript.sh && ls -latr | tail)
 drutil burn -drive 2 -nofs yourISOhere
 for f in * ; do diff $jnk/$f $f && (echo TOSS $f ; rm -f $f) ; done
