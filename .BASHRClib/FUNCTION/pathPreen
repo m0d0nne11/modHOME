@@ -11,8 +11,8 @@ function pathPreen() {
     local temPath=""
     if [ -z "$ARCH" ] ; then
         echo ARCH envar not set
-        if d=$(type -p arch) ; then
-            lARCH=$(arch)
+        if d=$(type -p uname) ; then
+            lARCH=$(uname -m)
         else
             lARCH="UnknownARCH"
         fi
