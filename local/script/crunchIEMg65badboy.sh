@@ -8,6 +8,8 @@
 # lpr -o landscape -o sides=two-sided-long-edge -o cpi=14
 
 cat <<"EOF"
+MACvendorFor.sh
+yyp!!wordN 7 | tr / ' ' | fmt -1 | fgrep -v -e '-' | email4labID | sort -bfdu | fmt -2400kJj
 d2jj!}sort -bfd --key=2
 k!}awk '{ printf( "\%-26s \%-18s \%-17s \%-15s \%-16s \%-14s \%-17s \%-14s \%-48s \%-9s \%s\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11 ); } '
 ]

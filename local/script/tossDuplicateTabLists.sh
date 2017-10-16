@@ -16,7 +16,9 @@
 
 #export PATH=/home/mod/modHOME/local/script:/home/mod/modHOME/local/alternative:/etc/alternatives:/sbin:/bin:/usr/sbin:/usr/local:/usr/local/bin:/usr/local/sbin:/usr/local/firefox:/usr/local/games:/usr/local/share:/usr/bin:/usr/bin/X11:/usr/games:.
 
- export PATH=/Users/mi25714/modHOME/local/script:/Users/mi25714/modHOME/local/alternative:/bin:/sbin:/usr/bin:/usr/sbin:/Applications/MacVim.app/Contents/MacOS:/Users/mi25714/modHOME/local/alternative/osxVMwareFusionLibrarySymlink:/Users/mi25714/modHOME/local/alternative/osxVMWareOVFtoolDir:/usr/local:/usr/local/bin:/usr/local/sbin:/usr/local/share:/usr/X11:/usr/X11/bin:.
+#export PATH=/Users/mi25714/modHOME/local/script:/Users/mi25714/modHOME/local/alternative:/bin:/sbin:/usr/bin:/usr/sbin:/Applications/MacVim.app/Contents/MacOS:/Users/mi25714/modHOME/local/alternative/osxVMwareFusionLibrarySymlink:/Users/mi25714/modHOME/local/alternative/osxVMWareOVFtoolDir:/usr/local:/usr/local/bin:/usr/local/sbin:/usr/local/share:/usr/X11:/usr/X11/bin:.
+
+ export PATH=/Users/mi25714/modHOME.custom/local/script:/Users/mi25714/modHOME/local/script:/Users/mi25714/modHOME.custom/local/alternative:/Users/mi25714/modHOME/local/alternative:/Users/mi25714/modHOME/local/alternative/osxVMWareOVFtoolDir:/Users/mi25714/modHOME/local/alternative/osxVMwareFusionLibrarySymlink:/Users/mi25714/modHOME/local/bin:/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/share:/usr/X11:/Applications/MacVim.app/Contents/MacOS:/usr/local:.
 
 ##############################################################################
 # Never mind extraneous info (like which window it's in, etc)
@@ -29,7 +31,7 @@ function canonicalizedTabLines() { extractURLs | LC_ALL=C sort -bfd | uniq ; }
 
 #cd ~mod/.mozilla/firefox/wq7jkb5f.default || exit 1
 
- cd ~/Library/"Application Support"/Firefox/Profiles/adrmdgba.default || exit 1
+#cd ~/Library/"Application Support"/Firefox/Profiles/adrmdgba.default || exit 1
 #cd ~/.mozilla/firefox/wq7jkb5f.default                               || exit 1
 
 tempFile=/tmp/tempFile$$.$(tds)
