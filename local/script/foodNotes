@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NOTEROOT=~/modHOME/.foodNoteDir/
+NOTEROOT=${modHOME}.custom/.foodNoteDir/.
 BANNER="######foodNote######"
 REMINDER="BLDSMPX:Bkfst/Lunch/Din/Snak/Meds/Poop/Xrsiz"
 

@@ -1,11 +1,11 @@
 function Nvi()  { 
-    pushd ~/.NoteDir/
-    if [ $# -lt 1 ]
-    then
-        vi .
-    else
-        vi $( ls | fgrep $1 )
-    fi
-    popd
+    if pushd ${modHOME}.custom/.NoteDir/. ; then
+        if [ $# -lt 1 ] ; then
+            vi . ;
+        else
+            vi $( ls | fgrep $1 ) ;
+        fi ;
+        popd ;
+    fi ;
 }
 

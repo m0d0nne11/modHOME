@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NOTE_REPOSITORY=~/.NoteDir/
+NOTE_REPOSITORY=${modHOME}.custom/.NoteDir/.
     NOTE_BANNER="########NOTE########"
 
  function NotesFunc()  {

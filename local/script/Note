@@ -26,7 +26,7 @@ function fail()  {
 ######################################################################
 #
     NOTE_BANNER="########NOTE########"
-NOTE_REPOSITORY=~/.NoteDir/
+NOTE_REPOSITORY=${modHOME}.custom/.NoteDir/.
 
 cd $NOTE_REPOSITORY                   || fail cd $NOTE_REPOSITORY
 
