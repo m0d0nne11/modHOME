@@ -86,7 +86,11 @@ startingDir=$PWD
 #HOME=$(eval "eval 'echo ~`whoami`'")
 
 if cd ~/modHOME/. ; then
-    modHOME="$PWD"
+    # Other scripts/functions/aliases care about
+    # this EXPORTED definition of modHOME
+    #
+    export modHOME="$PWD"
+
     cd			# ASSUME: no symlinks involved.
 
     # Force glob patterns that match nothing to expand to
