@@ -1,4 +1,9 @@
-while read input
-do
-    echo "$input" = $( echo "$input" | bc -l )
-done
+#!/bin/bash
+
+if [ $# -gt 0 ] ; then                        # Expression on cmd line?
+    echo "$@" = $( echo "$@" | bc -l )
+else                                   # Take expressions from stdin...
+    while read input ; do
+        echo "$input" = $( echo "$input" | bc -l )
+    done
+fi
