@@ -1,5 +1,5 @@
 
-# Usage: rigCustom [ optional subDir ]
+# Usage: rigCustomDir [ optional subDir ]
 
 function rigCustomDir()  {
     local f
