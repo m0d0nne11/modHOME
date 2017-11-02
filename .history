@@ -20,7 +20,7 @@ EOF
 } ; for f in "$(everyCharacter)" ; do echo "${f}"; done
 
 ( find . -type d | sed -e 's/..//' | sort -r | while read f; do rmdir "${f}"; done ) 2>&1 | wc
-(f=ContenTable.STORAGE/ContenTable.`hostname`.`ymd` ; mkdir -p ContenTable.STORAGE ; find . -xdev -type f | sed -e 's/..//' | sort -bfd > "${f}" ; rm -f ContenTable ; ln -s "${f}" ContenTable) &
+(f=ContenTable.STORAGE/ContenTable.$(hostname).$(ymd) ; mkdir -p ContenTable.STORAGE ; find . -xdev -type f | sed -e 's/..//' | sort -bfd > "${f}" ; rm -f ContenTable ; ln -s "${f}" ContenTable) &
 (find . -type d | sed -e 's/..//' | sort -r | while read f; do rmdir "${f}"; done) 2>&1 | wc
 find . -name .DS_Store | while read f ; do echo "${f}" ; done
 sudo find . -type f | fgrep -v -e ' ' | while read f; do sudo fgrep -i -e testing "${f}"; echo "##################" DONE "${f}"; done
@@ -43,19 +43,13 @@ sudo port install wget
 xcodebuild
 ~/modHOME/local/script/isLinux || echo NOPE
 
-function everyCharacter() {
-cat << "EOF"
-! " # $ % & ' ( ) * + , - . / 0 1 2 3 4 5 6 7 8 9 : ; < = > ? @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [ \ ] ^ _ ` a b c d e f g h i j k l m n o p q r s t u v w x y z { | } ~
-EOF
-} ; for f in "$(everyCharacter)" ; do echo "${f}"; done
-
 (cd ~/Desktop/AVstaging && ./AVfetchScript.sh && ls -latr | tail)
 cd Documents/Virtual\ Machines.localized/
 cd modHOME/local/alternative/
 declare -a rzq=("")
 echo g65help@issues
 echo http://b0rken.com/putty-0.64-installer.exe
-(f=ContenTable.STORAGE/ContenTable.`hostname`.`ymd` ; mkdir -p ContenTable.STORAGE ; find . -xdev -type f | sed -e 's/..//' | sort -bfd > "${f}" ; rm -f ContenTable ; ln -s "${f}" ContenTable) &
+(f=ContenTable.STORAGE/ContenTable.$(hostname).$(ymd) ; mkdir -p ContenTable.STORAGE ; find . -xdev -type f | sed -e 's/..//' | sort -bfd > "${f}" ; rm -f ContenTable ; ln -s "${f}" ContenTable) &
 function lineupFunc() { column -t | sed -e 's/\([^ ]\) /\1 /g' ; }
 git clone https://github.com/pddenhar/esxi-linked-clone
 ldapSearch jeffr
@@ -74,4 +68,10 @@ sudo find /var/log \( -name "*gz" -o -name "*.[01]" -o -name "*.old" \) -exec rm
 sudo id ; ( sudo ~/modmacNamePreservation.sh < /dev/null > /dev/null 2>&1 & ) < /dev/null > /dev/null 2>&1 &
 git clone https://github.com/m0d0nne11/modHOME
 echo 'export TERM=ansi' > ~/modHOME.custom/.BASHRClib/ENVARphase1/TERM
+
+( export ARCH=x86 ; echo "######## BEGIN $(date)" ; for t in clean bzImage modules modules_install ; do banner begin $t ; make V=1 $t ; banner end $t ; done ; echo "######## END $(date)" ) > makeLogSTORAGE/$(tds) 2>&1 & sleep 1 ; updateMakeLogLink ; Tmake
+
+updateMakeLogLink ; rm $(readlink makeLog) ; rm makeLog ; ( export ARCH=x86 ; echo "######## BEGIN $(date)" ; for t in clean bzImage modules ; do banner begin $t ; make V=1 $t ; banner end $t ; done ; sudo mv /etc/mdadm/mdadm.conf /etc/mdadm/mdadm.conf.HIDDEN ; for t in modules_install install ; do banner begin $t ; sudo make V=1 $t ; banner end $t ; done ; sudo cp /etc/mdadm/mdadm.conf.HIDDEN /etc/mdadm/mdadm.conf ; echo "######## END $(date)" ) > makeLogSTORAGE/$(tds) 2>&1 & sleep 1 ; updateMakeLogLink ; Tmake
+
+updateMakeLogLink ; rm $(readlink makeLog) ; rm makeLog ; ( export XXX_MIKE_ARCH=x86 ; echo "######## BEGIN $(date)" ; for t in clean bzImage modules ; do banner begin $t ; make V=1 $t ; banner end $t ; done ; for t in modules_install install ; do banner begin $t ; sudo make V=1 $t ; banner end $t ; done ; echo "######## END $(date)" ) > makeLogSTORAGE/$(tds) 2>&1 & sleep 1 ; updateMakeLogLink ; Tmake
 
