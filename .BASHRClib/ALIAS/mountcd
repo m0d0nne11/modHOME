@@ -1,2 +1,0 @@
-#alias mountcd='mount -t iso9660 /dev/cdrom /cdrom'
-
