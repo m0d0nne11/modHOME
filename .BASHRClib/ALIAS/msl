@@ -1,2 +1,0 @@
- alias msl='pd /vobs/mcos ; ctsv modSaturnLearn ; popd'
-
