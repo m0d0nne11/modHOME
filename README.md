@@ -12,7 +12,8 @@
 
     cd; tar xvzf modHOME.tgz
 
- ...followed thus:
+ ...or even just by copying ~/modHOME from another machine,
+ followed thus:
 
     . modHOME/Bmod; pathPreen; pathSave
 
@@ -28,7 +29,7 @@
 
     . Bmod
 
- ...saving yourself YUUUUUGE amounts of typing.  Huge!
+ ...saving yourself YUUUUUGE amounts of typing.  Huge!   ;->
 
  Normally, this modHOME stuff can be safely left in place since it
  has (essentially) no effect on other users who do not explicitly

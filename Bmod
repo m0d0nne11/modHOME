@@ -12,7 +12,8 @@
 #
 #    cd; tar xvzf modHOME.tgz
 #
-# ...followed thus:
+# ...or even just by copying ~/modHOME from another machine,
+# followed thus:
 #
 #    . modHOME/Bmod; pathPreen; pathSave
 #
@@ -28,7 +29,7 @@
 #
 #    . Bmod
 #
-# ...saving yourself YUUUUUGE amounts of typing.  Huge!
+# ...saving yourself YUUUUUGE amounts of typing.  Huge!   ;->
 #
 # Normally, this modHOME stuff can be safely left in place since it
 # has (essentially) no effect on other users who do not explicitly
@@ -116,6 +117,8 @@ if cd ~/modHOME/. ; then
     rigCustomDir # Ensure modHOME.custom hierarchy exists
     history -c
     history -r
+
+    if echo "${PATH}" | fgrep -e thisMinimalDefaultPATHdefinedIn_modHOME ; then pathPreen ; pathSave ; fi
 else
     echo Cannot cd ~/modHOME/.
 fi
