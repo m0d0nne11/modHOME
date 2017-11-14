@@ -1,0 +1,2 @@
+ alias vi='vi -u "${modHOME}.custom/.vimrc" -i "${modHOME}.custom/.viminfo"'
+
