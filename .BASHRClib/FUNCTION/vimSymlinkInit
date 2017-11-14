@@ -11,7 +11,7 @@ function vimSymlinkInit() {
         echo "Can't pushd ${modHOME}.custom ?" ;
         return 1 ;
     fi ;
-    tar xvzf "${modHOME}"/vimInitFiles.tgz ;
+    tar xvzf --no-same-owner "${modHOME}"/vimInitFiles.tgz ;
     cd .. ;
     links=".exrc .vim .vimrc" ;
     for f in $links ; do
