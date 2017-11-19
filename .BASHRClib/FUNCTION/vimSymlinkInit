@@ -5,13 +5,12 @@ function vimSymlinkInit() {
     local links ;
     local f ;
 
-#echo '#### FIX-ME! ...maybe launch Vim with -u / -U instead of modifying $HOME dir...'
     rigCustomDir .vim ;
     if ! pushd "${modHOME}".custom >/dev/null ; then
         echo "Can't pushd ${modHOME}.custom ?" ;
         return 1 ;
     fi ;
-    tar xvzf --no-same-owner "${modHOME}"/vimInitFiles.tgz ;
+#   tar xvzf --no-same-owner "${modHOME}"/vimInitFiles.tgz ;
     cd .. ;
     links=".exrc .vim .vimrc" ;
     for f in $links ; do
@@ -19,8 +18,8 @@ function vimSymlinkInit() {
             echo " ###### " Already have "$PWD"/$f ;
         else
             echo " ## " Creating symlink "$PWD"/$f ;
-#           ln -s "${modHOME}".custom/$f ;
-            ln -s      modHOME.custom/$f ;
+            ln -s "${modHOME}".custom/$f ;
+#           ln -s      modHOME.custom/$f ;
         fi ;
     done ;
     ls -laCFld $links ;

@@ -1,0 +1,18 @@
+
+#
+
+function vimRCfileInit() {
+    local links ;
+    local f ;
+
+    rigCustomDir .vim ;
+    if ! pushd "${modHOME}".custom >/dev/null ; then
+        echo "Can't pushd ${modHOME}.custom ?" ;
+        return 1 ;
+    fi ;
+    echo "#### (re)creating Vim init files in $PWD" ;
+    tar xvzf "${modHOME}"/vimInitFiles.tgz --no-same-owner ;
+    echo "#### Reminder: consider vimSymlinkInit()..."
+    popd >/dev/null ;
+}
+
