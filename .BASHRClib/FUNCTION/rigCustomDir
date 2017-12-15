@@ -8,11 +8,13 @@ function rigCustomDir()  {
         read -p "  OK to create necessary (sub)dirs? (Ctl-C to abort) " f ;
         mkdir -p "${modHOME}".custom || return 1 ;
     fi
-    for f in local/bin.MacOSX       local/bin.x86_64       \
-             local/script           local/src/cmd          \
-             .BASHRClib/ALIAS       .BASHRClib/COMMAND     \
-             .BASHRClib/ENVARphase0 .BASHRClib/ENVARphase1 \
-             .BASHRClib/FUNCTION    local/alternative      .vim $* ;
+    for f in                                          \
+        .BASHRClib/ALIAS       .BASHRClib/COMMAND     \
+        .BASHRClib/ENVARphase0 .BASHRClib/ENVARphase1 \
+        .BASHRClib/FUNCTION    local/alternative      \
+        local/bin.MacOSX       local/bin.x86_64       \
+        local/script           local/src/cmd          \
+        .NoteDir               .vim                   $* ;
     do
         mkdir -p "${modHOME}".custom/"${f}" ;
     done ;

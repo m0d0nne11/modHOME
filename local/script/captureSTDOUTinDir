@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Write STDOUT to a file created in the specified outputDir
+
+if ! [ -d "$1" -a -w "$1"/. ] ; then
+	echo No writable outputDir specified... ;
+	exit 1 ;
+fi
+
+ CAPTUREdir="$1" ;
+CAPTUREfile="$(tds).$$" ;
+
+while [ -e "$CAPTUREdir"/"$CAPTUREfile" ] ; do
+	echo ALREADY HAVE "$CAPTUREdir"/"$CAPTUREfile" ;
+	CAPTUREfile="$(tds).$$" ;
+done ;
+
+cat > "$CAPTUREdir"/"$CAPTUREfile" ;
+
+echo CAPTUREdir="$CAPTUREdir" CAPTUREfile="$CAPTUREfile" ;
+
