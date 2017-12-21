@@ -33,36 +33,45 @@
     /usr/bin
     /usr/sbin
 
-    /usr/local/sbin
     /usr/local/bin
+    /usr/local/sbin
+    /usr/local/script
+    /usr/local/scripts
+    /usr/local/gnu/bin
+
     /opt/local/bin
     /opt/local/local/bin
     /opt/local/sbin
-    /opt/X11/bin
+
     /u/bin
+    /u/script
+    /u/scripts
+
+    /opt/X11/bin
     /usr/bin/X11
-    /usr/local/gnu/bin
-    /usr/local/script
     /usr/local/X11/bin
     /usr/X11/bin
+    /usr/x11r5/bin
     /usr/X386/bin
-
-    /usr/ucb
-    /usr/local/share
-    /usr/local/nmh/lib
-    /usr/local/nmh/bin
-    /usr/local/mozilla
-    /usr/local/mh/lib
-    /usr/local/mh/bin
-    /usr/local/games
-    /usr/local/firefox
-    /usr/lib/firefox
-    /usr/games
-    /usr/bin/mh
-    /usr/X11
     /u/x11r5/bin
-    /u/scripts
+    /usr/X11
+
+    /usr/local/games
+    /usr/games
+
     /u/mh
+    /usr/bin/mh
+    /usr/lib/firefox
+    /usr/lib/mh
+    /usr/local/firefox
+    /usr/local/mh/bin
+    /usr/local/mh/lib
+    /usr/local/mozilla
+    /usr/local/nmh/bin
+    /usr/local/nmh/lib
+    /usr/local/share
+    /usr/ucb
+
 
     /Builds/btools2/afn/buildtools/bin
     /Builds/btools2/afn/testing/bin
@@ -91,7 +100,6 @@
     /usr/mercury/bin
     /usr/mercury/bin/solaris-2_5-sparc_elf
     /usr/openwin/bin
-    /usr/x11r5/bin
     /usr/xpg4/bin
     /vobs/build/exports/bin
     /vobs/build/exports/scripts
