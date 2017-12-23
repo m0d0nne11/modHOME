@@ -4,18 +4,34 @@ function bashRCfunc()  {
     local d
     local f
     local t
-    for d in $modHOME/.BASHRClib "$modHOME".custom/.BASHRClib ; do
-        if pushd "${d}" > /dev/null 2>&1 ; then 
-            for t in ALIAS ENVARphase0 ENVARphase1 FUNCTION COMMAND ; do
-                if [ -d "${t}" ] ; then
-                    for f in $(find "${t}" -type f ) ; do
+    if pushd "$modHOME"/.BASHRClib > /dev/null 2>&1 ; then
+        for t in ALIAS ENVARphase0 ENVARphase1 FUNCTION COMMAND ; do
+            if [ -d "${t}" ] ; then
+                for f in $(find "${t}" -type f ) ; do
+                    if [ -r "$modHOME".custom/.BASHRClib/"${f}" ] ; then
+                        .   "$modHOME".custom/.BASHRClib/"${f}"
+                    else
+                        .                                "${f}"
+                    fi
+                done
+            fi
+        done
+        popd >/dev/null
+    fi
+
+    if pushd "$modHOME".custom/.BASHRClib > /dev/null 2>&1 ; then
+        for t in ALIAS ENVARphase0 ENVARphase1 FUNCTION COMMAND ; do
+            if [ -d "${t}" ] ; then
+                for f in $(find "${t}" -type f ) ; do
+                    if ! [ -r "$modHOME"/.BASHRClib/"${f}" ] ; then
                         . "${f}"
-                    done
-                fi
-            done
-            popd >/dev/null
-        fi
-    done
+                    fi
+                done
+            fi
+        done
+        popd >/dev/null
+    fi
 }
 
 bashRCfunc > /dev/null
+
