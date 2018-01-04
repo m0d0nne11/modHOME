@@ -59,14 +59,14 @@
     /usr/local/games
     /usr/games
 
+    /usr/local/firefox
+    /usr/lib/firefox
+    /usr/local/mozilla
     /u/mh
     /usr/bin/mh
-    /usr/lib/firefox
     /usr/lib/mh
-    /usr/local/firefox
     /usr/local/mh/bin
     /usr/local/mh/lib
-    /usr/local/mozilla
     /usr/local/nmh/bin
     /usr/local/nmh/lib
     /usr/local/share
