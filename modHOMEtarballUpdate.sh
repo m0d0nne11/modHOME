@@ -66,7 +66,7 @@ function FAILED()  {
         exit 1
 }
 
-if ! [ -d modHOME/. -a -L Bmod ] ; then
+if ! [ -d modHOME/. -a -e modHOME/Bmod ] ; then
 	FAILED must execute in parent directory of modHOME
 	exit 1
 fi
