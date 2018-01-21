@@ -1,0 +1,18 @@
+#!/bin/bash
+
+function uuMail2func()  {
+    recipients="$1" fileName=$2.UUE
+    echo To: "${recipients}"       >$tempFile
+    echo "Subject: $fileName"     >>$tempFile
+    echo ""                       >>$tempFile
+    uuencode $fileName <$1        >>$tempFile
+   /usr/lib/mh/post -watch -verbose $tempFile
+}
+
+
+if [ $# -lt 2 ] ; then
+    echo USAGE: $0 recipients file2bUUencoded
+    exit 1
+fi
+
+uuMail2func $*

@@ -1,9 +1,0 @@
-function uuMail2mod()  {
-    fileName=$1.UUE
-    echo "To: mod@mc.com"          >$tempFile
-    echo "Subject: $fileName"     >>$tempFile
-    echo ""                       >>$tempFile
-    uuencode $fileName <$1        >>$tempFile
-   /usr/lib/mh/post -watch -verbose $tempFile
-}
-
