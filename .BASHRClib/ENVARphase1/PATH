@@ -1,1 +1,1 @@
- PATH=thisMinimalDefaultPATHdefinedIn_modHOME/.BASHRClib/ENVARphase1/PATH:executePathPreen:thenExecutePathSave:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+ PATH=/data/data/com.termux/files/usr/bin:/data/data/com.termux/files/usr/bin/applets:thisMinimalDefaultPATHdefinedIn_modHOME/.BASHRClib/ENVARphase1/PATH:executePathPreen:thenExecutePathSave:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
