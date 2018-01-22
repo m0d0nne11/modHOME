@@ -39,6 +39,9 @@
     /usr/local/scripts
     /usr/local/gnu/bin
 
+    /data/data/com.termux/files/usr/bin
+    /data/data/com.termux/files/usr/bin/applets
+
     /opt/local/bin
     /opt/local/local/bin
     /opt/local/sbin
