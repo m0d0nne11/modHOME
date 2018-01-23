@@ -4,6 +4,10 @@ function bashRCfunc()  {
     local d
     local f
     local t
+
+    # For all pre-packaged instances of modHOME init files,
+    # prefer to execute the localized version if present...
+    #
     if pushd "$modHOME"/.BASHRClib > /dev/null 2>&1 ; then
         for t in ALIAS ENVARphase0 ENVARphase1 FUNCTION COMMAND ; do
             if [ -d "${t}" ] ; then
@@ -19,6 +23,9 @@ function bashRCfunc()  {
         popd >/dev/null
     fi
 
+    # ...then assume we only need to execute files which are not
+    # localized instances of the pre-packaged versions.
+    #
     if pushd "$modHOME".custom/.BASHRClib > /dev/null 2>&1 ; then
         for t in ALIAS ENVARphase0 ENVARphase1 FUNCTION COMMAND ; do
             if [ -d "${t}" ] ; then
