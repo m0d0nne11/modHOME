@@ -5,7 +5,7 @@
 function isLinuxFunc() { uname -a | fgrep -qi -e linux  ; }
 function isMacOSfunc() { uname -a | fgrep -q  -e Darwin ; }
 
-function pathPreen() {
+function pathPreenOLD() {
     local d
     local lARCH
     local temPath=""
@@ -37,6 +37,27 @@ function pathPreen() {
 
     export PATH=$(echo "${temPath}" | sed -e 's/::*/:/g' -e 's/^::*//' -e 's/::*$//')
     echo " #### PATH components now:"
+    echo $PATH | tr ':' '\n'
+}
+
+function pathPreen() {
+    local d
+    local temPath=""
+
+    for d in $ALL_POSSIBLE_PATH_DIRS "$@" ; do
+        d=$(eval echo $d)
+        if [ -d $d/. ] ; then
+            echo "INCLUDE $d"
+            temPath="$temPath:$d"
+        else
+            echo "EXCLUDE                       $d"
+        fi
+    done
+
+    echo " #### Previous PATH components:"
+    echo $PATH | tr ':' '\n'
+    export PATH=$(echo "${temPath}" | sed -e 's/::*/:/g' -e 's/^::*//' -e 's/::*$//')
+    echo " ##### Current PATH components:"
     echo $PATH | tr ':' '\n'
 }
 
