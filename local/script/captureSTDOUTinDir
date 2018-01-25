@@ -1,12 +1,15 @@
 #!/bin/bash
 
-# Write STDOUT to a file created in the specified outputDir
+# Copy STDIN to a file created in the specified
+# outputDir, which is not allowed to be defaulted.
 
 if ! [ -d "$1" -a -w "$1"/. ] ; then
 	echo No writable outputDir specified... ;
 	exit 1 ;
 fi
 
+# ASSUME: tds is somewhere in our $PATH
+#
  CAPTUREdir="$1" ;
 CAPTUREfile="$(tds).$$" ;
 
@@ -15,7 +18,9 @@ while [ -e "$CAPTUREdir"/"$CAPTUREfile" ] ; do
 	CAPTUREfile="$(tds).$$" ;
 done ;
 
-cat > "$CAPTUREdir"/"$CAPTUREfile" ;
+if ! cat > "$CAPTUREdir"/"$CAPTUREfile" ; then
+    echo FAILED - CAPTUREdir="$CAPTUREdir" CAPTUREfile="$CAPTUREfile" ;
+    exit 1
+fi
 
 echo CAPTUREdir="$CAPTUREdir" CAPTUREfile="$CAPTUREfile" ;
-
