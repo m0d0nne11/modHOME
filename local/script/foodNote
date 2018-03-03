@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 
 # Store notes in files whose names are of the form:

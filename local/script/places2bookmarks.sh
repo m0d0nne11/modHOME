@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #! /bin/bash
 # PUBLIC DOMAIN
 # See http://www.purposeful.co.uk/software/places2bookmarks/

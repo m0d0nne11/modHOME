@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 #
 # Compare the output of two dpkg -l runs, showing only the basic package

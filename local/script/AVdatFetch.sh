@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 
 # Fetch latest McAfee AntiVirus signature files etc for Windows/Linux.

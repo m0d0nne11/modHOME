@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 cat <<EOF
   Recovering combination from a "standard" single-dial combination lock:

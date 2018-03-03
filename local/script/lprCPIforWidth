@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 
 # lpr -o landscape -o sides=two-sided-long-edge -o cpi=$(lprCPIforWidth $(wc -c))

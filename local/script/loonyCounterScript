@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/sh
 # my home site without having to ftp during the day.
 # Ted Park, August, 1994.

@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 #
 # (re)Arrange stdin (assumed to be something like /etc/exports) such that

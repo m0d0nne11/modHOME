@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 
 # NOTE: The -r option to sed apparently interferes with back-reference processing (?)

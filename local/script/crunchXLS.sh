@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 
 # ASSUME: stdin is the cut'n'pasted data from a MacOSX Excel spreadsheet.

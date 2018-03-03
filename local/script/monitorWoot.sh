@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 #
 # Poll the Woot! WWW site and send email to interested parties whenever

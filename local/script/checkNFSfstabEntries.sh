@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 #
 #  For each NFS mount specification line in the FSTAB_FILE we

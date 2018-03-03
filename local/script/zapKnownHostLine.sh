@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 #
 # This script will quickly remove the specified line from ~/.ssh/known_hosts

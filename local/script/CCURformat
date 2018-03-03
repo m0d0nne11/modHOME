@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #! /bin/sh
 # @(#)format	9.3 MASSCOMP (LOCAL) 5/10/90
 # ex: se ts=5 :

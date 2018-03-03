@@ -1,2 +1,3 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/csh -f
 yes y | /afs/ri/project/norma-nd/farm/bin/reset-farm product

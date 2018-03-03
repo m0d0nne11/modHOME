@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #! /bin/bash
 #
 # UbunTUNE 1.50.31e-nlfv-pre-2.0-wrbs

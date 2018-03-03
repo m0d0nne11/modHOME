@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/sh
 #
 # vxgdb: invoke an appropriate version of vxgdb or xvxgdb.

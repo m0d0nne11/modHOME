@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 # Some very precious person decided to lard the output from
 # the MacOSX md5 utility with lots of extra glop that makes

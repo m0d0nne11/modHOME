@@ -1,2 +1,3 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/csh -f
 nroff -man $argv | sed -e 's/_//g' -e 's/.//g'

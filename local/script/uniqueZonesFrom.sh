@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 # Version=20100401 MD5=2a7ffa4f7b1976752c9188869898867f
 #

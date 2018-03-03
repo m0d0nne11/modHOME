@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 # Skript to rescan SCSI bus, using the
 # scsi add-single-device mechanism

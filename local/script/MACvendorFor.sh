@@ -1,3 +1,4 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 
 # Lookup vendor IDs for MACaddrs in stdin or on cmdline.
