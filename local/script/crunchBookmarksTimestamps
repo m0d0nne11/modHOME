@@ -1,0 +1,37 @@
+# A script suitable for use in a pipeline.  The stdin is
+# assumed to be a bookmarks.html file and stdout will be that
+# same file, modified.  In two passes, the script extracts the
+# latest timestamp of all timestamps found in the bookmarks
+# file, and then changes all other timestamps to be the same
+# as that latest one.
+#
+# CHANGE: Now, if a commandline arg is present, we
+#	  just emit the value of the latest timestamp
+#	  scanned from all lines presented at stdin
+# NOTE:   "eat" is assumed to be something like:
+#         sed -E -e 's/[[:space:]]+/ /g' -e 's/[[:space:]]+$//g'
+
+CACHE=/tmp/temp1_$$
+cat > $CACHE
+
+LATEST=$(
+  sed -e '/\("[0-9][0-9]*"\)/s// \1 /g'	<$CACHE \
+	| eat				\
+	| fmt -1			\
+	| grep '"[0-9][0-9]*"'		\
+	| sort -fdu			\
+	| sed -e '/[ "]/s///g'		\
+	| tail -1
+)
+
+if [ $# -eq 1 ]
+then
+    echo $LATEST
+else
+    sed -e '/"[0-9][0-9]*"/s//"'$LATEST'"/g' < $CACHE
+fi
+
+rm -f $CACHE
+
+exit 0
+
