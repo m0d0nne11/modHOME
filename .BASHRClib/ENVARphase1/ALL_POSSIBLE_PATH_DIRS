@@ -58,6 +58,7 @@
     /usr/X386/bin
     /u/x11r5/bin
     /usr/X11
+    /snap/bin
 
     /usr/local/games
     /usr/games
@@ -129,3 +130,15 @@
 
     "
 
+
+
+/home/MI25714/bin
+/home/MI25714/.local/bin
+/usr/local/sbin
+/usr/local/bin
+/usr/sbin
+/usr/bin
+/sbin
+/bin
+/usr/games
+/usr/local/games
