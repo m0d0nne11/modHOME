@@ -9,19 +9,19 @@
 
  export ALL_POSSIBLE_PATH_DIRS=" \
 
-    "${modHOME}".custom/local/script
-    "${modHOME}"/local/script
+    ${modHOME}.custom/local/script
+    ${modHOME}/local/script
 
     ARCH_DEPENDENT_LOCAL_BIN
 
-    "${modHOME}".custom/bin
-    "${modHOME}".custom/local/alternative
-    "${modHOME}".custom/local/bin
-    "${modHOME}".custom/local/symlink
-    "${modHOME}"/bin
-    "${modHOME}"/local/alternative
-    "${modHOME}"/local/bin
-    "${modHOME}"/local/symlink
+    ${modHOME}.custom/bin
+    ${modHOME}.custom/local/alternative
+    ${modHOME}.custom/local/bin
+    ${modHOME}.custom/local/symlink
+    ${modHOME}/bin
+    ${modHOME}/local/alternative
+    ${modHOME}/local/bin
+    ${modHOME}/local/symlink
 
     ~/local/bin
     ~/local/script
@@ -110,14 +110,14 @@
     /vobs/gdb/kgdb
     /vobs/mcos/ccbuild/exports/bin
 
-    "${modHOME}".custom/JAVA/jdk1.5.0_03/bin
-    "${modHOME}"/JAVA/jdk1.5.0_03/bin
-    "${modHOME}".custom/local/alternative/osxVMwareFusionLibrarySymlink
-    "${modHOME}".custom/local/alternative/osxVMWareOVFtoolDir
-    "${modHOME}".custom/perl5/bin
-    "${modHOME}"/local/alternative/osxVMwareFusionLibrarySymlink
-    "${modHOME}"/local/alternative/osxVMWareOVFtoolDir
-    "${modHOME}"/perl5/bin
+    ${modHOME}.custom/JAVA/jdk1.5.0_03/bin
+    ${modHOME}/JAVA/jdk1.5.0_03/bin
+    ${modHOME}.custom/local/alternative/osxVMwareFusionLibrarySymlink
+    ${modHOME}.custom/local/alternative/osxVMWareOVFtoolDir
+    ${modHOME}.custom/perl5/bin
+    ${modHOME}/local/alternative/osxVMwareFusionLibrarySymlink
+    ${modHOME}/local/alternative/osxVMWareOVFtoolDir
+    ${modHOME}/perl5/bin
 
     /Applications/MacVim.app/Contents/MacOS
     ~/JAVA/jdk1.5.0_03/bin
@@ -130,15 +130,3 @@
 
     "
 
-
-
-/home/MI25714/bin
-/home/MI25714/.local/bin
-/usr/local/sbin
-/usr/local/bin
-/usr/sbin
-/usr/bin
-/sbin
-/bin
-/usr/games
-/usr/local/games
