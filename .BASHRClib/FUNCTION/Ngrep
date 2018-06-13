@@ -1,4 +1,4 @@
 function Ngrep()  {
-    Notes | grep "$@"
+    Notes | LANG=C grep --text "$@"
 }
 
