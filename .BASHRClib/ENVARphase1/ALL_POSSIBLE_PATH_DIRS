@@ -119,9 +119,21 @@
     ${modHOME}/local/alternative/osxVMWareOVFtoolDir
     ${modHOME}/perl5/bin
 
+    /Applications/MacVim.app/Contents/bin
     /Applications/MacVim.app/Contents/MacOS
     ~/JAVA/jdk1.5.0_03/bin
     /usr/local/Eiffel52/studio/spec/linux-glibc2.1/bin
+
+    /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/usr/bin
+    /Applications/Xcode.app/Contents/Developer/usr/bin
+    /Applications/Xcode.app/Contents/Developer/usr/share/xcs/Node/bin
+    /Applications/Xcode.app/Contents/Developer/usr/share/xcs/Redis/bin
+
+    /Library/Developer/CommandLineTools/usr/bin
+
+    /Library/OpenSC/bin
+
+    /System/Library/Frameworks/Python.framework/Versions/2.7/bin
 
     ~cgeggis/bin
     ~jeffc/bin
