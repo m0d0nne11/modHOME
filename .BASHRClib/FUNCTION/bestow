@@ -1,5 +1,5 @@
 function bestow
 {
-    sudo chown mod.mod "$@"
+    sudo chown $(id -u).$(id -g) "$@"
 }
 
