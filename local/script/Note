@@ -15,7 +15,7 @@
 # Force glob patterns that match nothing to expand to
 # empty strings rather than their literal selves.
 #
-shopt -s nullglob 
+shopt -s nullglob
 
 ######################################################################
 #
@@ -39,7 +39,8 @@ while : ; do
     sleep 2
 done
 
-noteFile="${timeStamp}".00000000000000000000000000000000
+#noteFile="${timeStamp}".00000000000000000000000000000000
+ noteFile="${timeStamp}"
 
 [ -z "${NOTE_TAG}" ] && NOTE_TAG=$(hostname)
 
@@ -51,4 +52,6 @@ echo "${NOTE_BANNER}" $timeStamp "${NOTE_TAG}"                      > $noteFile
 sed     -e 's/[[:space:]]+$//g' | cat -s | sed -e '${ /^$/d ; }' >> $noteFile
 
 # echo $noteFile | tdsMD5retag
-tdsMD5retag $noteFile
+#tdsMD5retag $noteFile
+git add $noteFile
+
