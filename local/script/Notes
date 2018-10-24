@@ -5,7 +5,7 @@ NOTE_REPOSITORY=${modHOME}.custom/.NoteDir/.
     NOTE_BANNER="########NOTE########"
 
  function NotesFunc()  {
-	(cd $NOTE_REPOSITORY && find . -xdev -type f -name '[12]*' | sort | while read f ; do cat "${f}" ; done ) | LANG=C sed -e 's/^/  /' -e '/^  *'"${NOTE_BANNER}"' [12]/s/  *//' -e 's/[[:space:]]*$//g' ;
+	(cd $NOTE_REPOSITORY && find . -xdev -type f -name '[12]*' | fgrep -v -e git | sort | while read f ; do cat "${f}" ; done ) | LANG=C sed -e 's/^/  /' -e '/^  *'"${NOTE_BANNER}"' [12]/s/  *//' -e 's/[[:space:]]*$//g' ;
 }
 
 # This alternative form uses process substitution but xargs is unhappy if the pipeline is closed before cat is finished:
