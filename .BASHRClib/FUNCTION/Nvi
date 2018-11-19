@@ -3,7 +3,7 @@ function Nvi()  {
         if [ $# -lt 1 ] ; then
             vi . ;
         else
-            vi $( ls | fgrep $1 ) ;
+            vgrep $1 -r .
         fi ;
         popd ;
     fi ;
