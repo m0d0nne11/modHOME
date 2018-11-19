@@ -1,4 +1,10 @@
-function vgrep()  {
-    vi +/$@ $(grep -l $@)
+
+# Usage: vgrep x files
+#   grep for x in files and open those for which it reports success.
+
+function vgrep() { 
+    local x=$1;
+    shift;
+    vi -u "${modHOME}.custom/.vimrc" -i "${modHOME}.custom/.viminfo" +/$x $(grep -l -e $x $* ) ;
 }
 
