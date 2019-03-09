@@ -568,7 +568,7 @@ fi
 # Clean out log and temp files
 ########################################################################
 
-find $LOGDIR $TMPDIR -ctime +5 -exec rm -f {} \;
+find $LOGDIR $TMPDIR -xdev -ctime +5 -exec rm -f {} \;
 
 ############## SCRIPT ./Cdebug
 echo ""
@@ -2216,16 +2216,6 @@ echo "" >>$HOME/keepMailMH
 
 ############## SCRIPT ./killH
 sed -f ~/local/script/SED/killHeader.sed
-
-############## SCRIPT ./julie
-if [ -n "$1" ]
-then
-	echo To: Julie.Rohrbacher@marion.k12.fl.us
-fi
-#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Julie Rohrbacher <julieroh723@yahoo.com>/'
- fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Julie Rohrbacher <julieroh331@yahoo.com>/'
-
-#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Julie Rohrbacher <julieroh723@yahoo.com>, rohrbacj@marion.k12.fl.us/'
 
 ############## SCRIPT ./l2bccmnt
 decomment | eat | sed 's/^ //' | bccmnt

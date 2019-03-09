@@ -25,7 +25,7 @@ folder -pack +deleted \
  && mv $NOW      deleted/SNAP \
  && cd           deleted/SNAP \
  && scan        +deleted/SNAP/$NOW >$NOW/scanList$NOW \
- && find $NOW -type f -print | sort -t / +1 -nf >$NOW/ContenTable \
+ && find $NOW -xdev -type f -print | sort -t / +1 -nf >$NOW/ContenTable \
  && $GNUTAR -c -v -z -f $NOW.tgz -T $NOW/ContenTable \
  && rm -f $NOW/[0-9]* $NOW/.[em]* $NOW/ContenTable \
  && mv $NOW.tgz $NOW \

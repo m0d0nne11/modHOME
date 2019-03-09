@@ -15,10 +15,10 @@ function listOfMHfilesWithBetween2and7dirLinks() {
     local i;
     local l;
     local f;
-    for i in $(for l in $(seq 2 7) ; do find . -type f -links $l ; done \
+    for i in $(for l in $(seq 2 7) ; do find . -xdev -type f -links $l ; done \
              | while read f ; do ls -id1 $f ; done | word1 | sort -nu);
     do
-        echo $(find . -inum $i | sed -e s/..// );
+        echo $(find . -xdev -inum $i | sed -e s/..// );
     done
 }
 

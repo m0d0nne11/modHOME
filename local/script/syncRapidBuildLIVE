@@ -55,7 +55,7 @@ syncRapidBuildLIVE()
 	--exclude "*" \
 	rsync://localhost/rapidbuild/ /wxdisk/install
   then
-    find /wxdisk/install/ -depth -type d -empty -exec rmdir {} \;
+    find /wxdisk/install/ -xdev -depth -type d -empty -exec rmdir {} \;
   else
     echo
     echo -e "###############################################################"

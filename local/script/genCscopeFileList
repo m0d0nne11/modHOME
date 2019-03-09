@@ -1,4 +1,4 @@
-find . $1 -type f -name '*.[chslyS]' | sed -e 's;^\./;;' | sort | grep -E -v \
+find . $1 -xdev -type f -name '*.[chslyS]' | sed -e 's;^\./;;' | sort | grep -E -v \
 	-e '^arch/(alpha|arm|avr32|blackfin|c6x|hexagon|openrisc|cris|frv|h8300|ia64|m32r|m68k|microblaze|mips|mn10300|parisc|powerpc|s390|score|sh|sparc|tile|um|unicore32|xtensa)' \
 	-e '^drivers/s390' \
 	-e '^(scripts|tools|Documentation)' \

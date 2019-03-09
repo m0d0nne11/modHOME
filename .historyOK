@@ -4,7 +4,7 @@ function lineupFunc() { column -t | sed -e 's/\([^ ]\)  /\1 /g' ; }
 host $(hostname)
 ipconfig getifaddr
 rsync -vax --exclude=SNAPSHOT . SNAPSHOT/test
-sudo find . -type f | fgrep -v -e ' ' | while read f; do sudo fgrep -i -e testing "${f}"; echo "##################" DONE "${f}"; done
+sudo find . -xdev -type f | fgrep -v -e ' ' | while read f; do sudo fgrep -i -e testing "${f}"; echo "##################" DONE "${f}"; done
 sudo tcpdump -i en0 -nev udp port 68
 hostname modmac
 
@@ -22,13 +22,13 @@ EOF
 
 ldapsearch -x -H ldap://modldapserver/
 ldapsearch -x -H mdldapserver
-( find . -type d | sed -e 's/..//' | sort -r | while read f; do rmdir "${f}"; done ) 2>&1 | wc
+( find . -xdev -type d | sed -e 's/..//' | sort -r | while read f; do rmdir "${f}"; done ) 2>&1 | wc
 (f=ContenTable.STORAGE/ContenTable.$(hostname).$(ymd) ; mkdir -p ContenTable.STORAGE ; find . -xdev -type f | sed -e 's/..//' | sort -bfd > "${f}" ; rm -f ContenTable ; ln -s "${f}" ContenTable) &
-(find . -type d | sed -e 's/..//' | sort -r | while read f; do rmdir "${f}"; done) 2>&1 | wc
-find . -name .DS_Store | while read f ; do echo "${f}" ; done
-sudo find . -type f | fgrep -v -e ' ' | while read f; do sudo fgrep -i -e testing "${f}"; echo "##################" DONE "${f}"; done
-sudo find /var/log \( -name "*gz" -o -name "*.[01]" -o -name "*.old" \) -exec rm '{}' \; ; sudo bash -c 'for f in $(sudo find /var/log -type f); do cat /dev/null > $f; done'
-sudo id ; find . -name .DS_Store | while read f ; do sudo rm "${f}" ; done
+(find . -xdev -type d | sed -e 's/..//' | sort -r | while read f; do rmdir "${f}"; done) 2>&1 | wc
+find . -xdev -name .DS_Store | while read f ; do echo "${f}" ; done
+sudo find . -xdev -type f | fgrep -v -e ' ' | while read f; do sudo fgrep -i -e testing "${f}"; echo "##################" DONE "${f}"; done
+sudo find /var/log -xdev \( -name "*gz" -o -name "*.[01]" -o -name "*.old" \) -exec rm '{}' \; ; sudo bash -c 'for f in $(sudo find /var/log -xdev -type f); do cat /dev/null > $f; done'
+sudo id ; find . -xdev -name .DS_Store | while read f ; do sudo rm "${f}" ; done
 mkdir -p /SNAPSHOT ;                                                                               timeStamp=$(tds) ;
 rsync -vax --delete --exclude /SNAPSHOT                                              /. /SNAPSHOT/$timeStamp ;
 rsync -vax --delete --exclude /SNAPSHOT --link-dest=$(ls -d /SNAPSHOT/20* | tail -1) /. /SNAPSHOT/$timeStamp ;
@@ -56,7 +56,7 @@ echo http://b0rken.com/putty-0.64-installer.exe
 function lineupFunc() { column -t | sed -e 's/\([^ ]\) /\1 /g' ; }
 git clone https://github.com/pddenhar/esxi-linked-clone
 ldapSearch jeffr
-sudo find . -type f | fgrep -v -e ' ' | while read f; do sudo fgrep -i -e testing "${f}"; echo "##################" DONE "${f}"; done
+sudo find . -xdev -type f | fgrep -v -e ' ' | while read f; do sudo fgrep -i -e testing "${f}"; echo "##################" DONE "${f}"; done
 sudo id ; for f in en0 en1 en2 fw0 gif0 lo0 p2p0 pflog0 stf0 vmnet1 vmnet2 vmnet8 ; do echo $f $(sudo ipconfig getifaddr $f) X ; done
 sudo port -d selfupdate
 sudo port install wget
@@ -67,7 +67,7 @@ drutil burn -drive 2 -nofs ~/Desktop/ISO/ubuntu-12.04.5-desktop-amd64.iso
 pd ~/'Library/Application Support/Firefox/Profiles/adrmdgba.default'
 pushd ~ ; history -c ; history -r ; . Bmod ; popd
 rsync -vax --exclude=SNAPSHOT . SNAPSHOT/test
-sudo find /var/log \( -name "*gz" -o -name "*.[01]" -o -name "*.old" \) -exec rm '{}' \; ; sudo bash -c 'for f in $(sudo find /var/log -type f); do cat /dev/null > $f; done'
+sudo find /var/log -xdev \( -name "*gz" -o -name "*.[01]" -o -name "*.old" \) -exec rm '{}' \; ; sudo bash -c 'for f in $(sudo find /var/log -xdev -type f); do cat /dev/null > $f; done'
 sudo id ; ( sudo ~/modmacNamePreservation.sh < /dev/null > /dev/null 2>&1 & ) < /dev/null > /dev/null 2>&1 &
 git clone https://github.com/m0d0nne11/modHOME
 echo 'export TERM=ansi' > ~/modHOME.custom/.BASHRClib/ENVARphase1/TERM

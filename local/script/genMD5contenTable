@@ -1,1 +1,1 @@
-find . -type f | fgrep -v -e ' ' | canonicalPath | xargs -l20 md5sum | sed -e 's;^\(.*\) /\(.*\)/\(.*\)$;\1 \3 /\2;'
+find . -xdev -type f | fgrep -v -e ' ' | canonicalPath | xargs -l20 md5sum | sed -e 's;^\(.*\) /\(.*\)/\(.*\)$;\1 \3 /\2;'

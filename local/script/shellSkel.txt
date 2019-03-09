@@ -555,7 +555,7 @@ fi
 # Clean out log and temp files
 ########################################################################
 
-find $LOGDIR $TMPDIR -ctime +5 -exec rm -f {} \;
+find $LOGDIR $TMPDIR -xdev -ctime +5 -exec rm -f {} \;
 
 ############## SCRIPT ./Cdebug
 echo ""
@@ -1361,7 +1361,7 @@ folder +inbox                              \
  && rmdir ../$tempDir
 
 ############## SCRIPT ./genCscopeFileList
-find . -type f -name '*.[chslyS]' | sed -e 's/..//' | sort | grep -v \
+find . -xdev -type f -name '*.[chslyS]' | sed -e 's/..//' | sort | grep -v \
         -e '/.config$'               \
         -e '/.config.old$'           \
         -e '/.hdepend$'              \
@@ -2268,7 +2268,7 @@ function gatherRPMinfoRootedAt()  {
     fi
 
     cd $1 || failed "Can't cd $1"
-    for RPMfileName in `find . -type f -name '*.rpm' | sed -e s/..// `
+    for RPMfileName in `find . -xdev -type f -name '*.rpm' | sed -e s/..// `
     do
              basicPkgName="`rpm -q --queryformat '%{NAME}'                                         -p $RPMfileName 2>/dev/null`"
         elaboratedPkgName="`rpm -q --queryformat '%{NAME}-%{VERSION}-%{RELEASE}-%{SERIAL}-%{ARCH}' -p $RPMfileName 2>/dev/null`"
@@ -2453,11 +2453,11 @@ if ( -f context ) then
 endif
 set MAILDIR=$cwd
 touch .dummyFile$$
-rm `find . -type f | fgrep /.`
-find . -type d | sed 's/^\.\///'     >>$MAILDIR/.folders
+rm `find . -xdev -type f | fgrep /.`
+find . -xdev -type d | sed 's/^\.\///'     >>$MAILDIR/.folders
 cd ccur/OSPREY
 touch .dummyFile$$
-rm `find . -type f | fgrep /.`
+rm `find . -xdev -type f | fgrep /.`
 find . -type d | sed 's/^\./ccur\/OSPREY/' >>$MAILDIR/.folders
 cd $MAILDIR
 sort -u <$MAILDIR/.folders | fgrep -vx . >$MAILDIR/.folders$$
@@ -2787,7 +2787,7 @@ endif
 while ( 1 )
     echo    "####### Collecting files in $cwd"
     echo -n "####### " ; pwd
-    find . -type d $argv -print >>$allDirs
+    find . -xdev -type d $argv -print >>$allDirs
     if ( ! -d ../link/src ) then
         break
     endif
@@ -2859,7 +2859,7 @@ endif
 while ( 1 )
     echo    "####### Collecting files in $cwd"
     echo -n "####### " ; pwd
-    find . -type f -print >>$tempFile
+    find . -xdev -type f -print >>$tempFile
     if ( ! -d ../link/src ) then
         break
     endif
@@ -2869,10 +2869,10 @@ end
 #cd $startDir
 #cd $OBJECTDIR
 #echo    "####### Collecting files in $cwd"
-#find $cwd -type f -print >>$tempFile
+#find $cwd -xdev -type f -print >>$tempFile
 #cd $EXPORTBASE
 #echo    "####### Collecting files in $cwd"
-#find $cwd -type f -print >>$tempFile
+#find $cwd -xdev -type f -print >>$tempFile
 
 #
 # Now sort the sbFileList file, placing results into the final sbFileList
@@ -2972,8 +2972,8 @@ endif
 set sb=`basename $cwd`
 echo "Munging export/obj links in sandbox $sb"
 
-set exportDirs=`find export -type d -print`
-set objDirs=`find obj -type d -print`
+set exportDirs=`find export -xdev -type d -print`
+set objDirs=`find obj -xdev -type d -print`
 
 mkdir -p ../O/$sb/export ../O/$sb/obj
 

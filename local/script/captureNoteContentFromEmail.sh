@@ -35,12 +35,12 @@ cd $tempDir                                            || { echo FAILED cd $temp
 
 munpack -q -t < $tempFile >/dev/null 2>&1
 
-x=$(find . -type f | wc -l)
+x=$(find . -xdev -type f | wc -l)
 
 if [ $x -gt 0 ] ; then
 	while read f ; do
 		tidySpaceFunc < "${f}"
-	done < <(find . -type f)
+	done < <(find . -xdev -type f)
 else
 	sed -e '1,/^$/d' < $tempFile | tidySpaceFunc
 fi

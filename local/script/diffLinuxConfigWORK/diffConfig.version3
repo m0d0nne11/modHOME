@@ -195,7 +195,7 @@ exit 1
 
 
 cd $dir1/COMMON/ENABLED
-for token in $(find . -type f)
+for token in $(find . -xdev -type f)
 do
     if [ ! -f $dir2/COMMON/DISABLED/$token -a ! -f $dir2/COMMON/ENABLED/$token ]
     then
@@ -204,7 +204,7 @@ do
 done
 
 cd $dir1/COMMON/DISABLED
-for token in $(find . -type f)
+for token in $(find . -xdev -type f)
 do
     if [ ! -f $dir2/COMMON/DISABLED/$token -a ! -f $dir2/COMMON/ENABLED/$token ]
     then
@@ -214,28 +214,28 @@ done
 
 echo "############# Disabled options unique to $1"
 cd $dir1/UNIQUE/DISABLED/
-for f in $(find . -type f -print)
+for f in $(find . -xdev -type f -print)
 do
     cat $f
 done
 
 echo "############# Disabled options unique to $2"
 cd $dir2/UNIQUE/DISABLED/
-for f in $(find . -type f -print)
+for f in $(find . -xdev -type f -print)
 do
     cat $f
 done
 
 echo "############# Enabled options unique to $1"
 cd $dir1/UNIQUE/ENABLED/
-for f in $(find . -type f -print)
+for f in $(find . -xdev -type f -print)
 do
     cat $f
 done
 
 echo "############# Enabled options unique to $2"
 cd $dir2/UNIQUE/ENABLED/
-for f in $(find . -type f -print)
+for f in $(find . -xdev -type f -print)
 do
     cat $f
 done
@@ -243,7 +243,7 @@ done
 
 echo "############# Common options, enabled but different..."
 cd $dir1/COMMON/ENABLED
-for token in $(find . -type f -print)
+for token in $(find . -xdev -type f -print)
 do
     if ! diff -q $dir1/COMMON/ENABLED/$token $dir2/COMMON/ENABLED/$token >>$tempFile
     then

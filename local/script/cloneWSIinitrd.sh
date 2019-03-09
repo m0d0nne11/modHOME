@@ -30,7 +30,7 @@ cp /boot/"${oldImageName}" /tmp/"${imageName}".gz
 gunzip           /tmp/"${imageName}".gz
 mount -oloop     /tmp/"${imageName}" /tmp/loopMount/"${imageName}"
 pushd                                /tmp/loopMount/"${imageName}"/lib
-cp $(for f in *; do find /lib/modules/"${y}"/ -name $f; done) .
+cp $(for f in *; do find /lib/modules/"${y}"/ -xdev -name $f; done) .
 popd
 umount /tmp/loopMount/"${imageName}"
 gzip             /tmp/"${imageName}"

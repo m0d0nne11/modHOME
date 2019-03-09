@@ -11,7 +11,7 @@ function bashRCfunc()  {
     if pushd "$modHOME"/.BASHRClib > /dev/null 2>&1 ; then
         for t in ALIAS ENVARphase0 ENVARphase1 FUNCTION COMMAND ; do
             if [ -d "${t}" ] ; then
-                for f in $(find "${t}" -type f ) ; do
+                for f in $(find "${t}" -xdev -type f ) ; do
                     if [ -r "$modHOME".custom/.BASHRClib/"${f}" ] ; then
                         .   "$modHOME".custom/.BASHRClib/"${f}"
                     else
@@ -29,7 +29,7 @@ function bashRCfunc()  {
     if pushd "$modHOME".custom/.BASHRClib > /dev/null 2>&1 ; then
         for t in ALIAS ENVARphase0 ENVARphase1 FUNCTION COMMAND ; do
             if [ -d "${t}" ] ; then
-                for f in $(find "${t}" -type f ) ; do
+                for f in $(find "${t}" -xdev -type f ) ; do
                     if ! [ -r "$modHOME"/.BASHRClib/"${f}" ] ; then
                         . "${f}"
                     fi

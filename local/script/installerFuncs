@@ -861,7 +861,7 @@ function saveLocalizedFiles0()  {
       chmod ug+rwx   $ARCHIVEdir/install $ARCHIVEdir/install/wsi-rpms
     fi
     pushd var/lib/wsi-rpms
-    for f in $(find . -type f)
+    for f in $(find . -xdev -type f)
     do
       if file "${f}" | grep -q 'RPM v3' ; then
         treeCopy "${f}" $ARCHIVEdir/install/wsi-rpms
@@ -1002,7 +1002,7 @@ function saveLocalizedRHELfiles0()  {
       chmod ug+rwx   $ARCHIVEdir/install $ARCHIVEdir/install/wsi-rpms
     fi
     pushd var/lib/wsi-rpms
-    for f in $(find . -type f)
+    for f in $(find . -xdev -type f)
     do
       if file "${f}" | grep -q 'RPM v3' ; then
         treeCopy "${f}" $ARCHIVEdir/install/wsi-rpms
@@ -1530,7 +1530,7 @@ function localizeROOT0()  {
   #
   cd $ROOT0dir
   cat /dev/null                     > /tmp/rpmFileList
-  find wxdisk/install -type d | while read d
+  find wxdisk/install -xdev -type d | while read d
   do                                   # ...append any additional RPM filenames
     cd $ROOT0dir/"${d}"
     for f in *.rpm ; do

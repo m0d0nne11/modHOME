@@ -46,7 +46,7 @@ echo "ctags -f $ctagsOutput "'$1'            >$scriptFile
 echo "cat $ctagsOutput >>$allTags"          >>$scriptFile
 
 chmod +x $scriptFile
-find . -name "*.[ch]" -print | fgrep -v SCCS | xargs -l1 $scriptFile
+find . -xdev -name "*.[ch]" -print | fgrep -v SCCS | xargs -l1 $scriptFile
 
 ##
 ## Generate C source code for a trivial program which will
@@ -81,7 +81,7 @@ find . -name "*.[ch]" -print | fgrep -v SCCS | xargs -l1 $scriptFile
 ## of .s files is small enough to fit into the "foreach" parameter
 ## list - have to take the approach used above if this fails.)
 ##
-#foreach file ( `find . -name "*.s" -print | fgrep -v SCCS` )
+#foreach file ( `find . -xdev -name "*.s" -print | fgrep -v SCCS` )
 #    grep '^[	 ]*[_a-zA-z][_0-9a-zA-z]*:' $file        | \
 #    sed  -e 's/:.*$//'    -e '/^[	 ][	 ]*$/d'  | \
 #    $progBinary $file       >>$allTags

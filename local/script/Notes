@@ -9,6 +9,6 @@ NOTE_REPOSITORY=${modHOME}.custom/.NoteDir/.
 }
 
 # This alternative form uses process substitution but xargs is unhappy if the pipeline is closed before cat is finished:
-#function NotesFunc()  { sed -e 's/^/  /' -e 's/^  *########NOTE######## /########NOTE######## /' -e 's/[[:space:]]*$//g' <( cd ~/.NoteDir && find . -type f -name "[12]*" | sort | xargs -l20 cat ); }
+#function NotesFunc()  { sed -e 's/^/  /' -e 's/^  *########NOTE######## /########NOTE######## /' -e 's/[[:space:]]*$//g' <( cd ~/.NoteDir && find . -xdev -type f -name "[12]*" | sort | xargs -l20 cat ); }
 
 NotesFunc

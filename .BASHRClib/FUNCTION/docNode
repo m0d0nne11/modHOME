@@ -23,7 +23,7 @@ function docNode()  {
     #
     if [ $# -eq 0 ] ; then
         echo "#### Known doc nodes:"
-        find $docRoot -type f -name "infoForNodeType.*" \
+        find $docRoot -xdev -type f -name "infoForNodeType.*" \
          | sed -e 's;^'$docRoot';;' -e 's;/infoForNodeType\..*$;;'
         return 0
     fi

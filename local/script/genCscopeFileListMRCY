@@ -304,7 +304,7 @@ do
         if [ -d $dir ]
         then
             echo -n "####" finding files in $dir...
-            find $dir -type f -print >>cscope.files
+            find $dir -xdev -type f -print >>cscope.files
 
             ####
             # We reluctantly conclude that certain rules files

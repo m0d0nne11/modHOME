@@ -75,6 +75,7 @@ apt-get update ; apt-get install vim ssh git ansible
 git clone -b gui https://llcad-github.llan.ll.mit.edu/div6sysadmin/ansible-iss2.git
 ( cd ansible-iss2/ && ansible-galaxy install -r requirements.yml -p roles --force   )
 ( cd ansible-iss2/ && sed -i -e "s/ mitll_divnum:.*$/ mitll_divnum: '06'/" site.yml )
+echo "######### NOTICE: next command kills X sessions"
 ( cd ansible-iss2/ && ansible-playbook -c local -i localhost, site.yml              )
 
 echo LLANcompliance/EXAMPLE/usr/share/lightdm/lightdm.conf.d/50-disable-userlist.conf

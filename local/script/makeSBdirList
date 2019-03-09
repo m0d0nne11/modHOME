@@ -36,7 +36,7 @@ endif
 while ( 1 )
     echo    "####### Collecting files in $cwd"
     echo -n "####### " ; pwd
-    find . -type d $argv -print >>$allDirs
+    find . -xdev -type d $argv -print >>$allDirs
     if ( ! -d ../link/src ) then
         break
     endif

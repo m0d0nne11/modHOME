@@ -7,7 +7,7 @@
 lastSnapshot=$(ls SNAPSHOT/snapshot9* | tail -1)
 GNUTAR=/usr/local/gnu/bin/tar
 snapShotList=/tmp/snapshot$$
-find . -type f -newer $lastSnapshot -print >$snapShotList
+find . -xdev -type f -newer $lastSnapshot -print >$snapShotList
 echo "#################### snapShotList is $snapShotList :"
 cat $snapShotList
 echo "#################### hit Return when ready..."

@@ -1,4 +1,4 @@
-find . -type f -name '*.[chslyS]' | sed -e 's/..//' | sort | grep -v \
+find . -xdev -type f -name '*.[chslyS]' | sed -e 's/..//' | sort | grep -v \
         -e /4xx_io/                  \
         -e /8260_io/                 \
         -e /8xx_io/                  \

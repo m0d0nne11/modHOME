@@ -1,5 +1,5 @@
 # !}sort -bfd
-find . $1 -type f -name '*.[chslyS]' | sed -e 's;^\./;;' | sort | grep -v \
+find . $1 -xdev -type f -name '*.[chslyS]' | sed -e 's;^\./;;' | sort | grep -v \
 	-e 22/ethtool-2              \
 	-e /4xx_io/                  \
 	-e /8260_io/                 \

@@ -12,8 +12,8 @@ endif
 set sb=`basename $cwd`
 echo "Munging export/obj links in sandbox $sb"
 
-set exportDirs=`find export -type d -print`
-set objDirs=`find obj -type d -print`
+set exportDirs=`find export -xdev -type d -print`
+set objDirs=`find obj -xdev -type d -print`
 
 mkdir -p ../O/$sb/export ../O/$sb/obj
 

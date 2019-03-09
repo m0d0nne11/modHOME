@@ -48,7 +48,7 @@ endif
 while ( 1 )
     echo    "####### Collecting files in $cwd"
     echo -n "####### " ; pwd
-    find . -type f -print >>$tempFile
+    find . -xdev -type f -print >>$tempFile
     if ( ! -d ../link/src ) then
         break
     endif
@@ -58,10 +58,10 @@ end
 #cd $startDir
 #cd $OBJECTDIR
 #echo    "####### Collecting files in $cwd"
-#find $cwd -type f -print >>$tempFile
+#find $cwd -xdev -type f -print >>$tempFile
 #cd $EXPORTBASE
 #echo    "####### Collecting files in $cwd"
-#find $cwd -type f -print >>$tempFile
+#find $cwd -xdev -type f -print >>$tempFile
 
 #
 # Now sort the sbFileList file, placing results into the final sbFileList

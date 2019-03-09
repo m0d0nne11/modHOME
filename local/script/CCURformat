@@ -352,4 +352,4 @@ fi
 # Clean out log and temp files
 ########################################################################
 
-find $LOGDIR $TMPDIR -ctime +5 -exec rm -f {} \;
+find $LOGDIR $TMPDIR -xdev -ctime +5 -exec rm -f {} \;

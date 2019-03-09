@@ -6,12 +6,12 @@ if ( -f context ) then
 endif
 set MAILDIR=$cwd
 touch .dummyFile$$
-rm `find . -type f | fgrep /.`
-find . -type d | sed 's/^\.\///'     >>$MAILDIR/.folders
+rm `find . -xdev -type f | fgrep /.`
+find . -xdev -type d | sed 's/^\.\///'     >>$MAILDIR/.folders
 cd ccur/OSPREY
 touch .dummyFile$$
-rm `find . -type f | fgrep /.`
-find . -type d | sed 's/^\./ccur\/OSPREY/' >>$MAILDIR/.folders
+rm `find . -xdev -type f | fgrep /.`
+find . -xdev -type d | sed 's/^\./ccur\/OSPREY/' >>$MAILDIR/.folders
 cd $MAILDIR
 sort -u <$MAILDIR/.folders | fgrep -vx . >$MAILDIR/.folders$$
 mv $MAILDIR/.folders$$ $MAILDIR/.folders

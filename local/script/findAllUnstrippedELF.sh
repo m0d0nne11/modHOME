@@ -1,4 +1,4 @@
-find . -type f \
+find . -xdev -type f \
  | file -f - \
  | sed -e 's/[[:space:]][[:space:]]*/ /g' -e 's;^\./;;' -e 's/ $//' \
  | fgrep -e 'ELF 32-bit' \
