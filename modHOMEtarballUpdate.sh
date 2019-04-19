@@ -17,6 +17,28 @@
 # of propagation before converting to Git, so test carefully
 # as it is not maintained much since then...
 
+# 20190419 warning issued during clone to MacOS:
+# WARNING: the following paths have collided (e.g.
+# case-sensitive paths on a case-insensitive filesystem) and
+# only one from the same colliding group is in the working tree:
+#
+#  'local/script/endif'
+#  'local/script/ENDIF'
+#  'local/script/ifdef'
+#  'local/script/IFDEF'
+#  'local/script/ifdefe'
+#  'local/script/IFDEFE'
+#  'local/script/ife'
+#  'local/script/IFE'
+#  'local/script/ifn'
+#  'local/script/IFN'
+#  'local/script/ifndef'
+#  'local/script/IFNDEF'
+#  'local/script/ifndefe'
+#  'local/script/IFNDEFE'
+#  'local/script/ifne'
+#  'local/script/IFNE'
+
 [ -n "$MIKE_DEBUG" ] && set -x
 
 myName="${0}"
