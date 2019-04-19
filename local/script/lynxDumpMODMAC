@@ -1,13 +1,19 @@
 function lynxDumpMODMACfunc() {
-    local tmpFile=/tmp/$(tds).$$ ;
+#   local tmpFile=/tmp/$(tds).$$ ;
 #   wget -O - "$@" > "${tmpFile}" 2> "${tmpFile}".stderr ;
 #   wget -O - --useragent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:38.0) Gecko/20100101 Firefox/38.0" "$@" > "${tmpFile}" 2> "${tmpFile}".stderr ;
-    curl "$@" > "${tmpFile}" 2> "${tmpFile}".stderr ;
+#   curl --user-agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:65.0) Gecko/20100101 Firefox/65.0' "$@" > "${tmpFile}" 2> "${tmpFile}".stderr ;
 #   lynx -dump -stdin < "${tmpFile}" ;
 
-    lynx < "${tmpFile}" -dump -stdin -nobold -nocolor -nomargins -noreverse -width=2400 -dont_wrap_pre ;
+#   lynx < "${tmpFile}" -dump -stdin -nobold -nocolor -nomargins -noreverse -width=2400 -dont_wrap_pre ;
 
-    rm -f "${tmpFile}" "${tmpFile}".stderr ;
+#   rm -f "${tmpFile}" "${tmpFile}".stderr ;
+
+#   lynx -dump "$@"
+
+#   lynx -dump -list_inline -force-html <(curl --stderr /dev/null "$@")
+#   lynx -dump              -force-html <(curl --stderr /dev/null "$@")
+    lynx -dump              -force-html <(curl --user-agent 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:65.0) Gecko/20100101 Firefox/65.0' --stderr /dev/null "$@")
 }
 
 lynxDumpMODMACfunc "$@"
