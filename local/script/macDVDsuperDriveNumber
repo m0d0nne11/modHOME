@@ -1,0 +1,1 @@
+drutil list | grep -e ' HL-DT-ST *DVDRW .* USB' | word1
