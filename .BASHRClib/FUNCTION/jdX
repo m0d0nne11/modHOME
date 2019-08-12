@@ -1,5 +1,5 @@
 function jdX()  {
-#   xcleardiff -b $jnk/"$@" "$@"      &
-    tkdiff        "$@"      $jnk/"$@" &
+#   xcleardiff -b "${jnk}"/"$@" "$@"      &
+    tkdiff        "$@"      "${jnk}"/"$@" &
 }
 

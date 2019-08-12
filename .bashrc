@@ -9,7 +9,7 @@ function bashRCfunc()  {
     # prefer to execute the localized .custom version if present...
     #
     if pushd "$modHOME"/.BASHRClib > /dev/null 2>&1 ; then
-        for t in ALIAS ENVARphase0 ENVARphase1 FUNCTION COMMAND ; do
+        for t in ENVARphase0 ENVARphase1 ALIAS FUNCTION COMMAND ; do
             if [ -d "${t}" ] ; then
                 for f in $(find "${t}" -xdev -type f ) ; do
                     if [ -r "$modHOME".custom/.BASHRClib/"${f}" ] ; then
@@ -27,7 +27,7 @@ function bashRCfunc()  {
     # version we assume we've already executed this .custom version.
     #
     if pushd "$modHOME".custom/.BASHRClib > /dev/null 2>&1 ; then
-        for t in ALIAS ENVARphase0 ENVARphase1 FUNCTION COMMAND ; do
+        for t in ENVARphase0 ENVARphase1 ALIAS FUNCTION COMMAND ; do
             if [ -d "${t}" ] ; then
                 for f in $(find "${t}" -xdev -type f ) ; do
                     if ! [ -r "$modHOME"/.BASHRClib/"${f}" ] ; then

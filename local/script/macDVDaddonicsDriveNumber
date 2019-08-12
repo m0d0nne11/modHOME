@@ -1,0 +1,5 @@
+#drutil list | grep    -e ' HL-DT-ST *DVDRW .* USB' | word1
+#drutil list | grep -i -e 'super'                   | word1
+#drutil list | grep    -e ' HL-DT-ST *DVDRW .* USB' | word1
+ drutil list | grep    -e 'HL-DT-ST *DVDRAM *GTB0N *BA00 *USB' | word1
+
