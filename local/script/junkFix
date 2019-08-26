@@ -1,0 +1,446 @@
+# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
+#!/bin/bash
+#
+# My personal collection of translations to handle the presence of
+# "foreign" byte sequences where only English characters are expected.
+#
+# Note: Several versions merged 20090512 so some tweaking probably
+# required.  Order is important; single-byte occurrences should generally
+# be handled after multi-byte sequences.
+#
+#if [ -x  "${modHOME}".custom/local/script/junkFix ] ; then
+#    exec "${modHOME}".custom/local/script/junkFix $@ ] ;
+#fi
+
+LANG=C sed			\
+<<<<<<< HEAD
+	-e "s/Â/.../g"	\
+	-e "s//.../g"	\
+	-e 's/â/-/g'	\
+	-e 's/â/-/g'	\
+	-e 's/â/"/g'	\
+	-e 's/â/"/g'	\
+	-e "s/Â/'/g"	\
+	-e "s/Â/'/g"	\
+=======
+	-e 's/★/*/g'		\
+	-e "s//.../g"		\
+>>>>>>> 36312c0a5c1594838f2ca4f6eca9390a3adeafcb
+	-e "s//'/g"		\
+	-e "s//'/g"		\
+	-e "s/§/-/g"		\
+	-e "s/°/'/g"		\
+	-e "s/´/'/g"		\
+	-e "s/Â/ - /g"		\
+	-e "s/Â°/'/g"		\
+	-e "s/Â´/'/g"		\
+	-e "s/Ã¢/'/g"		\
+	-e "s/Ã¢Ââ/-/g"	\
+	-e "s/â/'/g"		\
+	-e "s/â /'/g"	\
+	-e "s/â/'/g"	\
+	-e "s/’/'/g"		\
+	-e 's/Â/(0x80)/g'	\
+	-e 's//(0x80)/g'	\
+	-e 's/Ã/(0xc3)/g'	\
+	-e 's/Ã/(0xc3)/g'	\
+	-e 's/Â/"/g'	\
+	-e 's//"/g'		\
+	-e 's/Ã¢ÂÂ/-/g'	\
+	-e 's/Â/"/g'	\
+	-e 's//"/g'		\
+	-e 's/Â/ -- /g'	\
+	-e 's// -- /g'	\
+	-e 's/Â/-/g'	\
+	-e 's//-/g'		\
+	-e 's/Â/ -- /g'	\
+	-e 's//-/g'		\
+	-e 's// -- /g'	\
+	-e 's/Â/(0x98)/g'	\
+	-e 's//(0x98)/g'	\
+	-e 's//(tm)/g'	\
+	-e 's/Ã¢ÂÂ/"/g'	\
+	-e 's/Â/"/g'	\
+	-e 's/Ã¢ÂÂ/"/g'	\
+	-e 's/Â/"/g'	\
+	-e 's/Â/(0x9f)/g'	\
+	-e 's//(0x9f)/g'	\
+	-e 's/ / /g'		\
+	-e 's/ /-/g'		\
+	-e 's/©/(C)/g'		\
+	-e 's/©/(c)/g'		\
+	-e 's/­/-/g'		\
+	-e 's/®/(Reg)/g'	\
+	-e 's/®/(R)/g'		\
+	-e 's/·/-/g'		\
+	-e 's/»/>>/g'		\
+	-e 's/¿/ /g'		\
+	-e 's/Â /-/g'		\
+	-e 's/Â©/(c)/g'		\
+	-e 's/Â­/-/g'		\
+	-e 's/Â®/(R)/g'		\
+	-e 's/Â·/-/g'		\
+	-e 's/Â»/>>/g'		\
+	-e 's/Ã©/e/g'		\
+	-e 's/Ã­/i/g'		\
+	-e 's/Ã¼/u/g'		\
+	-e 's/Ò/"/g'		\
+	-e 's/Ó/"/g'		\
+	-e 's/âEUR"/ -- /g'	\
+	-e 's/é/e/g'		\
+	-e 's/í/i/g'		\
+	-e 's/ü/u/g'		\
+	-e 's/​/ \# /g'	\
+	-e 's/“/"/g'		\
+	-e 's/”/"/g'		\
+	-e 's/•/-/g'		\
+	-e 's/‹/</g'		\
+	-e 's/›/>/g'		\
+	-e 's/™/(tm)/g'		\
+	-e 's/↑/ (up) /g'	\
+	-e 's/→/ -> /g'		\
+	-e 's/↩/<-/g'		\
+	-e 's/✔/(checkmark)/g'	\
+	-e 's/﻿//g'	\
+	-e 's/😊/:)/g'		\
+	-e 's;¼;(1/4);g'	\
+	-e 's;½;(1/2);g'	\
+	-e 's;¾;(3/4);g'	\
+	-e 's;Â¼;(1/4);g'	\
+	-e 's;Â½;(1/2);g'	\
+	-e 's;Â¾;(3/4);g'	\
+	-e 's/Â«"/<</g'		\
+	-e 's/«/<</g'		\
+	-e 's/…/.../g'		\
+
+
+exit
+
+ # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+http://vim.1045645.n5.nabble.com/what-s-a-quot-conversion-error-quot-and-how-do-I-correct-it-td4416508.html
+
+VIM › Vim - General
+what's a "conversion error" and how do I correct it?
+‹ Previous Topic Next Topic ›
+
+classic 	Classic 	list 	List 	threaded 	Threaded
+8 messages Options
+eNG1Ne
+Reply | Threaded |
+what's a "conversion error" and how do I correct it?
+eNG1Ne
+
+Working on a Linux box (Ubuntu 10.4), I've successfully copy/pasted a
+block of text from a Planmaker spreadsheet into a vim file. The text
+includes U+2012 dashes, which are correctly displayed in vim … but
+when I try to save the vim file, I get the message "conversion error".
+
+Probably related, but when I used :dig to try and find the code for
+the U+2012 dash (so I could use search/replace) I couldn't spot one.
+Just out of curiosity, what do the numbers in the digraph reference
+page refer to?
+
+Thanks in advance for helping me out.
+
+--
+You received this message from the "vim_use" maillist.
+Do not top-post! Type your reply below the text you are replying to.
+For more information, visit http://www.vim.org/maillist.php
+Christian Brabandt
+Reply | Threaded |
+Re: what's a "conversion error" and how do I correct it?
+Christian Brabandt
+
+Hi eNG1Ne!
+
+On So, 22 Mai 2011, eNG1Ne wrote:
+
+> Working on a Linux box (Ubuntu 10.4), I've successfully copy/pasted a
+> block of text from a Planmaker spreadsheet into a vim file. The text
+> includes U+2012 dashes, which are correctly displayed in vim … but
+> when I try to save the vim file, I get the message "conversion error".
+
+I guess, your fileencodings setting (notice the plural) does not include
+utf-8, so Vim does not try to save it with that encoding. It probably
+either tries to save it using plain old ASCII encoding or something like
+latin1, which does not include this char and therefore conversion fails.
+
+You should fix your 'fencs' setting to something like
+ucs-bom,utf-8,default,latin1 or you can force Vim to save it in utf-8
+encoding, by issuing :w ++enc=utf8 filename. (It might be, that this
+needs the +multi_byte feature, which is only enabled, when compiling at
+least a big version of Vim).
+
+> Probably related, but when I used :dig to try and find the code for
+> the U+2012 dash (so I could use search/replace) I couldn't spot one.
+> Just out of curiosity, what do the numbers in the digraph reference
+> page refer to?
+
+The decimal number for that unicode char.
+
+regards,
+Christian
+
+--
+You received this message from the "vim_use" maillist.
+Do not top-post! Type your reply below the text you are replying to.
+For more information, visit http://www.vim.org/maillist.php
+Ben Fritz
+Reply | Threaded |
+Re: what's a "conversion error" and how do I correct it?
+Ben Fritz
+
+On May 22, 6:00 am, Christian Brabandt <[hidden email]> wrote:
+
+> Hi eNG1Ne!
+>
+> On So, 22 Mai 2011, eNG1Ne wrote:
+>
+> > Working on a Linux box (Ubuntu 10.4), I've successfully copy/pasted a
+> > block of text from a Planmaker spreadsheet into a vim file. The text
+> > includes U+2012 dashes, which are correctly displayed in vim … but
+> > when I try to save the vim file, I get the message "conversion error".
+>
+> I guess, your fileencodings setting (notice the plural) does not include
+> utf-8, so Vim does not try to save it with that encoding. It probably
+> either tries to save it using plain old ASCII encoding or something like
+> latin1, which does not include this char and therefore conversion fails.
+>
+> You should fix your 'fencs' setting to something like
+> ucs-bom,utf-8,default,latin1
+
+The 'fileencodings' option is what Vim uses to detect file encoding
+when *reading* a file. When writing, Vim uses the current setting of
+'fileencoding' (*without* the 's' at the end) as the encoding in which
+to write the file.
+
+If the file did not originally have Unicode characters in it, quite
+possibly it was not detected as Unicode, so 'fileencoding' will be set
+to something else (from the 'filencodings' option) or it will be
+empty. If 'fileencoding' is empty, the value of 'encoding' is used
+instead.
+
+At least, this is how I understand it. Is there some situation I'm
+missing in which 'filencodings' (with the 's') is relevant to a write
+operation?
+
+>  or you can force Vim to save it in utf-8
+> encoding, by issuing :w ++enc=utf8 filename.
+
+This is true, but you can also do a
+
+:setlocal fileencoding=utf-8
+
+before saving.
+
+> (It might be, that this
+> needs the +multi_byte feature, which is only enabled, when compiling at
+> least a big version of Vim).
+>
+
+Yes, I'm pretty sure it does require +multi_byte.
+
+See our current featured tip on working with Unicode in Vim:
+
+http://vim.wikia.com/wiki/Working_with_Unicode
+
+--
+You received this message from the "vim_use" maillist.
+Do not top-post! Type your reply below the text you are replying to.
+For more information, visit http://www.vim.org/maillist.php
+Christian Brabandt
+Reply | Threaded |
+Re: what's a "conversion error" and how do I correct it?
+Christian Brabandt
+
+Hi Ben!
+
+On So, 22 Mai 2011, Ben Fritz wrote:
+
+> > You should fix your 'fencs' setting to something like
+> > ucs-bom,utf-8,default,latin1
+>
+> The 'fileencodings' option is what Vim uses to detect file encoding
+> when *reading* a file. When writing, Vim uses the current setting of
+> 'fileencoding' (*without* the 's' at the end) as the encoding in which
+> to write the file.
+
+Oh yes true. I got confused.
+
+regards,
+Christian
+
+--
+You received this message from the "vim_use" maillist.
+Do not top-post! Type your reply below the text you are replying to.
+For more information, visit http://www.vim.org/maillist.php
+Erik Christiansen
+Reply | Threaded |
+Re: what's a "conversion error" and how do I correct it?
+Erik Christiansen
+
+In reply to this post by Ben Fritz
+On 22.05.11 11:55, Ben Fritz wrote:
+> On May 22, 6:00 am, Christian Brabandt <[hidden email]> wrote:
+> >  or you can force Vim to save it in utf-8
+> > encoding, by issuing :w ++enc=utf8 filename.
+>
+> This is true, but you can also do a
+>
+> :setlocal fileencoding=utf-8
+
+Thank you both! I've also been irritated by occasional write failure due
+to conversion error, after pasting text to vim. A quick overwrite of the
+offending characters in vim has always cured the problem. Yesterday it
+was a weird minus sign. I see now that the file is latin1.
+
+Presumably the old and new encodings sync after setting fileencoding=utf-8,
+so I wouldn't still have two kinds of '-' ? (I have no idea how many
+different minus signs and hyphens are included amongst utf-8 multibyte
+characters.)
+
+Erik
+
+--
+Forum moderator: Did you take the [End of the world on 21.05.11] doomsday prediction seriously?
+Contributor:     Bugger, now I have to go to work tomorrow.
+   - Seen on ABC website on 22.05.11
+
+--
+You received this message from the "vim_use" maillist.
+Do not top-post! Type your reply below the text you are replying to.
+For more information, visit http://www.vim.org/maillist.php
+Ben Fritz
+Reply | Threaded |
+Re: what's a "conversion error" and how do I correct it?
+Ben Fritz
+
+On May 23, 3:59 am, Erik Christiansen <[hidden email]> wrote:
+
+> On 22.05.11 11:55, Ben Fritz wrote:
+>
+> > On May 22, 6:00 am, Christian Brabandt <[hidden email]> wrote:
+> > >  or you can force Vim to save it in utf-8
+> > > encoding, by issuing :w ++enc=utf8 filename.
+>
+> > This is true, but you can also do a
+>
+> > :setlocal fileencoding=utf-8
+>
+> Thank you both! I've also been irritated by occasional write failure due
+> to conversion error, after pasting text to vim. A quick overwrite of the
+> offending characters in vim has always cured the problem. Yesterday it
+> was a weird minus sign. I see now that the file is latin1.
+>
+> Presumably the old and new encodings sync after setting fileencoding=utf-8,
+> so I wouldn't still have two kinds of '-' ? (I have no idea how many
+> different minus signs and hyphens are included amongst utf-8 multibyte
+> characters.)
+>
+
+They will "sync" only if your 'fileencodings' and 'encoding' options
+are set in a way that the proper encoding is detected when reading the
+file.
+
+See the help for each option, and also http://vim.wikia.com/wiki/Working_with_Unicode
+as mentioned before.
+
+Something I've also found useful for those times Vim cannot properly
+recognize the encoding by itself, is the AutoFenc plugin:
+
+http://www.vim.org/scripts/script.php?script_id=2721
+
+I only use it for those cases where the encoding is specified in the
+file text (like in many HTML documents), but I know there's also an
+option to use an external tool to determine encoding based on file
+content.
+
+--
+You received this message from the "vim_use" maillist.
+Do not top-post! Type your reply below the text you are replying to.
+For more information, visit http://www.vim.org/maillist.php
+eNG1Ne
+Reply | Threaded |
+Re: what's a "conversion error" and how do I correct it?
+eNG1Ne
+
+In reply to this post by Christian Brabandt
+Thanks! just the information I needed. Now to try and remember it ...
+Tony Mechelynck
+Reply | Threaded |
+Re: what's a "conversion error" and how do I correct it?
+Tony Mechelynck
+
+In reply to this post by Christian Brabandt
+On 22/05/11 13:00, Christian Brabandt wrote:
+
+> Hi eNG1Ne!
+>
+> On So, 22 Mai 2011, eNG1Ne wrote:
+>
+>> Working on a Linux box (Ubuntu 10.4), I've successfully copy/pasted a
+>> block of text from a Planmaker spreadsheet into a vim file. The text
+>> includes U+2012 dashes, which are correctly displayed in vim … but
+>> when I try to save the vim file, I get the message "conversion error".
+>
+> I guess, your fileencodings setting (notice the plural) does not include
+> utf-8, so Vim does not try to save it with that encoding. It probably
+> either tries to save it using plain old ASCII encoding or something like
+> latin1, which does not include this char and therefore conversion fails.
+>
+> You should fix your 'fencs' setting to something like
+> ucs-bom,utf-8,default,latin1 or you can force Vim to save it in utf-8
+> encoding, by issuing :w ++enc=utf8 filename. (It might be, that this
+> needs the +multi_byte feature, which is only enabled, when compiling at
+> least a big version of Vim).
+>
+>> Probably related, but when I used :dig to try and find the code for
+>> the U+2012 dash (so I could use search/replace) I couldn't spot one.
+>> Just out of curiosity, what do the numbers in the digraph reference
+>> page refer to?
+>
+> The decimal number for that unicode char.
+>
+> regards,
+> Christian
+>
+
+Conversely, when reading, Vim will not give a "conversion error" message
+if there is an 8-bit encoding at the end of your 'fileencodings', but it
+can still fail to recognize the actual encoding used: for instance, with
+:set fencs=ucs-bom,utf-8,latin1 which is a "good" setting for people in
+"Western" countries like I am, try to read a file containing Japanese
+encoded in Shift-JIS, Traditional Chinese in Big5, Simplified Chinese in
+GB18030, or even Russian in KOI8-R, and the text will look like
+gibberish, because Vim saw no BOM, saw correctly that the text wasn't
+UTF-8 on disk, and fell back on Latin1. In that case you need to tell
+Vim the actual encoding of the file (and if you don't know it, maybe try
+several possible ones, proceeding by trial and error), by adding a ++enc
+modifier to your :e or :view command, for instance
+
+        :view ++enc=sjis example.txt
+
+and (assuming that 'encoding' is already set to utf-8) Vim will then (if
+compiled with +iconv, or with +iconv/dyn and the iconv or libiconv
+library is available) happily translate the shift-JIS into the UTF-8
+used internally.
+
+About digraphs: 0x2012 == 8210 and I see no digraph for that, but you
+could use Ctrl-V u 2012 (without the spaces, see :help i_CTRL-V_digit
+which also applies in command-line mode) or make your own digraph (but
+try to use something which is not already in use).
+
+Best regards,
+Tony.
+--
+hundred-and-one symptoms of being an internet addict:
+195. Your cat has its own home page.
+
+--
+You received this message from the "vim_use" maillist.
+Do not top-post! Type your reply below the text you are replying to.
+For more information, visit http://www.vim.org/maillist.php
+<< Return to Vim - General  |
+Free forum by Nabble 	Edit this page
+
