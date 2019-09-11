@@ -1,9 +1,9 @@
 #if [ $isLinux ] ; then
-#    function cdllth { cdll -t  "$@" | head -$(( $(($LINES / 5)) * 4)) ; }
+#    function cdllth { cdll -t  "$@" | head4fifths ; }
 #else                         # Assume: MacOSX
-#    function cdllth { cdll -tr "$@" | head -$(( $(($LINES / 5)) * 4)) ; }
+#    function cdllth { cdll -tr "$@" | head4fifths ; }
 #fi
 
 # 20160505: the MacOSX-specific logic above seems no longer necessary?
-    function cdllth { cdll -t  "$@" | head -"$(( ($LINES / 5) * 4 ))" ; }
+    function cdllth { cdll -t  "$@" | head4fifths ; }
 

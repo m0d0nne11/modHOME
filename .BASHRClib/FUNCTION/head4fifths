@@ -1,0 +1,9 @@
+#if [ $isLinux ] ; then
+#    function head4fifths { head -$(( $(($LINES / 5)) * 4)) ; }
+#else                         # Assume: MacOSX
+#    function head4fifths { head -$(( $(($LINES / 5)) * 4)) ; }
+#fi
+
+# 20160505: the MacOSX-specific logic above seems no longer necessary?
+    function head4fifths { head -"$(( ($LINES / 5) * 4 ))" ; }
+
