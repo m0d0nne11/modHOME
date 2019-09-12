@@ -1,7 +1,14 @@
 # hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 #
+# NOTE: The curly braced expression used to all be on one line thus:
+#   -e '/^[[:space:]]*#/ { s_^_/* _ ; s_$_ */_ }'
+# ...but stooopid MacOS sed insists that it be broken out 1-per-line
+
 # A pipe that tidies up the output of a cc -E run a little bit...
 # Usage: cc -E someFile.c | thisScript > someFile.cc-E
 #
-sed -e 's/[[:space:]]*$//' -e '/^[[:space:]]*#/ { s_^_/* _ ; s_$_ */_ }' | cat -s
+sed -e 's/[[:space:]]*$//' -e '/^[[:space:]]*#/ {
+s_^_/* _
+s_$_ */_
+}' | cat -s
