@@ -2,7 +2,7 @@
 #!/bin/bash
 
 if [ $# -ne 1 ] ; then
-	echo argCOunt
+	echo arg1=recipient line1=subject
 	exit 1
 fi
 
