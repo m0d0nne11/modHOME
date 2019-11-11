@@ -98,6 +98,7 @@ LANG=C sed			\
 	-e 's/™/(tm)/g'		\
 	-e 's/↑/ (up) /g'	\
 	-e 's/→/ -> /g'		\
+	-e 's/←/<-/g'		\
 	-e 's/↩/<-/g'		\
 	-e 's/✔/(checkmark)/g'	\
 	-e 's/﻿//g'	\
