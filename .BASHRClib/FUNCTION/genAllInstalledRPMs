@@ -1,0 +1,15 @@
+
+function genAllInstalledRPMs()  {
+	local t;
+
+	if ! [ -d allInstalledRPMs.STORAGE/. ] ; then
+		mkdir allInstalledRPMs.STORAGE ;
+	fi ;
+
+	t=allInstalledRPMs.STORAGE/allInstalledRPMs.$(hostname).$(ymd) ;
+
+	paste <(rpm -qa) <(rpm -qa --queryformat 'NAME:%{NAME} VERSION:%{VERSION} RELEASE:%{RELEASE} ARCH:%{ARCH} INSTALLTIME:%{INSTALLTIME}\n') | lineup | sort -bfd >$t ;
+	ln -sf $t allInstalledRPMs ;
+	ll allInstalledRPMs ;
+}
+
