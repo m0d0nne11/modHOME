@@ -119,6 +119,8 @@
     ${modHOME}/local/alternative/osxVMWareOVFtoolDir
     ${modHOME}/perl5/bin
 
+    /usr/local/fecftp
+
     /Applications/MacVim.app/Contents/bin
     /Applications/MacVim.app/Contents/MacOS
     ~/JAVA/jdk1.5.0_03/bin
@@ -141,4 +143,5 @@
     ~loverso/local/bin
 
     "
+
 
