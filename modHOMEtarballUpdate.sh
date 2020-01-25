@@ -113,13 +113,15 @@ cd              $STAGING         || exit 1
 # ASSUME: now operating on the local $STAGING copy...
 
 ( cd modHOME/. &&                                            \
-    ( rm -rf .Adobe      .adobe   .config          .dbus     \
-             Desktop     .gconf   .gconfd          .git      \
-             .gnome2     hostDir  .ICEauthority    .kde      \
-             .lesshst    .mcop    modHOME.tgz.2*   .mozilla  \
-             .p4qt       .qt      .rhn-applet.conf .screen   \
-             .ssh        .viminfo .vnc             .xauth*   \
-             .Xauthority ;                                   \
+    ( rm -rf .adobe         .Adobe           .config         \
+             .dbus          Desktop          .gconf          \
+             .gconfd        .git             .gitconfig      \
+             .gnome2        hostDir          .ICEauthority   \
+             .kde           .lesshst         .mcop           \
+             modHOME.tgz.2* .mozilla         .p4qt           \
+             .qt            .rhn-applet.conf .screen         \
+             .ssh           .viminfo         .vnc            \
+             .xauth*        .Xauthority      ;               \
       cat .historyOK > .history ;                            \
       ( cd local/. && rm -f bin && ln -sf bin.x86_64 bin ; ) \
     )                                                        \
@@ -129,7 +131,7 @@ rm -f                                     modHOME/modHOMEsnapshotVersion*
 echo                         $timeStamp > modHOME/modHOMEsnapshotVersion.$timeStamp
 ln -s modHOMEsnapshotVersion.$timeStamp   modHOME/modHOMEsnapshotVersion
 
-# No longer using tarball - see vimSymlinkInit()
+# No longer using this tarball approach - see vimSymlinkInit()
 #vimInitFiles=".exrc .vim .vimrc"
 #for f in        $vimInitFiles ; do ln -s modHOME/$f ; done
 #tar cvzf modHOME/vimInitFiles.tgz $archSpecificOpts $vimInitFiles
