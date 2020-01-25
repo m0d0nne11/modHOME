@@ -32,12 +32,21 @@ cat <<EOF
     a standard 40-number dial) there are only 40 possible variations,
     which we print out here by cycling through them all, modulo 40.
 
+    NOTE: modulus defaults to 40 but any number mentioned
+          on the command line will override...
+
 EOF
 
-MODULUS=40                                    # How many numbers on the dial...
+if [ $# -gt 0 ] ; then
+    MODULUS=$1 ;
+else
+    MODULUS=40 ;
+ fi
+
+echo "#### MODULUS is $MODULUS ####"
 
 read -p "Enter the 3 combo numbers that aligned the disks: " a b c
-let a+=25 ; let b+=25 ; let c+=25 # Make early success more likely...
+let a+=25 ; let b+=25 ; let c+=25 # Bias makes early success more likely...
 x=$MODULUS ; while [ $x -gt 0 ] ; do
     printf "%2d %2d %2d\n" $[$a % $MODULUS] $[$b % $MODULUS] $[$c % $MODULUS]
     let a++ ; let b++ ; let c++ ; let x--
