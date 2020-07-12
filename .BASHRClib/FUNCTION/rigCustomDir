@@ -1,23 +1,22 @@
 
-# Usage: rigCustomDir [ optional subDir ]
+# Usage: rigCustomDir [ additional subDirs ]
 
 function rigCustomDir()  {
-    local f
+    local d ;
+    local customSubDirs="
+        .BASHRClib/ALIAS       .BASHRClib/COMMAND  .BASHRClib/ENVARphase0
+        .BASHRClib/ENVARphase1 .BASHRClib/FUNCTION .NoteDir
+        .vim                    DOC                 local/alternative
+         local/bin              local/script        local/src/cmd     $*" ;
+
     if ! [ -d "${modHOME}.custom/." ] ; then
-        echo " ## " MISSING "${modHOME}.custom/" ;
-        read -p "  OK to create with usual (sub)dirs? (Ctl-C to abort) " f ;
+        echo " ## " MISSING "${modHOME}.custom/ and SubDirs:${customSubDirs}" ;
+        read -p "  OK to create with SubDirs? (Ctl-C to abort) " d ;
         mkdir -p "${modHOME}".custom || return 1 ;
     fi ;
-    for f in                                          \
-        .BASHRClib/ALIAS       .BASHRClib/COMMAND     \
-        .BASHRClib/ENVARphase0 .BASHRClib/ENVARphase1 \
-        .BASHRClib/FUNCTION    DOC                    \
-        local/alternative      local/bin              \
-        local/script           local/src/cmd          \
-        .NoteDir               .vim                   \
-        $*                                            ;
+    for d in ${customSubDirs} ;
     do
-        mkdir -p "${modHOME}".custom/"${f}" ;
+        mkdir -p "${modHOME}".custom/"${d}" ;
     done ;
 }
 
