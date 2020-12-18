@@ -76,4 +76,12 @@
  ...or otherwise ensure that ownerships/permissions suit the
  circumstances and protect your godlike powers.
 
+ Come to think of it, unless you plan to use Git to manage/
+ contribute changes to this stuff, you might want to simply:
+
+    rm -rf .git
+
+ ...herein so as to eliminate any possible (yes, it's unlikely)
+ source of unknown/unwanted material.
+
  mod.modHOME@spineless.org
