@@ -316,7 +316,7 @@ element *reversedChain( element *chain )
 void dumpChain( element *e )
 {
     while( e )  {
-        printf( " (0x%08x[%2d]->0x%08x)", e, e->value, e->next );
+        printf( " (0x%08lx[%2d]->0x%08lx)", (u32)(e), e->value, (u32)(e->next) );
         e = e->next;
     }
     printf( "\n" );
