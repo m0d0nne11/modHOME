@@ -6,7 +6,7 @@ cat <<"END_OF_C_SKELETON"
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef	ENABLE_THESE_IF_NEEDED
+#ifdef  ENABLE_THESE_IF_NEEDED
 #include <unistd.h>
 #include <ctype.h>
 #include <strings.h>
@@ -16,7 +16,7 @@ cat <<"END_OF_C_SKELETON"
  * ----------------------------------------------------------------------------
  * Constant #definitions
  */
-#ifdef	ENABLE_THESE_IF_NEEDED
+#ifdef  ENABLE_THESE_IF_NEEDED
 #undef  TRUE
 #undef  FALSE
 
@@ -67,7 +67,7 @@ do  {                                           \
         size_t l = strlen( dest );              \
                                                 \
         if( l < ARRAY_INDEX_MAX(dest) )  {      \
-                strncpy( &((dest)[ l ]), (src), (ARRAY_INDEX_MAX(dest) - l)); \
+            strncpy( &((dest)[ l ]), (src), (ARRAY_INDEX_MAX(dest) - l)); \
         }                                       \
         (dest)[ARRAY_INDEX_MAX(dest)] = 0;      \
 } while( 0 )
@@ -82,9 +82,9 @@ do  {                                           \
  * Examples of primitive (name,value) mapping
  */
 typedef enum  {
-	MOE,
-	LARRY,
-	CURLY,
+    MOE,
+    LARRY,
+    CURLY,
 } thingamajig;
 
 typedef struct nameValueMapEntryStruct  {
@@ -327,8 +327,11 @@ void dumpChain( element *e )
  * Circular buffer with generation numbers for tracking events during debug.
  * Needs mutex or something to be thread-safe.
  */
-extern void MIKE_capture_one( void *val, const char *func, int line, char *comment );
-#define MIKE_CAPTURE( val, comment ) MIKE_capture_one( val, __func__, __LINE__, comment )
+extern void MIKE_log_one( void *val, const char *func, int line, char *comment );
+extern void MIKE_dump_info();
+
+#define MIKE_LOG( val, comment ) MIKE_log_one( val, __func__, __LINE__, comment )
+#define MIKE_DUMP()              MIKE_dump_info()
 
 /*
  * ***************************************************************************
@@ -336,48 +339,62 @@ extern void MIKE_capture_one( void *val, const char *func, int line, char *comme
 #include <assert.h>
 
 #define MIKE_INFO_SLOT_COUNT 100
+#define NEXT_MIKE_ROTOR_FROM( x ) \
+    ( ((x) + 1) > ARRAY_INDEX_MAX(mikeInfoSlot) ? 0 : ((x) + 1) ) ;
 
 typedef struct mikeInfoStruct {
-	unsigned    generation;
-	void       *val;
-	const char *func;
-	int         line;
-	char       *comment;
+    unsigned    generation;
+    void       *val;
+    const char *func;
+    int         line;
+    char       *comment;
 } mikeInfo;
+
 
 mikeInfo mikeInfoSlot[ MIKE_INFO_SLOT_COUNT ];
 unsigned mikeBusy       = 0;
 unsigned mikeRotor      = 0;
 unsigned mikeGeneration = 0;
 
-void MIKE_capture_one(
-	void       *val,
-	const char *func,
-	int         line,
-	char       *comment )
+void MIKE_log_one(
+    void       *val,
+    const char *func,
+    int         line,
+    char       *comment )
 {
-	mikeInfo *p;
+    mikeInfo *p;
 
-	assert( !mikeBusy );
-	mikeBusy = 1;
+    assert( !mikeBusy );
+    mikeBusy = 1;
 
-	p = &(mikeInfoSlot[mikeRotor]);
-	mikeRotor++;
-	if( mikeRotor > ARRAY_INDEX_MAX(mikeInfoSlot) ) {
-		mikeRotor = 0;
-	}
-	p->generation = mikeGeneration++;
-	p->val        = val;
-	p->func       = func;
-	p->line       = line;
-	p->comment    = comment;
+    p = &(mikeInfoSlot[mikeRotor]);
+    mikeRotor     = NEXT_MIKE_ROTOR_FROM( mikeRotor );
+    p->generation = mikeGeneration++;
+    p->val        = val;
+    p->func       = func;
+    p->line       = line;
+    p->comment    = comment;
 
-	mikeBusy = 0;
+    mikeBusy = 0;
 }
+
+void MIKE_dump_info()  {
+    unsigned  rotor = mikeRotor;
+    mikeInfo *info;
+
+    do {
+        info  = &(mikeInfoSlot[ rotor ]);
+        printf( "SLOT:%03d LINE:%05d VAL:0x%08lx %s\n", rotor, info->line,
+                                               (unsigned long)(info->val),
+                                                               info->comment );
+        rotor = NEXT_MIKE_ROTOR_FROM( rotor );
+    } while ( rotor != mikeRotor );
+}
+
 
 /*
  * ----------------------------------------------------------------------------
- * Return nonzero if an anchored scan of field matches target.
+ * Return nonzero if an ANCHORED scan of field matches target.
  * The NULL string is a substring of every string.
  */
 int
@@ -385,17 +402,17 @@ isSubMatch(
     char *field,
     char *target )
 {
-    char  byteT;
-    char  byteF;
+    char  byteF;                                                   /* Field  */
+    char  byteT;                                                   /* Target */
 
     while( 1 )  {
-        if( !(byteT = *(target++)) )  {
+        if( !(byteT = *(target++)) )  {     /* End of Target counts as match */
             return( 1 );
         }
-        if( !(byteF = *(field++)) )  {
+        if( !(byteF = *(field++)) )  {    /* End of Field counts as mismatch */
             return( 0 );
         }
-        if( byteF != byteT )  {
+        if( byteF != byteT )  {                 /* A strightforward mismatch */
             return( 0 );
         }
     }
@@ -403,7 +420,7 @@ isSubMatch(
 
 /*
  * ----------------------------------------------------------------------------
- * Return nonzero if an unanchored scan of field matches target.
+ * Return nonzero if an UNANCHORED scan of field matches target.
  * The NULL string is a substring of every string.
  */
 int
@@ -451,8 +468,8 @@ localMain( int    argc,
     optarg    = NULL;
 
     if( argc < 2 )  {
-	fprintf( stderr, "usage:\n\t%s ThisSpaceForRent\n", origArgv[ 0 ]  );
-	exit( 1 );
+        fprintf( stderr, "usage:\n\t%s ThisSpaceForRent\n", origArgv[ 0 ]  );
+        exit( 1 );
     }
 
     while( 1 )  {
@@ -464,7 +481,7 @@ localMain( int    argc,
             break;
         }
         switch( byte )  {
-#ifdef	ENABLE_THESE_IF_NEEDED
+#ifdef  ENABLE_THESE_IF_NEEDED
         case 'n':
         case 'N': someInt      = atoi( optarg ); break;
         case 's':
@@ -478,7 +495,7 @@ localMain( int    argc,
         }
     }
 
-#ifdef	ENABLE_THESE_IF_NEEDED
+#ifdef  ENABLE_THESE_IF_NEEDED
     if( someKindOfProblemDeservingUsageMessageAndExit )  {
         localMain( 1, origArgv, envp );       /* Explain usage and bail out. */
     }
@@ -486,8 +503,12 @@ localMain( int    argc,
     srandom( time(0) * getpid() );
 #endif                                      /* #ifdef ENABLE_THESE_IF_NEEDED */
 
-#ifdef	YOUR_CODE_HERE
-#endif                                              /* #ifdef YOUR_CODE_HERE */
+#ifdef  MAYBE_YOUR_CODE_HERE
+    for( argc=23; argc ; --argc )  {
+        MIKE_LOG( (void *)((unsigned long)argc), "Hi, Mom!" );
+    }
+    MIKE_DUMP();
+#endif                                        /* #ifdef MAYBE_YOUR_CODE_HERE */
 
     return( 0 );
 }
@@ -506,8 +527,6 @@ main( int    argc,
 
     return( localMain( argc, argv, envp )  );
 }
-
-
 
 END_OF_C_SKELETON
 
