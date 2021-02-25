@@ -1,4 +1,4 @@
 function jvr()  {
-    vi $1 $jnk/$1
+    vi $1 "${jnk}"/$1
 }
 

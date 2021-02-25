@@ -1,6 +1,6 @@
 function jc() {
-    echo "##############################" $jnk/$@ versus $@
-    cmp $jnk/$@ $@
-    echo "#####################" That was $jnk/$@ versus $@
+    echo "##############################" "${jnk}"/$@ versus $@
+    cmp "${jnk}"/$@ $@
+    echo "#####################" That was "${jnk}"/$@ versus $@
 }
 

@@ -1,6 +1,6 @@
 function jsd()  {
-    echo "##############################" $jnk/"$@" versus "$@"
-    sdiff -w 160 $jnk/./"$@" "$@"
-    echo "#####################" That was $jnk/"$@" versus "$@"
+    echo "##############################" "${jnk}"/"$@" versus "$@"
+    sdiff -w 160 "${jnk}"/./"$@" "$@"
+    echo "#####################" That was "${jnk}"/"$@" versus "$@"
 }
 
