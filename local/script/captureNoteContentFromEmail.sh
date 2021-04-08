@@ -1,4 +1,3 @@
-# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 
 #set -x -v
@@ -25,15 +24,15 @@ function tidySpaceFunc()  {
 #
 trap exitHandler EXIT
 
-tempFile=$(mktemp    /tmp/captureNoteContentF.XXXXXXXX) || { echo FAILED mktemp    /tmp/captureNoteContentF.XXXXXXXX ; exit 1 ; }
+# Create our tempFile and use it to capture all of stdin before moving on.
+#
+tempDir=$(mktemp -d /tmp/captureNoteContentD.XXXXXXXX) || { echo FAILED mktemp -d /tmp/captureNoteContentD.XXXXXXXX ; exit 1 ; }
+cd $tempDir                                            || { echo FAILED cd $tempDir ; exit 1 ; }
+tempFile=$(mktemp   /tmp/captureNoteContentF.XXXXXXXX) || { echo FAILED mktemp    /tmp/captureNoteContentF.XXXXXXXX ; exit 1 ; }
 
 cat > $tempFile
 
-tempDir=$(mktemp -d /tmp/captureNoteContentD.XXXXXXXX)  || { echo FAILED mktemp -d /tmp/captureNoteContentD.XXXXXXXX ; exit 1 ; }
-
-cd $tempDir                                            || { echo FAILED cd $tempDir ; exit 1 ; }
-
-munpack -q -t < $tempFile >/dev/null 2>&1
+munpack -q -t < $tempFile >/dev/null 2>&1 # From the MH mpack package
 
 x=$(find . -xdev -type f | wc -l)
 
