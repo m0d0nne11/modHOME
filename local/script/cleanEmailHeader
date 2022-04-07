@@ -16,13 +16,15 @@ sed							\
 
 function stripHeaderGeneralFunc()  {
 formail -c -z -f | sed					\
-	-e	's/[	 ][	 ]*/ /g'		\
 	-e	's/ $//'				\
+	-e	's/[	 ][	 ]*/ /g'		\
 	-e	's/\([Rr][Ee]: *\)\1*/Re: /'		\
 	-e	'/^[Aa]utoforwarded:/d'			\
 	-e	'/^Apparently-To:/d'			\
 	-e	'/^Approved:/d'				\
+	-e	'/^ARC-/d'				\
 	-e	'/^Article:/d'				\
+	-e	'/^Authentication-Results:/d'		\
 	-e	'/^Comments:/d'				\
 	-e	'/^Delivered-To:/d'			\
 	-e	'/^Distribution:/d'			\
@@ -43,6 +45,7 @@ formail -c -z -f | sed					\
 	-e	'/^[Pp]riority:/d'			\
 	-e	'/^Precedence:/d'			\
 	-e	'/^Received:/d'				\
+	-e	'/^Received-SPF:/d'			\
 	-e	'/^Replied:/d'				\
 	-e	'/^Reply-[Tt]o:/d'			\
 	-e	'/^Resent-Date:/d'			\
@@ -54,6 +57,7 @@ formail -c -z -f | sed					\
 	-e	'/^Sender:/d'				\
 	-e	'/^Status:/d'				\
 	-e	'/^Thread-index:/d'			\
+	-e	'/^user-agent:/d'			\
 	-e	'/^User-Agent:/d'			\
 	-e	'/^[Uu]a-Content-Id:/d'			\
 	-e	'/^X-[Aa]ccept-[Ll]anguage:/d'		\
@@ -62,22 +66,32 @@ formail -c -z -f | sed					\
 	-e	'/^X-CAA-SPAM:/d'			\
 	-e	'/^X-Corel-.*:/d'			\
 	-e	'/^X-[Ff]ace:/d'			\
+	-e	'/^x-forefront-/d'			\
+	-e	'/^X-Gm-Message-/d'			\
+	-e	'/^X-Google-/d'				\
 	-e	'/^X-Incognito-.*:/d'			\
 	-e	'/^X-Juno-.*:/d'			\
 	-e	'/^X-Listprocessor-Version:/d'		\
 	-e	'/^X-Loop:/d'				\
 	-e	'/^X-Mail-Agent:/d'			\
 	-e	'/^X-Mailing-List:/d'			\
+	-e	'/^x-microsoft-/d'			\
 	-e	'/^X-Mimeole:/d'			\
 	-e	'/^X-[Mm]ailer:/d'			\
 	-e	'/^X-Mozilla-Status:/d'			\
+	-e	'/^x-ms-/d'				\
+	-e	'/^X-MS-/d'				\
 	-e	'/^X-Msmail.*:/d'			\
 	-e	'/^X-Mts:/d'				\
 	-e	'/^X-Newsreader:/d'			\
+	-e	'/^X-Original-Authentication-/d'	\
+	-e	'/^X-OriginatorOrg:/d'			\
 	-e	'/^X-Pgp-Fingerprint:/d'		\
 	-e	'/^X-PH:/d'				\
 	-e	'/^X-Pmd-Folder:/d'			\
 	-e	'/^X-Priority:/d'			\
+	-e	'/^X-Proofpoint-/d'			\
+	-e	'/^X-Received:/d'			\
 	-e	'/^Xref:/d'				\
 	-e	'/^X-SA-Exim-Connect-IP:/d'		\
 	-e	'/^X-SA-Exim-Mail-From:/d'		\
@@ -91,9 +105,7 @@ formail -c -z -f | sed					\
 	-e	'/^X-[Uu][Rr][IiLl]:/d'			\
 	-e	'/^X-WTID:/d'				\
 	-e	'/^X-WTVersion:/d'			\
-	-e	'/^X-Yahoo-Newman-Id:/d'		\
-	-e	'/^X-Yahoo-Newman-Property:/d'		\
-	-e	'/^X-Yahoo-Profile:/d'			\
+	-e	'/^X-Yahoo-/d'				\
 
 #	-e	'/^Message-[Ii][Dd]:/d'			\
 #	-e	'/^[Rr][Ee][Ff][Ee][Rr][Ee][Nn].*:/d'	\

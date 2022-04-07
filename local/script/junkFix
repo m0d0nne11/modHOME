@@ -13,6 +13,7 @@
 #fi
 
 LANG=C sed			\
+	-e 's/✅/#/g'		\
 	-e 's/🎭/(theatre)/g'	\
 	-e 's/⏳/(hourglass)/g'	\
 	-e 's/✈/(jet)/g'	\
