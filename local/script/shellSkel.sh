@@ -1978,12 +1978,6 @@ fi
 
 exit 0
 
-############## SCRIPT ./lisa
- fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: lodonnellma@yahoo.com\
-To: Lisa.ODonnell@genzyme.com/' -e 's/^X-message-flag:.*$/X-message-flag: IBLY-ooo-ooo/'
-#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Lisa.ODonnell@genzyme.com/'
-#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: lodonnel@std.com/'
-
 ############## SCRIPT ./hipcrime
 sed -e '/h[0-9io]pc[rl][0-9io][mn]e/s/[:!].*$/! 0000-0000/'      \
     -e '/cc*rr*ii*mm*ee*hh*ii*pp*/s/[:!].*$/! 0000-0000/'        \
@@ -2045,13 +2039,6 @@ then
 fi
 
 echo '/h/mod/local/script/hourlyCronScript >/dev/null 2>&1' | at now next hour >/dev/null 2>&1
-
-############## SCRIPT ./amity
-#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: amity@romanauskas.com\
- fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Amity Baldwin <amity.baldwin@gmail.com>\
-X-notReally-To: anybody@else.com/'
-#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Lisa.ODonnell@genzyme.com/'
-#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: lodonnel@std.com/'
 
 ############## SCRIPT ./.IF
 echo ".if $@"
@@ -2197,12 +2184,6 @@ uncompress *
 inc -file *
 cd ..
 rm -rf incWorldMailMH$$
-
-############## SCRIPT ./gen
- fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: g_ricard2000@yahoo.com\
-X-notReally-To: anybody@else.com/'
-#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Lisa.ODonnell@genzyme.com/'
-#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: lodonnel@std.com/'
 
 ############## SCRIPT ./junkFix
 #!/bin/bash
