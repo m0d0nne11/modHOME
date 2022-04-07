@@ -11,37 +11,6 @@ cat <<"EndOfShellSkell"
 sed -e 's/\(.\)/\
 \1/g'
 
-############## SCRIPT ./anna
- fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: AnnaBracken@aol.com/'
-
-############## SCRIPT ./autoInc
-echo HEY - just say '"inc"'...
-exit 1
-
-#banner autoinc running >/dev/ttyp6
-#ps -j -a -x -Oc        >/dev/ttyp6
-
-date
-time expect <<EOF
-#
-# Send 1 char at a time, 100 millis apart
-#
-set send_slow {1 0.1}
-#spawn /usr/bin/mh/inc -host world.std.com -norpop
- spawn /usr/bin/mh/inc -host pop.ne.mediaone.net -norpop
-#expect "Password (world.std.com:mod): "
-expect "Password (pop.ne.mediaone.net:mod):"
-#
-# Sleep to allow the terminal settings to
-# be changed to avoid echoing the password...
-#
-sleep 2
-#send -s w1rld1\r
-send -s HSD9086\r
-set timeout -1
-expect eof
-EOF
-
 ############## SCRIPT ./AWK/calcFormatString.awk
 BEGIN  {
     mostFields = 0
