@@ -19,15 +19,6 @@
 
     cd && . modHOME/Bmod
 
- [TIP: if you first do this:
-
-    cd && ln -s modHOME/Bmod
-
- ...you'll afterwards be able to do this:
-
-    cd && . Bmod
- ]
-
  Normally, this modHOME stuff can be safely left in place since it
  has (essentially) no effect on other users who do not explicitly
  put it into effect via the Bmod script.
