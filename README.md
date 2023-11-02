@@ -6,30 +6,27 @@
  preferences.  The modHOME environment can be installed/initialized
  for any user, thus:
 
-    cd; git clone https://github.com/m0d0nne11/modHOME
+    cd && git clone https://github.com/m0d0nne11/modHOME
 
  ...or (assuming tarball available) thus:
 
-    cd; tar xvzf modHOME.tgz
+    cd && tar xvzf modHOME.tgz
 
- ...or even just by copying ~/modHOME from another machine,
- followed thus:
-
-    . modHOME/Bmod; pathPreen; pathSave
+ ...or even just by replicating an existing modHOME hierarchy from another
+ machine in your home directory as ~/modHOME.
 
  Subsequent uses then require only sourcing this Bmod script:
 
-    . modHOME/Bmod
+    cd && . modHOME/Bmod
 
- ...or if you first do this:
+ [TIP: if you first do this:
 
-    cd ; ln -s modHOME/Bmod
+    cd && ln -s modHOME/Bmod
 
- ...you'll then be able to do this:
+ ...you'll afterwards be able to do this:
 
-    . Bmod
-
- ...saving yourself YUUUUUGE amounts of typing.  Huge!   ;->
+    cd && . Bmod
+ ]
 
  Normally, this modHOME stuff can be safely left in place since it
  has (essentially) no effect on other users who do not explicitly
