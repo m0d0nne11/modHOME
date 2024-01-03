@@ -20,16 +20,24 @@ function eth0ipAddr()  {
 }
 
 ###############################################################################
+#
+function wlo1ipAddr()  {
+  local line=($(/sbin/ifconfig wlo1 | fgrep 'inet '))
+  echo ${line[1]} | sed -e 's/^.*://'
+}
+
+###############################################################################
 # True execution actually begins here...
 #
 
 unset showIPextern
 unset showIPeth0
+unset showIPwlo1
 
 currentOptArg=""
 while :
 do
-    getopts "axe" currentOptArg
+    getopts "axew" currentOptArg
 
     case "$currentOptArg" in
     '?')                                                # End of supplied args.
@@ -38,6 +46,7 @@ do
     a)                     # All.
         showIPextern=1
         showIPeth0=1
+        showIPwlo1=1
         ;;
     x)
         showIPextern=1
@@ -45,17 +54,22 @@ do
     e)
         showIPeth0=1
         ;;
+    w)
+        showIPwlo1=1
+        ;;
     *)
         echo "Unexpected commandline parameter: $currentOptArg"
-        echo "usage: $0 [-a] [-x] [-e] (All/Extern/eth0)"
+        echo "usage: $0 [-a] [-x] [-e] [-w](All/Extern/eth0/wlo1)"
         exit 1
         ;;
     esac
 done
 
-if [ -z "$showIPextern"  -a -z "$showIPeth0" ]
+if [ -z "$showIPextern"  -a -z "$showIPeth0" -a -z "$showIPwlo1" ]
 then
+        showIPextern=1
         showIPeth0=1
+        showIPwlo1=1
 fi
 
 if [ "$showIPextern" = "1" ]
@@ -66,5 +80,10 @@ fi
 if [ "$showIPeth0" = "1" ]
 then
         eth0ipAddr
+fi
+
+if [ "$showIPwlo1" = "1" ]
+then
+        wlo1ipAddr
 fi
 

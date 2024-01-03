@@ -104,12 +104,12 @@ def md5stringForFile( fileName ) :
 #
 def tdsMD5retagFunc( fileName ) :
 
-    # Extract from the specified pathname the directory where NoteFile resides
-    # and attempt to stand there.
+    # Extract from the specified pathname the directory where
+    # the specified file resides and attempt to stand there.
     #
     dir = saneDirname( fileName )                       # os.path.dirname() bug
     if not os.path.isdir( dir ) :
-        sys.stderr.write( "No dir '%s' for NoteFile '%s' ?\n" % (dir, fileName) )
+        sys.stderr.write( "No dir '%s' for file '%s' ?\n" % (dir, fileName) )
         return False
 
     try:
@@ -120,7 +120,7 @@ def tdsMD5retagFunc( fileName ) :
 
     base = os.path.basename( fileName )
     if not os.path.isfile( base ) :
-        sys.stderr.write( "No file '%s' for NoteFile '%s' in dir '%s' ?\n" % (base, fileName, dir) )
+        sys.stderr.write( "No file '%s' for file '%s' in dir '%s' ?\n" % (base, fileName, dir) )
         return False
 
     # We require that the filename be laid out in tds.md5 format:
@@ -145,6 +145,7 @@ def tdsMD5retagFunc( fileName ) :
     tds = m.group( 1 )
 
     # Existence of multiple files with same TDS not a good sign...
+    # XXX_MIKE: To-Do - maybe offer a no-clobber option?
     #
     l = glob.glob( tds + '*' )
     if len(l) != 1 :
@@ -180,7 +181,7 @@ def tdsMD5retagFunc( fileName ) :
         sys.stderr.write( "Can't tdsTouch(%s, %s) in %s ?\n" % (tds, proposed, dir) )
         return False
 
-    if base != proposed :
+    if base != proposed :                        # Mention new name if changed.
         print "%s: %s -> %s" % (tds, m.group( 2 ), md5)
 
     return True

@@ -11,6 +11,37 @@ cat <<"EndOfShellSkell"
 sed -e 's/\(.\)/\
 \1/g'
 
+############## SCRIPT ./anna
+ fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: AnnaBracken@aol.com/'
+
+############## SCRIPT ./autoInc
+echo HEY - just say '"inc"'...
+exit 1
+
+#banner autoinc running >/dev/ttyp6
+#ps -j -a -x -Oc        >/dev/ttyp6
+
+date
+time expect <<EOF
+#
+# Send 1 char at a time, 100 millis apart
+#
+set send_slow {1 0.1}
+#spawn /usr/bin/mh/inc -host world.std.com -norpop
+ spawn /usr/bin/mh/inc -host pop.ne.mediaone.net -norpop
+#expect "Password (world.std.com:mod): "
+expect "Password (pop.ne.mediaone.net:mod):"
+#
+# Sleep to allow the terminal settings to
+# be changed to avoid echoing the password...
+#
+sleep 2
+#send -s w1rld1\r
+send -s HSD9086\r
+set timeout -1
+expect eof
+EOF
+
 ############## SCRIPT ./AWK/calcFormatString.awk
 BEGIN  {
     mostFields = 0
@@ -1947,6 +1978,12 @@ fi
 
 exit 0
 
+############## SCRIPT ./lisa
+ fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: lodonnellma@yahoo.com\
+To: Lisa.ODonnell@genzyme.com/' -e 's/^X-message-flag:.*$/X-message-flag: IBLY-ooo-ooo/'
+#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Lisa.ODonnell@genzyme.com/'
+#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: lodonnel@std.com/'
+
 ############## SCRIPT ./hipcrime
 sed -e '/h[0-9io]pc[rl][0-9io][mn]e/s/[:!].*$/! 0000-0000/'      \
     -e '/cc*rr*ii*mm*ee*hh*ii*pp*/s/[:!].*$/! 0000-0000/'        \
@@ -2008,6 +2045,13 @@ then
 fi
 
 echo '/h/mod/local/script/hourlyCronScript >/dev/null 2>&1' | at now next hour >/dev/null 2>&1
+
+############## SCRIPT ./amity
+#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: amity@romanauskas.com\
+ fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Amity Baldwin <amity.baldwin@gmail.com>\
+X-notReally-To: anybody@else.com/'
+#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Lisa.ODonnell@genzyme.com/'
+#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: lodonnel@std.com/'
 
 ############## SCRIPT ./.IF
 echo ".if $@"
@@ -2153,6 +2197,12 @@ uncompress *
 inc -file *
 cd ..
 rm -rf incWorldMailMH$$
+
+############## SCRIPT ./gen
+ fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: g_ricard2000@yahoo.com\
+X-notReally-To: anybody@else.com/'
+#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: Lisa.ODonnell@genzyme.com/'
+#fromHack | sed -e 's/^[Tt][Oo]:[	 ].*$/To: lodonnel@std.com/'
 
 ############## SCRIPT ./junkFix
 #!/bin/bash

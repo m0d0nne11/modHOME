@@ -11,12 +11,15 @@
 # symlink points at the most recent log.
 #
 function updateMakeLogLink()  {
-    timeStamp=$(tds)
+    local timeStamp=$(tds)
+
+
 
     # Do we have a directory?
     if [ -d makeLogSTORAGE ] ; then
         echo "####" Have makeLogSTORAGE/
         mostRecentLog=$(cd makeLogSTORAGE ; ls 20* | tail -1)
+
 
         if [ -z "$mostRecentLog" ] ; then
             echo "####" Creating lone entry makeLogSTORAGE/$timeStamp
