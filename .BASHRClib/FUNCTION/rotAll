@@ -1,6 +1,6 @@
 function rotALL ()  {
     jnk="$@"
-echo RZQ is "${jnk}"
+[ "$XXX_MIKE_DEBUG" ] && echo ARG0 is "${jnk}"
     x=26
     while [ $x -gt 0 ]
     do

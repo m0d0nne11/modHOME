@@ -47,7 +47,6 @@ xcodebuild
 cd Documents/Virtual\ Machines.localized/
 cd modHOME/local/alternative/
 declare -a rzq=("")
-echo g65help@issues
 echo http://b0rken.com/putty-0.64-installer.exe
 (f=ContenTable.STORAGE/ContenTable.$(hostname).$(ymd) ; mkdir -p ContenTable.STORAGE ; find . -xdev -type f | sed -e 's/..//' | sort -bfd > "${f}" ; rm -f ContenTable ; ln -s "${f}" ContenTable) &
 function lineupFunc() { column -t | sed -e 's/\([^ ]\) /\1 /g' ; }
@@ -59,7 +58,6 @@ sudo port -d selfupdate
 sudo port install wget
 xcodebuild
 sudo tcpdump -i en0 -nev udp port 68
-cd ~/Desktop/MITLL/bureaucracy/timesheet/
 drutil burn -drive 2 -nofs ~/Desktop/ISO/ubuntu-12.04.5-desktop-amd64.iso
 pd ~/'Library/Application Support/Firefox/Profiles/adrmdgba.default'
 pushd ~ ; history -c ; history -r ; . Bmod ; popd

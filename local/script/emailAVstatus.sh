@@ -24,7 +24,7 @@ if ! echo $1 | grep -E -q -e '^timesheetMichaelODonnell201[[:digit:]]{5}-[[:digi
     usage $1 '- unexpected filename layout. (?)'
 fi
 
-#echo Transmitting uuencoded $1 to michael.odonnell@ll.mit.edu ...
+#echo Transmitting uuencoded $1 to emailRecipient ...
 
-#cat <(echo -e "\n\nAttached please find unsigned $1\n\n" $1) <(uuencode $1 < $1) | mail -s"$1" michael.odonnell@ll.mit.edu
+#cat <(echo -e "\n\nAttached please find unsigned $1\n\n" $1) <(uuencode $1 < $1) | mail -s"$1" emailRecipient
 

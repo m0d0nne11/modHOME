@@ -1868,11 +1868,7 @@ function "strohsliteWideWhite" { !"xterm -xrm '*vt100*initialFont: 6' -bc -bdc -
 #
 #function "wideWhite"           { !"xterm -xrm '*vt100*initialFont: 6' -bc -bdc -bg navajoWhite3 -cb +cm -cr red   +dc -fg black -fn -misc-fixed-medium-r-normal--14-110-100-100-c-70-iso8859-1 -geometry 160x50+0-0    -ls -n wideWhite         -sb -sl 5000 -ulc                                        &" }
 
-function "SSHworld"            { !"xterm -xrm '*vt100*initialFont: 6' -bc -bdc -bg gray30       -cb +cm           +dc -fg white -fn -misc-fixed-medium-r-normal--14-110-100-100-c-70-iso8859-1 -geometry 80x50-12+-4   -ls -n SSHworld          -sb -sl 5000 -ulc -e ssh -X  mod@world.std.com           &" }
-
-function "SSHspineless"        { !"xterm -xrm '*vt100*initialFont: 6' -bc -bdc -bg gray30       -cb +cm           +dc -fg white -fn -misc-fixed-medium-r-normal--14-110-100-100-c-70-iso8859-1 -geometry 80x50-12+-4   -ls -n SSHspineless      -sb -sl 5000 -ulc -e ssh -X  mod@spineless.org           &" }
-
-function "SSHsemolina"         { !"xterm -xrm '*vt100*initialFont: 6' -bc -bdc -bg gray30       -cb +cm           +dc -fg white -fn -misc-fixed-medium-r-normal--14-110-100-100-c-70-iso8859-1 -geometry 80x50-12+-4   -ls -n SSHsemolina       -sb -sl 5000 -ulc -e ssh -X  -p 443 mod@semolina         &" }
+funcion "SSHremote"            { !"xterm -xrm '*vt100*initialFont: 6' -bc -bdc -bg gray30       -cb +cm           +dc -fg white -fn -misc-fixed-medium-r-normal--14-110-100-100-c-70-iso8859-1 -geometry 80x50-12+-4   -ls -n SSHworld          -sb -sl 5000 -ulc -e ssh -X  someRemoteHost           &" }
 
 # Mention screen-edge then position
 #

@@ -1,6 +1,6 @@
 function mv2tagsHead()  {
-    fgrep    "$@"   tags  >tagsSSS
-    fgrep -v "$@"   tags >>tagsSSS
+    fgrep    "$@" tags  >tagsSSS
+    fgrep -v "$@" tags >>tagsSSS
     cat tagsSSS > tags
     rm  tagsSSS
 }

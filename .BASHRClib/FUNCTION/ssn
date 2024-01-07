@@ -1,5 +1,5 @@
 function ssn()  {
     echo "####################" $(timeDateString) >>~/.ssnFile
-    echo $@   >>~/.ssnFile
+    echo $@                                       >>~/.ssnFile
 }
 

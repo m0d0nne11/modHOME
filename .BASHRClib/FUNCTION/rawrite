@@ -1,4 +1,0 @@
-function rawrite()  {
-    sudo dd ibs=18k obs=18k of=/dev/fd0H1440 if=$@
-}
-
