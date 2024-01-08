@@ -7,65 +7,46 @@
 #   ~/modHOME/local/symlink
 #
 
- export ALL_POSSIBLE_PATH_DIRS=" \
+ export ALL_POSSIBLE_PATH_DIRS="
 
     ${modHOME}.custom/local/script
     ${modHOME}/local/script
+    ~/local/script
+
+    ${modHOME}.custom/local/alternative
+    ${modHOME}.custom/local/symlink
+    ${modHOME}.custom/bin
+    ${modHOME}.custom/local/bin
+    ${modHOME}.custom/perl5/bin
+
+    ${modHOME}/local/alternative
+    ${modHOME}/local/symlink
+    ${modHOME}/bin
+    ${modHOME}/local/bin
+    ${modHOME}/perl5/bin
 
     ARCH_DEPENDENT_LOCAL_BIN
-
-    ${modHOME}.custom/bin
-    ${modHOME}.custom/local/alternative
-    ${modHOME}.custom/local/bin
-    ${modHOME}.custom/local/symlink
-    ${modHOME}/bin
-    ${modHOME}/local/alternative
-    ${modHOME}/local/bin
-    ${modHOME}/local/symlink
-
-    ~/local/bin
-    ~/local/script
-    ~/.local/bin
-
-    /etc/alternatives
-    /sbin
-    /bin
-    /usr/bin
-    /usr/sbin
-
-    /usr/local/bin
-    /usr/local/sbin
-    /usr/local/script
-    /usr/local/scripts
-    /usr/local/gnu/bin
-
     /data/data/com.termux/files/usr/bin
     /data/data/com.termux/files/usr/bin/applets
 
+    /bin
+    /sbin
+    /usr/bin
+    /usr/local
+    /usr/local/bin
+    /usr/local/sbin
+    /usr/sbin
+
+    /etc/alternatives
     /opt/local/bin
     /opt/local/local/bin
     /opt/local/sbin
-
-    /u/bin
-    /u/script
-    /u/scripts
-
     /opt/X11/bin
-    /usr/bin/X11
+    /u/bin
     /usr/local/X11/bin
-    /usr/X11/bin
-    /usr/x11r5/bin
-    /usr/X386/bin
-    /u/x11r5/bin
     /usr/X11
-    /snap/bin
+    /usr/X11/bin
 
-    /usr/local/games
-    /usr/games
-
-    /usr/local/firefox
-    /usr/lib/firefox
-    /usr/local/mozilla
     /u/mh
     /usr/bin/mh
     /usr/lib/mh
@@ -73,75 +54,93 @@
     /usr/local/mh/lib
     /usr/local/nmh/bin
     /usr/local/nmh/lib
+
+    /u/scripts
+    /usr/local/scripts
+    /u/script
+    /usr/local/script
     /usr/local/share
     /usr/ucb
-
-
-    /Builds/btools2/afn/buildtools/bin
-    /Builds/btools2/afn/testing/bin
-    /afs/ri/vice/bin
-    /etc/net
-    /home/sun_client
+    /usr/local/uvscan
+    /usr/bin/X11
     /nfs/bin
     /root/bin
+    /snap/bin
     /tools/atria/bin
     /u/solaris-cc/bin
     /usr/atria/bin
-    /usr/ccs/gcc
-    /usr/etc
-    /usr/hosts
     /usr/i860/bin
-    /usr/lang
-    /usr/lib64/qt-3.3/bin
-    /usr/local
-    /usr/local/TeX/bin
-    /usr/local/natspeak/bin
-    /usr/local/netscape
-    /usr/local/ode/bin
-    /usr/local/ode/lib
+    /usr/local/gnu/bin
+    /usr/local/Homebrew/bin
     /usr/local/tcl/bin
-    /usr/local/uvscan
-    /usr/mercury/bin
-    /usr/mercury/bin/solaris-2_5-sparc_elf
+    /usr/local/TeX/bin
     /usr/openwin/bin
-    /usr/xpg4/bin
+    /usr/x11r5/bin
+    /usr/X386/bin
+    /u/x11r5/bin
+    /usr/etc
+    /usr/games
+    /usr/local/games
+    /usr/ccs/gcc
+    /usr/hosts
+    /usr/lang
+    /usr/libexec
+    /etc/net
+
     /vobs/build/exports/bin
     /vobs/build/exports/scripts
     /vobs/gdb/kgdb
-    /vobs/mcos/ccbuild/exports/bin
-    /opt/puppetlabs/bin
 
-    ${modHOME}.custom/JAVA/jdk1.5.0_03/bin
-    ${modHOME}/JAVA/jdk1.5.0_03/bin
+    /afs/ri/vice/bin
+    /Builds/btools2/afn/buildtools/bin
+    /Builds/btools2/afn/testing/bin
+    ~cgeggis/bin
+    /usr/local/ode/bin
+    /usr/local/ode/lib
+    /home/sun_client
+    ~jeffc/bin
+    ~loverso/local/arch/bin
+    ~loverso/local/bin
+    /usr/local/fecftp
+    /usr/mercury/bin
+    /usr/mercury/bin/solaris-2_5-sparc_elf
+    /usr/xpg4/bin
+    /vobs/mcos/ccbuild/exports/bin
+
     ${modHOME}.custom/local/alternative/osxVMwareFusionLibrarySymlink
     ${modHOME}.custom/local/alternative/osxVMWareOVFtoolDir
-    ${modHOME}.custom/perl5/bin
     ${modHOME}/local/alternative/osxVMwareFusionLibrarySymlink
     ${modHOME}/local/alternative/osxVMWareOVFtoolDir
-    ${modHOME}/perl5/bin
-
-    /usr/local/fecftp
-
     /Applications/MacVim.app/Contents/bin
     /Applications/MacVim.app/Contents/MacOS
-    ~/JAVA/jdk1.5.0_03/bin
-    /usr/local/Eiffel52/studio/spec/linux-glibc2.1/bin
-
     /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/usr/bin
     /Applications/Xcode.app/Contents/Developer/usr/bin
     /Applications/Xcode.app/Contents/Developer/usr/share/xcs/Node/bin
     /Applications/Xcode.app/Contents/Developer/usr/share/xcs/Redis/bin
-
     /Library/Developer/CommandLineTools/usr/bin
-
     /Library/OpenSC/bin
-
     /System/Library/Frameworks/Python.framework/Versions/2.7/bin
 
-    ~cgeggis/bin
-    ~jeffc/bin
-    ~loverso/local/arch/bin
-    ~loverso/local/bin
+    /opt/anaconda3/bin/
+    /opt/BESClient/bin
+    /opt/nessus_agent/bin
+    /opt/nessus_agent/sbin
+    /opt/puppetlabs/bin
+    /opt/sentinelone/benchmarks
+    /opt/sentinelone/bin
+    /opt/sentinelone/configuration
+    /opt/splunkforwarder/bin
+    /opt/splunkforwarder/etc/apps/journald_input/bin
+    /opt/splunkforwarder/etc/apps/Splunk_TA_nix/bin
+    /opt/splunkforwarder/share/mongo-c-driver
+    /usr/lib64/qt-3.3/bin
+    /usr/lib/firefox
+    /usr/local/Eiffel52/studio/spec/linux-glibc2.1/bin
+    /usr/local/firefox
+    /usr/local/mozilla
+    /usr/local/natspeak/bin
+    /usr/local/netscape
+    /usr/local/ORACLE.instantclient_19_8
 
-    "
+" ;
 

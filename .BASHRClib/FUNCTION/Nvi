@@ -3,7 +3,7 @@ function Nvi()  {
         if [ $# -lt 1 ] ; then
             vi . ;
         else
-            vgrep $1 -r .
+            vi $(grep -l "$@" 20* ); # ASSUME: no later than 2099
         fi ;
         popd ;
     fi ;

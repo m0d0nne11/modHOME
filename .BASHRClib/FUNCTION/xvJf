@@ -1,0 +1,8 @@
+function xvJf()  {
+    if [ $# -gt 0 ] ; then
+        tar xvJf - < $@ ;
+    else
+        tar xvJf - ;
+    fi ;
+}
+

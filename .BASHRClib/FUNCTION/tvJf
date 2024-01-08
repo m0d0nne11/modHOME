@@ -1,0 +1,9 @@
+function tvJf()  {
+    if [ $# -gt 0 ]
+    then
+        tar tvJf - < $@
+    else
+        tar tvJf -
+    fi
+}
+

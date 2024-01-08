@@ -4,33 +4,33 @@
 # time the build was started.  We maintain a symlink called
 # "makeLog" that we wish to keep pointed at the most recent
 # log that has been (is being) created.  Those log files
-# are actually kept in the subdirectory ./makeLogSTORAGE.
+# are actually kept in the subdirectory ${REPO}.
 #
 # This script makes sure that all the pieces exist (creating
 # them when necessary) and then ensures that the makeLog
 # symlink points at the most recent log.
 #
 function updateMakeLogLink()  {
-    local timeStamp=$(tds)
-
-
+    local timeStamp=$(tds) ;
+    local REPO="makeLogSTORAGE" ;
+    local mostRecentLog ;
 
     # Do we have a directory?
-    if [ -d makeLogSTORAGE ] ; then
-        echo "####" Have makeLogSTORAGE/
-        mostRecentLog=$(cd makeLogSTORAGE ; ls 20* | tail -1)
-
+    if [ -d "${REPO}" ] ; then
+        echo "#### Have ${REPO}"/
+#       mostRecentLog=$(cd "${REPO}" ; ls 20* | tail -1) # Simpler but possibly vulnerable to bizarre/malicious filenames?
+        mostRecentLog=$(cd "${REPO}" ; find . -maxdepth 1 -type f -regextype sed -regex '\./[[:digit:]]*' | sed -e s/..// | sort | tail -1)
 
         if [ -z "$mostRecentLog" ] ; then
-            echo "####" Creating lone entry makeLogSTORAGE/$timeStamp
-            touch makeLogSTORAGE/$timeStamp
+            echo "####" Creating lone entry ${REPO}/$timeStamp
+            touch "${REPO}"/$timeStamp
             mostRecentLog=$timeStamp
         fi
         echo "####" mostRecentLog is $mostRecentLog
-    else
+    else                                  # No REPO directory - create/populate
         echo "####" Creating directory+entry makeLogSTORAGE/$timeStamp
-        mkdir makeLogSTORAGE
-        touch makeLogSTORAGE/$timeStamp
+        mkdir "${REPO}"
+        touch "${REPO}"/$timeStamp
         mostRecentLog=$timeStamp
     fi
 

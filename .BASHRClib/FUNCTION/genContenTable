@@ -8,7 +8,8 @@ function genContenTable()  {
 
 	t=ContenTable.STORAGE/ContenTable.$(hostname).$(ymd) ;
 
-	find . -xdev \! -type d -print | sed -e s/..// >$t &
+#	find . -xdev \! \( -type b -o -type c -o -type d -o -type l -o -type p -o -type s \) | sed -e s/..// >$t &
+	find . -xdev \! \( -type b -o -type c -o -type d            -o -type p -o -type s \) | sed -e s/..// >$t &
 	ln -sf $t ContenTable ;
 	ll ContenTable ;
 }
