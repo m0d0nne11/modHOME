@@ -1,44 +1,65 @@
- This file is part of modHOME, a portable (and almost entirely
- non-invasive) home directory implementation that I (mod=Michael
- O'Donnell) sometimes inflict on systems where I'll be working
- so that I can have familiar surroundings (aliases, functions,
- environment variables, init scripts, etc) that reflect my
- preferences.  The modHOME environment can be installed/initialized
- for any user, thus:
+ This is file is part of modHOME, a portable bash environment that I
+ (mod=Michael O'Donnell) sometimes install as a supplement to my home
+ directory on systems where I'll be working so that I can have familiar
+ surroundings (aliases, functions, environment variables, init scripts,
+ etc) that reflect my preferences.
+
+ modHOME exists as the read-only subdirectory ~/modHOME in your home
+ directory, and it then creates an identically structured peer hierarchy
+ ~/modHOME.custom where any local modifications live.  Examples of local
+ modifications would be environment variables like PATH, and in my case
+ the Vim temp and config files live there.
+
+ To use modHOME you need only create ~/modHOME, with Git being the
+ "normal" way:
 
     cd && git clone https://github.com/m0d0nne11/modHOME
 
- ...or (assuming tarball available) thus:
+ ...but any method you can devise for cloning modHOME from another place
+ should work, so this works, too:
 
-    cd && tar xvzf modHOME.tgz
+    cd && rsync -vax someUser@otherHost:modHOME .
 
- ...or even just by replicating an existing modHOME hierarchy from another
- machine in your home directory as ~/modHOME.
-
- Subsequent uses then require only sourcing this Bmod script:
+ Once your ~/modHOME hierarchy exists, the recommended way to use it is
+ to source the Bmod script therein:
 
     cd && . modHOME/Bmod
 
- Normally, this modHOME stuff can be safely left in place since it
- has (essentially) no effect on other users who do not explicitly
- put it into effect via the Bmod script.
+ ...which (on first usage) will prompt you for permission to create
+ ~/modHOME.custom and initialize your PATH and such.
 
- Local modifications/customizations are maintained under the parallel
- modHOME.custom directory so the modHOME hierarchy is usually in pristine
- condition and should technically be usable even if its contents are
- set Read-Only; best example of a local customization would be .../PATH
+ In circumstances where a home directory is accessed by multiple users,
+ ~/modHOME* can be safely left in place since they have (essentially) no
+ effect on others unless explicitly put into effect via the Bmod script.
 
- I generally don't leave precious files in the modHOME* hierarchies
- so it should always be OK to delete them without notice if you feel
- the need to tidy things up, though it'd be good manners to talk to
- me first, if possible...  ;->
+ All local customizations are maintained under the parallel modHOME.custom
+ directory so the modHOME hierarchy is usually in pristine condition and
+ should theoretically be usable even if its contents are set Read-Only;
+ best example of a local customization would be .../PATH
+
+ I *usually* don't leave precious files in these modHOME* hierarchies
+ so it should be OK to delete them without notice if you really feel
+ the need, though it'd be good manners to first talk to me (or whoever
+ installed them) if possible...  ;->
+
+ I've only ever used modHOME with Bash so if you use a different shell
+ I predict it won't work without some hackery.
+
+ Git metadata in ~/modHOME can be deleted (rm -rf ~/modHOME/.git* )
+ unless you plan to manage or contribute any local changes upstream.
+
+ If one of my {functions,aliases,environment_variables,scripts} needs
+ to be changed or disabled they can be modified by editing the original
+ under ~/modHOME but the canonical method would be to clone it in its
+ corresponding location under ~/modHOME.custom and then modify/disable
+ it there, leaving ~modHOME unchanged.
 
  REMOVAL:
 
     rm -rf ~/modHOME* ~/Bmod
 
- should pretty much do it, though check for dangling symlinks in ~/.
- pointing into modHOME/...
+ ...should pretty much do it, though maybe check for dangling symlinks
+ in ~/.  pointing into the modHOME* hierarchies.
 
  (RE)GENERATING THE TARBALL:
 
@@ -46,30 +67,22 @@
 
     cd ; modHOME/modHOMEtarballUpdate.sh
 
- ...though please note that since git is now the preferred method
+ ...though please note that since Git is now the preferred method
  of propagation that script may show signs of neglect.
 
- ROOT USAGE: (security)
+ ROOT USAGE: (security!)
 
  I frequently install/use this modHOME stuff as root in root's
  home directory but security-conscious folks will, of course,
  NOT just take my word for it that there's nothing nasty herein!
 
- Since this mess is almost entirely scripts, though, it should
- be possible to verify that all's well, after which you'll want
- to then do something like:
+ Since this mess is entirely bash scripts, though, it should be
+ possible to verify that all's well, after which you'll want to
+ do something like:
 
     chown -R 0.0 ~/modHOME* ; chmod -R go-rwx ~/modHOME*
 
  ...or otherwise ensure that ownerships/permissions suit the
  circumstances and protect your godlike powers.
-
- Come to think of it, unless you plan to use Git to manage/
- contribute changes to this stuff, you might want to simply:
-
-    rm -rf .git
-
- ...herein so as to eliminate any possible (yes, it's unlikely)
- source of unknown/unwanted material.
 
  mod.modHOME@spineless.org

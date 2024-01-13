@@ -1,0 +1,50 @@
+
+# When we want to create a localized version of a file that's part of
+# the modHOME distribution, we could edit it in place but the preferred
+# method is to create a copy in the modHOME.custom hierarchy and leave
+# the original untouched.  This works because versions from modHOME.custom
+# are (when they exist) used instead of the originals under modHOME.
+# This function creates that custom copy when it's mentioned as ARG1
+#
+function modHOMEcustomize() {
+    (
+    local dir ;
+    local dirName ;
+    local file ;
+    local path ;
+
+    cd ~/modHOME              || return ; # Test accessibility.
+
+    path="$(find . -type f -name "$1" | sed -e s/..// )" || return ;
+    if [ -z "$path" ] ; then
+        echo "#### Can't find $1 anywhere under ~/modHOME" ;
+        return ;
+    fi ;
+    if [ $(echo "$path" | wc -l) -gt 1 ] ; then
+        echo "#### PROBLEM: more than one file found with that name:" ;
+        echo "$path" ;
+        return ;
+    fi
+
+    dir=$( dirname  "$path")  || return ;
+    file=$(basename "$path")  || return ;
+
+    if [ -e ${modHOME}.custom/$dir/$file ] ; then
+        echo "#### WARNING: Already have ${modHOME}.custom/$path" ;
+        ls -laCFld ${modHOME}/$path ${modHOME}.custom/$path ;
+    fi ;
+
+    echo "#### Will create/overwrite the localized copy using these commands:"
+    echo "#### rigCustomDir $dir"
+    echo "#### cp -a ${modHOME}/$path ${modHOME}.custom/$dir/."
+    echo '#### ...creating necessary (sub)directories as necessary.'
+    read -p '#### Return to proceed...  (Ctl-C to abort) ' path; # Reuse path
+
+    rigCustomDir $dir ;
+    cp -a $PWD/$dir/$file ${modHOME}.custom/$dir/. ;
+
+    echo "#### RESULT:"
+    ls -laCFld  ${modHOME}/$dir/$file ${modHOME}.custom/$dir/$file ;
+    ) ;
+} ;
+
