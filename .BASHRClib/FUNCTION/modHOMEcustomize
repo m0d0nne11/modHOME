@@ -20,16 +20,21 @@ function modHOMEcustomize() {
 
     cd ~/modHOME              || return ; # Test accessibility.
 
-    path="$(find . -type f -name "$1" | sed -e s/..// )" || return ;
-    if [ -z "$path" ] ; then
-        echo "#### Can't find $1 anywhere under ~/modHOME" ;
-        return ;
+    if ! echo "$1" | grep -q -e / ; then
+        path="$(find . -type f -name "$1" | sed -e s/..// )" || return ;
+        if [ -z "$path" ] ; then
+            echo "#### Can't find $1 anywhere under ~/modHOME" ;
+            return ;
+        fi ;
+        if [ $(echo "$path" | wc -l) -gt 1 ] ; then
+            echo "#### PROBLEM: more than one file found with that name:" ;
+            echo "$path" ;
+            return ;
+        fi
+    else
+        path="$1" ;
     fi ;
-    if [ $(echo "$path" | wc -l) -gt 1 ] ; then
-        echo "#### PROBLEM: more than one file found with that name:" ;
-        echo "$path" ;
-        return ;
-    fi
+
 
     dir=$( dirname  "$path")  || return ;
     file=$(basename "$path")  || return ;
@@ -50,6 +55,7 @@ function modHOMEcustomize() {
 
     echo "#### RESULT:"
     ls -laCFld  ${modHOME}/$dir/$file ${modHOME}.custom/$dir/$file ;
+    echo "#### MAYBE: vi ${modHOME}.custom/$dir/$file" ;
     ) ;
 } ;
 
