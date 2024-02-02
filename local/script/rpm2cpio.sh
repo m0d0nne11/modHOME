@@ -1,5 +1,47 @@
 #!/usr/bin/perl
 
+# 20240128_XXX_MIKE_OBTAINED_FROM_CHAT_GPT:
+# I see the following in some perl code and I wonder how it works:
+#      ($a, $b, $c, $d) = unpack("NCC C90", myFile);
+#
+# ChatGPT:
+#
+# The line of Perl code you provided uses the unpack function to extract
+# values from a binary string.  Let's break down the components of the
+# unpack function:
+#
+# ($a, $b, $c, $d) = unpack("NCC C90", myFile); #
+#     myFile:
+# 	This appears to be a file handle or a file descriptor.
+# 	It represents the file from which the data will be read.  #
+#     unpack:
+# 	This function is used to extract values from a binary string
+# 	based on a specified format.  It takes two arguments: the format
+# 	and the string to unpack.  #
+#     "NCC
+# 	C90": This is the format string that specifies how to interpret
+# 	the binary data.  Let's break it down: #
+#         N:
+# 	This represents an unsigned long in network order (typically
+# 	32 bits).  It will extract the first 4 bytes from the binary
+# 	string and assign them to the variable $a.  #
+#         CC:
+# 	These represent two unsigned characters (typically 8 bits each).
+# 	They will extract the next two bytes from the binary string and
+# 	assign them to the variables $b and $c.  #
+#         C90:
+# 	This represents 90 unsigned characters.  It will extract the
+# 	next 90 bytes from the binary string and assign them to the
+# 	variable $d.
+#
+# In summary, the unpack function is reading data from the file specified
+# by myFile and interpreting it based on the provided format string.
+# The extracted values are then assigned to the variables $a, $b, $c,
+# and $d.  The format string specifies how many bytes and how the bytes
+# should be interpreted for each variable.
+#
+# END_CHAT_GPT
+
 # Why does the world need another rpm2cpio?  Because the existing one
 # won't build unless you have half a ton of things that aren't really
 # required for it, since it uses the same library used to extract RPMs.

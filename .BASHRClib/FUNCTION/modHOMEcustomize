@@ -13,6 +13,11 @@ function modHOMEcustomize() {
     local file ;
     local path ;
 
+    if [ $# -ne 1 ] ; then
+        echo "Usage: $FUNCNAME existingFile" ;
+        return ;
+    fi ;
+
     cd ~/modHOME              || return ; # Test accessibility.
 
     path="$(find . -type f -name "$1" | sed -e s/..// )" || return ;
@@ -38,7 +43,7 @@ function modHOMEcustomize() {
     echo "#### rigCustomDir $dir"
     echo "#### cp -a ${modHOME}/$path ${modHOME}.custom/$dir/."
     echo '#### ...creating necessary (sub)directories as necessary.'
-    read -p '#### Return to proceed...  (Ctl-C to abort) ' path; # Reuse path
+    read -p '#### Hit Return to proceed...  (Ctl-C to abort) ' path; # Reuse path
 
     rigCustomDir $dir ;
     cp -a $PWD/$dir/$file ${modHOME}.custom/$dir/. ;
