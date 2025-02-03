@@ -1,1 +1,1 @@
-cat ~/modHOME/lisaMusic
+cat ${modHOME}.custom/lisaMusic

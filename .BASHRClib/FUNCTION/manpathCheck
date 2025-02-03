@@ -1,0 +1,12 @@
+function manpathCheck() {
+    local p
+    local OLDIFS="$IFS"
+    IFS=:
+    for p in $MANPATH ; do
+        echo "####" $p....
+        ll -d $p/.
+    done
+    IFS="$OLDIFS"
+    return 0
+}
+

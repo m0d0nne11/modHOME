@@ -1,2 +1,5 @@
-echo print '"######## Checkpoint' $(timeDateString)'"'
-noCR
+tmpFile=/tmp/mikeTmp."$PPID"."$$"
+cat  > "${tmpFile}"
+echo "$(sed -n '1s/\(^[[:space:]]*\).*$/\1/p' < "${tmpFile}")"'print( "######## Checkpoint' $(timeDateString)'" )'
+noCR < "${tmpFile}"
+rm  -f "${tmpFile}"

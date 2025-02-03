@@ -1,0 +1,63 @@
+
+# XXX_MIKE_TODO: still need to incorporate these because
+#                even on MacOS the arch command says "i386"
+#
+function isLinuxFunc() { uname -a | fgrep -qi -e linux  ; }
+function isMacOSfunc() { uname -a | fgrep -q  -e Darwin ; }
+
+function manpathPreenOLD() {
+    local d
+    local lARCH
+    local temPath=""
+    if [ -z "$ARCH" ] ; then
+        echo ARCH envar not set
+        if d=$(type -p uname) ; then
+            lARCH=$(uname -m)
+        else
+            lARCH="UnknownARCH"
+        fi
+        echo ...will use "${lARCH}"
+    else
+        lARCH="${ARCH}"
+    fi
+
+    for d in $ALL_POSSIBLE_MANPATH_DIRS "$@" ; do
+        d=$(eval echo $d)
+        if [ "${d}" = ARCH_DEPENDENT_LOCAL_BIN ] ; then
+            d="${modHOME}".custom/local/bin."${lARCH}"
+            d=$(eval echo $d)
+        fi
+        if [ -d $d/. ] ; then
+            echo "INCLUDE $d"
+            temPath="$temPath:$d"
+        else
+            echo "EXCLUDE                       $d"
+        fi
+    done
+
+    export MANPATH=$(echo "${temPath}" | sed -e 's/::*/:/g' -e 's/^::*//' -e 's/::*$//')
+    echo " #### MANPATH components now:"
+    echo $MANPATH | tr ':' '\n'
+}
+
+function manpathPreen() {
+    local d
+    local temPath=""
+
+    for d in $ALL_POSSIBLE_MANPATH_DIRS "$@" ; do
+        d=$(eval echo $d)
+        if [ -d $d/. ] ; then
+            echo "INCLUDE $d"
+            temPath="$temPath:$d"
+        else
+            echo "EXCLUDE                       $d"
+        fi
+    done
+
+    echo " #### Previous MANPATH components:"
+    echo $MANPATH | tr ':' '\n'
+    export MANPATH=$(echo "${temPath}" | sed -e 's/::*/:/g' -e 's/^::*//' -e 's/::*$//')
+    echo " ##### Current MANPATH components:"
+    echo $MANPATH | tr ':' '\n'
+}
+

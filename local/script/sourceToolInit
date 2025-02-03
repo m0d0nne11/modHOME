@@ -1,6 +1,8 @@
 # hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 
+[ "XXX_MIKE_DEBUG" ] && set -x ;
+
 ############################################################################
 # Given a list of source files in cscope.files
 # this script will build tne necessary databases

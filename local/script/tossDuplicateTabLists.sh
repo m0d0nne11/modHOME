@@ -1,5 +1,6 @@
-# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
+
+[ "$XXX_MIKE_DEBUG" ] && set -x
 
 # Having asked Firefox to periodically remember its list
 # of open tabs we try to minimize storage requirements by
@@ -19,7 +20,9 @@
 
 #export PATH=/Users/mi25714/modHOME/local/script:/Users/mi25714/modHOME/local/alternative:/bin:/sbin:/usr/bin:/usr/sbin:/Applications/MacVim.app/Contents/MacOS:/Users/mi25714/modHOME/local/alternative/osxVMwareFusionLibrarySymlink:/Users/mi25714/modHOME/local/alternative/osxVMWareOVFtoolDir:/usr/local:/usr/local/bin:/usr/local/sbin:/usr/local/share:/usr/X11:/usr/X11/bin:.
 
- export PATH=/Users/mi25714/modHOME.custom/local/script:/Users/mi25714/modHOME/local/script:/Users/mi25714/modHOME.custom/local/alternative:/Users/mi25714/modHOME/local/alternative:/Users/mi25714/modHOME/local/alternative/osxVMWareOVFtoolDir:/Users/mi25714/modHOME/local/alternative/osxVMwareFusionLibrarySymlink:/Users/mi25714/modHOME/local/bin:/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/share:/usr/X11:/Applications/MacVim.app/Contents/MacOS:/usr/local:.
+#export PATH=/home/mod/modHOME.custom/local/script:/home/mod/modHOME/local/script:/home/mod/modHOME.custom/local/bin:/home/mod/modHOME.custom/local/bin.i686:/home/mod/modHOME/local/alternative:/home/mod/modHOME/local/bin:/etc/alternatives:/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin/X11:/usr/local/share:/usr/local/games:/usr/local/firefox:/usr/games:/usr/bin/mh:/usr/local:.
+
+ export PATH=/home/mod/modHOME.custom/local/script:/home/mod/modHOME/local/script:/home/mod/modHOME.custom/local/bin.x86_64:/home/mod/modHOME.custom/local/alternative:/home/mod/modHOME.custom/local/bin:/home/mod/modHOME/local/alternative:/home/mod/modHOME/local/bin:/home/mod/.local/bin:/etc/alternatives:/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/sbin:/usr/local/bin:/usr/bin/X11:/usr/local/share:/usr/local/games:/usr/local/firefox:/usr/lib/firefox:/usr/games:/usr/local
 
 ##############################################################################
 # Never mind extraneous info (like which window it's in, etc)
@@ -37,9 +40,9 @@ function canonicalizedTabLines() { extractURLs | LC_ALL=C sort -bfd | uniq ; }
 
 tempFile=/tmp/tempFile$$.$(tds)
 
-# (for f in opentabs--2*.txt ; do echo $(md5sum < <(canonicalizedTabLines < $f) | word1) $f ; done) > "${tempFile}"
+  (for f in opentabs--2*.txt ; do echo $(md5sum < <(canonicalizedTabLines < $f) | word1) $f ; done) > "${tempFile}"
 
-  (for f in opentabs--2*.txt ; do echo $(md5    < <(canonicalizedTabLines < $f) | word1) $f ; done) > "${tempFile}"
+# (for f in opentabs--2*.txt ; do echo $(md5    < <(canonicalizedTabLines < $f) | word1) $f ; done) > "${tempFile}"
 
 dupMD5list=$(word1 < "${tempFile}" | LC_ALL=C sort | uniq -d)
 
@@ -50,5 +53,7 @@ for m in ${dupMD5list} ; do
     rm -f $toss
 done
 
-rm -f "${tempFile}"
+if ! [ "$XXX_MIKE_DEBUG" ] ; then
+    rm -f "${tempFile}"
+fi
 

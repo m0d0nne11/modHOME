@@ -12,3 +12,20 @@ NOTE_REPOSITORY=${modHOME}.custom/.NoteDir/.
 #function NotesFunc()  { sed -e 's/^/  /' -e 's/^  *########NOTE######## /########NOTE######## /' -e 's/[[:space:]]*$//g' <( cd ~/.NoteDir && find . -xdev -type f -name "[12]*" | sort | xargs -l20 cat ); }
 
 NotesFunc
+
+exit 0
+
+
+function NotesFunc() { 
+    local f;
+    NOTE_REPOSITORY=${modHOME}.custom/.NoteDir/.;
+    ( cd $NOTE_REPOSITORY || return;
+    for f in [12]*;
+    do
+        sed -e '2,$s/^/  /' < "${f}";
+    done ; ) ;
+} ;
+
+
+find . -maxdepth 1 -type f | sort
+

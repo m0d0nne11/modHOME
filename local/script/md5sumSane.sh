@@ -22,5 +22,8 @@ if uname -a | grep -qi -e linux ; then
     echo "         but you appear to be in a Linux system..."
 fi
      
-md5 "$@" | sed -e 's/^MD5 (\(..*\)) = \(..*$\)/\2 \1/'
+#md5 "$@" | sed -e 's/^MD5 (\(..*\)) = \(..*$\)/\2 \1/'
+
+# Ha! looks like they have an option for sane output...
+md5 -r "$@"
 

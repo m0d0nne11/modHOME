@@ -3,6 +3,16 @@
 
 # lpr -o landscape -o sides=two-sided-long-edge -o cpi=$(lprCPIforWidth $(wc -c))
 
+#
+# 20240920 - resurrecting this ugly hack but not making it any prettier
+#            until I convince myself that it's at all useful.  The intent
+#            is to help figure out what to put on a command line (I
+#            think I was using lpr) so that landscape-rendered PostScript
+#            versions of random text files (like wide diff logs) could
+#            be handed to a printer.  I think the trusty old "mpage"
+#            tool might have been involved but not sure...
+#
+# PREVIOUSLY...
 # To maintain the following list of functions, position (in vi) the cursor on
 # the first line in the list and then execute one of the following verbatim:
 #

@@ -1,0 +1,8 @@
+function manpathUpdate()  {
+    for f in $(echo $MANPATH | sed -e 's/:/ /g' )
+    do
+        echo "####" $f....
+        ll -d $f/.
+    done
+}
+

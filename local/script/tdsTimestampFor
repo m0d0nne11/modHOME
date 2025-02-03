@@ -1,5 +1,6 @@
 function tdsTimestampFor()  {
     ls -d --full-time --time-style='+%Y%m%d%H%M%S' "$@" | awk '{ print $6 }';
+#   echo "$1" | lastmod | awk '{ printf( "%s%s", $2, $3 ); }' | tr -d ':/' ;
 }
 
 tdsTimestampFor "$@"

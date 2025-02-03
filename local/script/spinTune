@@ -1,3 +1,3 @@
-echo "##################" $(tds) >> ~/modHOME.custom/lisaMusic
-#echo current-track | xmms-shell >> ~/modHOME.custom/lisaMusic
-echo "$(cat)"                    >> ~/modHOME.custom/lisaMusic
+echo "##################" $(tds) >> ${modHOME}.custom/lisaMusic
+#echo current-track | xmms-shell >> ${modHOME}.custom/lisaMusic
+echo "$(cat)"                    >> ${modHOME}.custom/lisaMusic

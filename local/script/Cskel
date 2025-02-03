@@ -7,8 +7,9 @@ cat <<"END_OF_C_SKELETON"
 #include <stdlib.h>
 
 #ifdef  ENABLE_THESE_IF_NEEDED
-#include <unistd.h>
+#include <unistd.h>                                  /* getopt() and friends */
 #include <ctype.h>
+#include <string.h>                                  /* strcmp() and friends */
 #include <strings.h>
 #endif                                      /* #ifdef ENABLE_THESE_IF_NEEDED */
 

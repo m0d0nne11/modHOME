@@ -1,9 +1,60 @@
-# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 #
 # Intended for use in vi where a series of 'mv' commands
 # is generated and then executed from within the editor
 # after suitable modifications.
 #
+# 20241106: Changed to handle strings with embedded single/double quotes
+#
 
-while read f ; do echo "mv '${f}' '${f}'" ; done
+function backslashedSingleQuotesIn() { echo "${1}" | sed -e "s/'/\\\'/g" ; } ;
+
+for filename in $* ; do
+    bits=0 ;
+    echo "${filename}" | grep -q -e "'" && bits=$(($bits | 1 ))
+    echo "${filename}" | grep -q -e '"' && bits=$(($bits | 2 ))
+
+    case $bits in
+    0|2) # No quotes or just double quotes
+        echo "mv '${filename}' '${filename}'" ;
+        ;;
+    1) # Has single quotes w/o double quotes
+        echo 'mv "'${filename}'" "'${filename}'"' ;
+        ;;
+    3) # Both single and double quotes
+        echo mv "'$(backslashedSingleQuotesIn "${filename}")' '$(backslashedSingleQuotesIn "${filename}")'"
+        ;;
+    *)
+        echo FAIL - Unexpected SWITCH value: $bits ;
+        exit 1
+        ;;
+    esac
+done
+
+[ $# -gt 1 ] && exit ; # Don't then wait around for stdin...
+
+while read filename ; do
+    bits=0 ;
+    echo "${filename}" | grep -q -e "'" && bits=$(($bits | 1 ))
+    echo "${filename}" | grep -q -e '"' && bits=$(($bits | 2 ))
+
+    case $bits in
+    0|2) # No quotes or just double quotes
+        echo "mv '${filename}' '${filename}'" ;
+#       break ;
+        ;;
+    1) # Has single quotes w/o double quotes
+        echo 'mv "'${filename}'" "'${filename}'"' ;
+#       break ;
+        ;;
+    3) # Both single and double quotes
+        echo mv "'$(backslashedSingleQuotesIn "${filename}")' '$(backslashedSingleQuotesIn "${filename}")'"
+#       break ;
+        ;;
+    *)
+        echo FAIL - Unexpected SWITCH value: $bits ;
+        exit 1
+        ;;
+    esac
+done
+

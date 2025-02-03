@@ -17,6 +17,7 @@
     ${modHOME}.custom/local/symlink
     ${modHOME}.custom/bin
     ${modHOME}.custom/local/bin
+    ${modHOME}.custom/.cargo/bin
     ${modHOME}.custom/perl5/bin
 
     ${modHOME}/local/alternative
@@ -24,6 +25,8 @@
     ${modHOME}/bin
     ${modHOME}/local/bin
     ${modHOME}/perl5/bin
+    ${modHOME}/.local/bin
+    ~/.local/bin
 
     ARCH_DEPENDENT_LOCAL_BIN
     /data/data/com.termux/files/usr/bin
@@ -107,10 +110,9 @@
     /usr/xpg4/bin
     /vobs/mcos/ccbuild/exports/bin
 
+    ${modHOME}.custom/JAVA/jdk1.5.0_03/bin
     ${modHOME}.custom/local/alternative/osxVMwareFusionLibrarySymlink
     ${modHOME}.custom/local/alternative/osxVMWareOVFtoolDir
-    ${modHOME}/local/alternative/osxVMwareFusionLibrarySymlink
-    ${modHOME}/local/alternative/osxVMWareOVFtoolDir
     /Applications/MacVim.app/Contents/bin
     /Applications/MacVim.app/Contents/MacOS
     /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/usr/bin

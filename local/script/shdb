@@ -1,2 +1,4 @@
 echo echo '"######## Checkpoint"' $(timeDateString)
+echo '[ "$XXX_MIKE_DEBUG" ] && echo $FUNCNAME:$LINENO'"'('"'$*'"')' ;"
 cat
+

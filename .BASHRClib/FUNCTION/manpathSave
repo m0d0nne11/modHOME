@@ -1,0 +1,21 @@
+
+#
+
+function manpathSave()  { 
+    local f
+
+    rigCustomDir         .BASHRClib/ENVARphase1 ; # Ensure dir exists.
+    f="${modHOME}.custom/.BASHRClib/ENVARphase1/MANPATH" ; 
+    if [ -f "${f}" ] ; then
+        echo " ## " PREVIOUS "${f}" : ;
+        cat                  "${f}"   ;
+    fi ;
+    echo " MANPATH=${MANPATH}" > "${f}" ;
+    if ! [ -r "${f}" ] ; then
+        echo 'MANPATH environment definition file not readable?' "${f}" ;
+        return ;
+    fi ;
+    echo " ### " CURRENT "${f}" : ;
+    cat                  "${f}"   ;
+}
+

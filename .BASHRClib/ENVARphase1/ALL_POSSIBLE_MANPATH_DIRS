@@ -1,6 +1,8 @@
  ALL_POSSIBLE_MANPATH_DIRS="
  "${modHOME}".custom/local/man
  "${modHOME}"/local/man
+ /afs/ri/user/mod/local/man
+ /opt/aCC/share/man
  /opt/ansic/share/man
  /opt/ansic/share/man/%L
  /opt/audio/share/man
@@ -28,18 +30,21 @@
  /usr/atria/doc/man
  /usr/contrib/man
  /usr/contrib/man/%L
+ /usr/lib/jvm/*/man
+ /usr/lib/ruby/*/bundler/man
  /usr/local/man
  /usr/local/man/%L
  /usr/local/tclX/latest/man
  /usr/local/tkX/latest/man
  /usr/man
  /usr/openwin/man
+ /usr/share/doc/python*/man
  /usr/share/man
  /usr/share/man/%L
  /usr/X11/man
  /usr/X11R5/man
  /usr/X11R6/man
- /afs/ri/user/mod/local/man
- /opt/aCC/share/man
+ /var/cache/man
+
 "
 

@@ -1,32 +1,35 @@
-# mkdir /mnt/loop4 ; offset=32256 ; losetup --offset=$offset /dev/loop4 lisaLaptopImage.sda.20100214 ; mount /dev/loop4 /mnt/loop4
+# mkdir /mnt/"${loopDev}" ; offset=32256 ; losetup --offset=$offset /dev/"${loopDev}" lisaLaptopImage.sda.20100214 ; mount /dev/"${loopDev}" /mnt/"${loopDev}"
 
 test -n "$MIKE_DEBUG" && set -x
 
 function successiveLoopMountAttemptsForImage_func() {
     local image=$1;
+    local loopDev=$2;
     local blockSize=512;
     local offset=0;
     local block=0;
+
+    mkdir -p /mnt/"${loopDev}" ;
     echo "######" SUCCESSIVE LOOP MOUNT ATTEMPTS FOR $image
     while :; do
         offset=$[$block * $blockSize];
         echo "####" OFFSET $offset ...
-        losetup --offset=$offset /dev/loop4 "${image}";
+        losetup --offset=$offset /dev/"${loopDev}" "${image}";
         sleep 1;
         losetup --all
-        if mount -t vfat -oro /dev/loop4 /mnt/loop4; then
+        if mount -t vfat -oro /dev/"${loopDev}" /mnt/"${loopDev}"; then
             echo Mount EXT3 succeeded at offset $offset;
             break;
         fi;
-        if mount -t ext3 -oro /dev/loop4 /mnt/loop4; then
+        if mount -t ext3 -oro /dev/"${loopDev}" /mnt/"${loopDev}"; then
             echo Mount EXT3 succeeded at offset $offset;
             break;
         fi;
-        if mount -t ext4 -oro /dev/loop4 /mnt/loop4; then
+        if mount -t ext4 -oro /dev/"${loopDev}" /mnt/"${loopDev}"; then
             echo Mount EXT4 succeeded at offset $offset;
             break;
         fi;
-        losetup --detach /dev/loop4;
+        losetup --detach /dev/"${loopDev}";
         let block++;
     done;
 }

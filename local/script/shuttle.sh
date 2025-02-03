@@ -1,4 +1,3 @@
-# hashBang line disabled to accommodate Termux's nonstandard filesystem layout...
 #!/bin/bash
 
 ###############################################################################
@@ -8,6 +7,7 @@
 # BEGIN CONFIGURABLES:
 
 otherHost=otherHostNotYetDefined
+otherHost=modmac
 
 unset otherUser     # Defaults to current user when undefined/unset
 #otherUser=mi25714@ # NOTE: if defined/set, otherUser *MUST* have trailing @
@@ -19,9 +19,26 @@ unset otherUser     # Defaults to current user when undefined/unset
 #  - are assumed to be pathnames relative to the home directory;
 #    absolute paths may also work but have not been exercised...
 
+#Desktop/HCB
+#Desktop/LDAP
+
 function reciteDirList() {
     cat <<"DIR_LIST_BOUNDARY"
-relativePaths/to/your/directories/here/1/per/line/but/delete/this/example
+Desktop/MITLL
+modHOME.custom/.NoteDir
+Library/Application Support/Firefox
+Library/Caches/Thunderbird
+Library/Caches/org.mozilla.thunderbird
+Library/Thunderbird
+Library/WebKit/org.mozilla.thunderbird
+DIR_LIST_BOUNDARY
+}
+
+function reciteDirListNoTbird() {
+    cat <<"DIR_LIST_BOUNDARY"
+Desktop/MITLL
+.NoteDir
+Library/Application Support/Firefox
 DIR_LIST_BOUNDARY
 }
 
@@ -33,7 +50,12 @@ DIR_LIST_BOUNDARY
 
 function reciteFileList() {
     cat <<"FILE_LIST_BOUNDARY"
-relativePaths/to/your/files/here/1/per/line/but/delete/this/example
+Library/Preferences/org.mozilla.thunderbird.plist
+FILE_LIST_BOUNDARY
+}
+
+function reciteFileListNoTbird() {
+    cat <<"FILE_LIST_BOUNDARY"
 FILE_LIST_BOUNDARY
 }
 

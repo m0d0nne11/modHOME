@@ -1,9 +1,14 @@
 
-# When we want to create a localized version of a file that's part of
-# the modHOME distribution, we could edit it in place but the preferred
-# method is to create a copy in the modHOME.custom hierarchy and leave
-# the original untouched.  This works because versions from modHOME.custom
-# are (when they exist) used instead of the originals under modHOME.
+# When we want to create a localized version of a file that's part
+# of the official modHOME distribution, we could edit it in place
+# under ~/modHOME but that goes against the "try to keep modHOME
+# read-only" approach so the preferred method is to create a copy
+# in the modHOME.custom hierarchy and leave the original untouched.
+#
+# This works because versions from modHOME.custom are (when they
+# exist) used instead of the originals under modHOME - see the Bmod
+# initialization script.
+#
 # This function creates that custom copy when it's mentioned as ARG1
 #
 function modHOMEcustomize() {
@@ -47,7 +52,8 @@ function modHOMEcustomize() {
     echo "#### Will create/overwrite the localized copy using these commands:"
     echo "#### rigCustomDir $dir"
     echo "#### cp -a ${modHOME}/$path ${modHOME}.custom/$dir/."
-    echo '#### ...creating necessary (sub)directories as necessary.'
+    echo '#### ...creating (sub)directories as necessary, including'
+    echo "#### ... ${modHOME}.custom/$dir/"
     read -p '#### Hit Return to proceed...  (Ctl-C to abort) ' path; # Reuse path
 
     rigCustomDir $dir ;

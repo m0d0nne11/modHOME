@@ -48,8 +48,9 @@ import re
 import glob
 
 ###############################################################################
-# Defend against os.path.dirname's astonishing failure to report '.'  as
-# the directory for filenames that have no explicit directory components.
+# Defend against os.path.dirname's astonishing failure to default
+# to report '.' as the parent directory for pathnames that otherwise
+# contain no explicit parent directory components.
 #
 def saneDirname( path ) :
     if path == '' :
@@ -81,7 +82,8 @@ def tdsTouch( ymdhms, fileName ) :
 
     try:                                 # Attempt 'touch' of specified file...
         os.utime(fileName, (epochSeconds, epochSeconds))
-    except OSError as (errno, strerror):
+    except OSError as uTimeFail:
+        (errno, strerror) = uTimeFail.args
         sys.stderr.write("Can't update %s(error:%s)\n" % (fileName, strerror) )
         return False
 
@@ -120,7 +122,7 @@ def tdsMD5retagFunc( fileName ) :
 
     base = os.path.basename( fileName )
     if not os.path.isfile( base ) :
-        sys.stderr.write( "No file '%s' for file '%s' in dir '%s' ?\n" % (base, fileName, dir) )
+        sys.stderr.write( "No file '%s' for path '%s' in dir '%s' ?\n" % (base, fileName, dir) )
         return False
 
     # We require that the filename be laid out in tds.md5 format:
@@ -137,10 +139,11 @@ def tdsMD5retagFunc( fileName ) :
         p = re.compile( '([0-9]{14})()$')  # Legitimize refs to NULL 2nd group.
         m = p.match(base)
         if not m :
-            sys.stderr.write( "Filename '%s' in dir '%s' not in tds.md5 (or even in old tds format)\n" % (base, dir) )
+            sys.stderr.write( "Filename '%s' in dir '%s' not in tds.md5 (or even plain old tds format)\n" % (base, dir) )
             return False
 
-    # fileName in acceptable form, so isolate the TDS portion.
+    # OK, fileName is in one of the acceptable formats, so isolate
+    # the TDS portion.
     #
     tds = m.group( 1 )
 
@@ -175,14 +178,14 @@ def tdsMD5retagFunc( fileName ) :
             sys.stderr.write( "Can't rename '%s' as '%s' in '%s' ?\n" % (base, proposed, dir) )
             return False
 
-    # OK - file now exists with correct name.  Force timestamp...
+    # OK - file now exists with correct(ed?) name.  Force timestamp...
     #
     if not tdsTouch( tds, proposed ) :
         sys.stderr.write( "Can't tdsTouch(%s, %s) in %s ?\n" % (tds, proposed, dir) )
         return False
 
-    if base != proposed :                        # Mention new name if changed.
-        print "%s: %s -> %s" % (tds, m.group( 2 ), md5)
+    if base != proposed :                       # If changed, mention new name.
+        print( "%s: %s -> %s" % (tds, m.group( 2 ), md5) )
 
     return True
 
